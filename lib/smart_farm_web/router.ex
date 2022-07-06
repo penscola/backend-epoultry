@@ -5,8 +5,19 @@ defmodule SmartFarmWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", SmartFarmWeb do
-    pipe_through :api
+  pipeline :graphql do
+    plug :accepts, ["json"]
+    # plug SmartFarmWeb.Context
+  end
+
+  scope "/api/graphql" do
+    pipe_through :graphql
+
+    forward "/", Absinthe.Plug, schema: SmartFarmWeb.Schema
+  end
+
+  if Mix.env() == :dev do
+    forward "/graphiql", Absinthe.Plug.GraphiQL, schema: SmartFarmWeb.Schema
   end
 
   # Enables LiveDashboard only for development
