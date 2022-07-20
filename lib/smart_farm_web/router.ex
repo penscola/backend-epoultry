@@ -7,7 +7,7 @@ defmodule SmartFarmWeb.Router do
 
   pipeline :graphql do
     plug :accepts, ["json"]
-    # plug SmartFarmWeb.Context
+    plug SmartFarmWeb.Context
   end
 
   scope "/api/graphql" do

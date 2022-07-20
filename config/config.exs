@@ -11,6 +11,12 @@ config :smart_farm,
   ecto_repos: [SmartFarm.Repo],
   generators: [binary_id: true]
 
+config :smart_farm, SmartFarm.Repo, migration_primary_key: [name: :uuid, type: :binary_id]
+
+config :smart_farm, SmartFarm.Guardian,
+  issuer: "smart_farm",
+  secret: "+sBqESBgDk/ea4rZcTd2BzhSVCAJfBU/UwQZaS48pPyZUIjlP7Hu7JUbVuxiVuQ6"
+
 # Configures the endpoint
 config :smart_farm, SmartFarmWeb.Endpoint,
   url: [host: "localhost"],

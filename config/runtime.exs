@@ -21,6 +21,13 @@ if System.get_env("PHX_SERVER") do
 end
 
 if config_env() == :prod do
+  guardian_secret =
+    System.get_env("GUARDIAN_SECRET") ||
+      raise """
+      environment variable GUARDIAN_SECRET is missing.
+      You can generate one by calling: mix guardian.gen.secret
+      """
+
   database_url =
     System.get_env("DATABASE_URL") ||
       raise """
@@ -62,6 +69,10 @@ if config_env() == :prod do
       port: port
     ],
     secret_key_base: secret_key_base
+
+  config :smart_farm, SmartFarm.Guardian,
+    issuer: "smart_farm",
+    secret: guardian_secret
 
   # ## Configuring the mailer
   #
