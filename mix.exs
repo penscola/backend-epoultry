@@ -49,7 +49,10 @@ defmodule SmartFarm.MixProject do
       {:absinthe_plug, "~> 1.5"},
       {:absinthe_phoenix, "~> 2.0"},
       {:dataloader, "~> 1.0"},
-      {:guardian, "~> 2.0"}
+
+      # Authentication
+      {:guardian, "~> 2.0"},
+      {:nimble_totp, "~> 0.1.0"}
     ]
   end
 

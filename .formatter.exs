@@ -1,5 +1,10 @@
 [
   import_deps: [:ecto, :phoenix],
-  inputs: ["*.{ex,exs}", "priv/*/seeds.exs", "{config,lib,test}/**/*.{ex,exs}"],
+  plugins: [Absinthe.Formatter],
+  inputs: [
+    "{mix,.formatter}.exs",
+    "{config,lib,test}/**/*.{ex,exs}",
+    "{lib, priv}/**/*.{gql,graphql}"
+  ],
   subdirectories: ["priv/*/migrations"]
 ]

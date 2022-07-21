@@ -2,7 +2,7 @@ defmodule SmartFarmWeb.Middleware.Authorize do
   @behaviour Absinthe.Middleware
 
   @spec call(Absinthe.Resolution.t(), %{current_user: any()}) :: Absinthe.Resolution.t()
-  def call(resolution = %{context: %{current_user: %{} = _user}}, _config) do
+  def call(resolution = %{context: %{current_user: %_{} = _user}}, _config) do
     resolution
   end
 

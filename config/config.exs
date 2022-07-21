@@ -8,8 +8,7 @@
 import Config
 
 config :smart_farm,
-  ecto_repos: [SmartFarm.Repo],
-  generators: [binary_id: true]
+  ecto_repos: [SmartFarm.Repo]
 
 config :smart_farm, SmartFarm.Repo, migration_primary_key: [name: :uuid, type: :binary_id]
 
