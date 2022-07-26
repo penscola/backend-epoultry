@@ -8,7 +8,7 @@ defmodule SmartFarm.Farms.Farm do
     field :location, :map
     field :name, :string
 
-    belongs_to :owner, User, references: :uuid
+    belongs_to :owner, User
 
     timestamps()
   end

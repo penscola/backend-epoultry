@@ -9,7 +9,8 @@ defmodule SmartFarm.Shared do
         Farms,
         Farms.Farm,
         Farms.FarmInvite,
-        Farms.FarmManager
+        Farms.FarmManager,
+        SMS
       }
     end
   end

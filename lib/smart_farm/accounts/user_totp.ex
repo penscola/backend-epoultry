@@ -6,7 +6,7 @@ defmodule SmartFarm.Accounts.UserTOTP do
   schema "users_totps" do
     field :secret, :binary
     field :code, :string, virtual: true
-    belongs_to :user, SmartFarm.Accounts.User, references: :uuid
+    belongs_to :user, SmartFarm.Accounts.User
 
     timestamps()
   end

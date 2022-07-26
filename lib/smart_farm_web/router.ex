@@ -13,10 +13,12 @@ defmodule SmartFarmWeb.Router do
   scope "/api/graphql" do
     pipe_through :graphql
 
+    forward "/auth", SmartFarmWeb.AbsinthePlug, schema: SmartFarmWeb.AuthSchema
     forward "/", Absinthe.Plug, schema: SmartFarmWeb.Schema
   end
 
   if Mix.env() == :dev do
+    forward "/graphiql/auth", SmartFarmWeb.AbsinthePlug.GraphiQL, schema: SmartFarmWeb.AuthSchema
     forward "/graphiql", Absinthe.Plug.GraphiQL, schema: SmartFarmWeb.Schema
   end
 

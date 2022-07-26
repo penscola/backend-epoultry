@@ -35,6 +35,12 @@ if config_env() == :prod do
       For example: ecto://USER:PASS@HOST/DATABASE
       """
 
+  at_api_key =
+    System.get_env("AT_API_KEY") ||
+      raise """
+      environment variable AT_API_KEY is missing.
+      """
+
   maybe_ipv6 = if System.get_env("ECTO_IPV6"), do: [:inet6], else: []
 
   config :smart_farm, SmartFarm.Repo,
@@ -73,6 +79,8 @@ if config_env() == :prod do
   config :smart_farm, SmartFarm.Guardian,
     issuer: "smart_farm",
     secret: guardian_secret
+
+  config :at_ex, api_key: at_api_key
 
   # ## Configuring the mailer
   #

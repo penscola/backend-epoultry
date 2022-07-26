@@ -7,7 +7,7 @@ defmodule SmartFarm.Accounts.Farmer do
     field :birth_date, :date
     field :gender, :string
 
-    belongs_to :user, User, references: :uuid
+    belongs_to :user, User
 
     timestamps()
   end

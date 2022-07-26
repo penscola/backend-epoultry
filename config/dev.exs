@@ -59,3 +59,5 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :at_ex, api_key: System.get_env("AT_API_KEY"), sandbox: true

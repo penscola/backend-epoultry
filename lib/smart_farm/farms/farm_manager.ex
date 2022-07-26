@@ -4,8 +4,8 @@ defmodule SmartFarm.Farms.FarmManager do
   alias SmartFarm.Farms.Farm
 
   schema "farms_managers" do
-    belongs_to :farm, Farm, references: :uuid
-    belongs_to :user, User, references: :uuid
+    belongs_to :farm, Farm
+    belongs_to :user, User
 
     timestamps()
   end

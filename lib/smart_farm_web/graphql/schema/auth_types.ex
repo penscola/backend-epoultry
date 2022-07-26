@@ -1,5 +1,8 @@
-defmodule SmartFarmWeb.Types.AuthTypes do
+defmodule SmartFarmWeb.Schema.AuthTypes do
   use SmartFarmWeb, :schema
+
+  object :auth_queries do
+  end
 
   object :auth_mutations do
     field :request_login_otp, non_null(:boolean) do

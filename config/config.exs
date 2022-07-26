@@ -10,7 +10,7 @@ import Config
 config :smart_farm,
   ecto_repos: [SmartFarm.Repo]
 
-config :smart_farm, SmartFarm.Repo, migration_primary_key: [name: :uuid, type: :binary_id]
+config :smart_farm, SmartFarm.Repo, migration_primary_key: [name: :id, type: :binary_id]
 
 config :smart_farm, SmartFarm.Guardian,
   issuer: "smart_farm",
@@ -42,6 +42,8 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+config :smart_farm, env: Mix.env()
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

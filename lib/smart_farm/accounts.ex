@@ -4,6 +4,7 @@ defmodule SmartFarm.Accounts do
   """
 
   use SmartFarm.Context
+  require Logger
 
   @doc """
   Returns the list of users.
@@ -33,6 +34,10 @@ defmodule SmartFarm.Accounts do
 
   """
   def get_user!(id), do: Repo.get!(User, id)
+
+  def get_user_by_phone_number(number) do
+    Repo.fetch_by(User, phone_number: number)
+  end
 
   @doc """
   Creates a user.
@@ -106,7 +111,7 @@ defmodule SmartFarm.Accounts do
   end
 
   def get_user_otp(%User{} = user) do
-    case Repo.get_by(UserTOTP, user_id: user.uuid) do
+    case Repo.get_by(UserTOTP, user_id: user.id) do
       nil ->
         create_user_totp(user)
 
@@ -116,5 +121,19 @@ defmodule SmartFarm.Accounts do
   end
 
   def request_login_otp(%User{} = user) do
+    with {:ok, totp} <- get_user_otp(user),
+         {:ok, _response} <- send_otp(user, totp) do
+      :ok
+    end
+  end
+
+  defp send_otp(user, totp) do
+    otp_code = NimbleTOTP.verification_code(totp.secret)
+
+    if Application.get_env(:smart_farm, :env) == :dev do
+      Logger.info("Generated OTP CODE: #{otp_code}")
+    end
+
+    SMS.send(user.phone_number, otp_code)
   end
 end

@@ -52,7 +52,11 @@ defmodule SmartFarm.MixProject do
 
       # Authentication
       {:guardian, "~> 2.0"},
-      {:nimble_totp, "~> 0.1.0"}
+      {:nimble_totp, "~> 0.1.0"},
+
+      # SMS
+      {:at_ex, "~> 0.20.22"},
+      {:mime, "~> 2.0", override: true}
     ]
   end
 
