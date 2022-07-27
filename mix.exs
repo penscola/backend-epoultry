@@ -55,8 +55,7 @@ defmodule SmartFarm.MixProject do
       {:nimble_totp, "~> 0.1.0"},
 
       # SMS
-      {:at_ex, "~> 0.20.22"},
-      {:mime, "~> 2.0", override: true}
+      {:tesla, "~> 1.4"}
     ]
   end
 

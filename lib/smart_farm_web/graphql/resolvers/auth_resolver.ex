@@ -9,4 +9,18 @@ defmodule SmartFarmWeb.Resolvers.Auth do
       {:ok, true}
     end
   end
+
+  @spec verify_otp(%{phone_number: String.t(), otp_code: String.t()}, %{context: map()}) ::
+          {:ok, map()} | {:error, any()}
+  def verify_otp(args, %{context: _context}) do
+    with {:ok, user} <- Accounts.get_user_by_phone_number(args.phone_number),
+         :ok <- Accounts.verify_otp(user, args.otp_code),
+         {:ok, token, _claims} = SmartFarm.Guardian.encode_and_sign(user) do
+      {:ok, %{api_key: token}}
+    end
+  end
+
+  def ping(_args, _context) do
+    {:ok, "pong"}
+  end
 end

@@ -1,6 +1,27 @@
 defmodule SmartFarm.SMS do
+  alias SmartFarm.SMS.AtClient
+
   def send(phone_number, message) when is_binary(phone_number) do
-    AtEx.Sms.send_sms(%{to: format_phone_number(phone_number), message: message})
+    config = Application.get_env(:smart_farm, :africastalking)
+
+    result =
+      AtClient.post("/messaging", %{
+        to: format_phone_number(phone_number),
+        message: message,
+        username: config[:username],
+        from: config[:shortcode]
+      })
+
+    case result do
+      {:ok, %{status: status, body: body}} when status >= 200 and status <= 300 ->
+        {:ok, body}
+
+      {:ok, %{body: body}} ->
+        {:error, body}
+
+      other ->
+        other
+    end
   end
 
   defp format_phone_number("254" <> rest) when byte_size(rest) == 9 do

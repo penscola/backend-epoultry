@@ -127,6 +127,23 @@ defmodule SmartFarm.Accounts do
     end
   end
 
+  def verify_otp(%User{} = user, otp_code) do
+    with {:ok, totp} <- get_user_otp(user) do
+      if valid_code?(totp.secret, otp_code) do
+        :ok
+      else
+        {:error, :invalid_otp_code}
+      end
+    end
+  end
+
+  def valid_code?(secret, otp) do
+    time = System.os_time(:second)
+
+    NimbleTOTP.valid?(secret, otp, time: time) or
+      NimbleTOTP.valid?(secret, otp, time: time - 60 * 10)
+  end
+
   defp send_otp(user, totp) do
     otp_code = NimbleTOTP.verification_code(totp.secret)
 

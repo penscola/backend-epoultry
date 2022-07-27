@@ -1,14 +1,13 @@
 defmodule SmartFarm.Farms.Farm do
   use SmartFarm.Schema
-  import Ecto.Changeset
-
-  alias SmartFarm.Accounts.User
 
   schema "farms" do
     field :location, :map
     field :name, :string
 
     belongs_to :owner, User
+    has_many :batches, Batch
+    many_to_many :managers, User, join_through: FarmManager
 
     timestamps()
   end

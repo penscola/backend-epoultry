@@ -41,6 +41,18 @@ if config_env() == :prod do
       environment variable AT_API_KEY is missing.
       """
 
+  sms_shortcode =
+    System.get_env("SMS_SHORTCODE") ||
+      raise """
+      environment variable SMS_SHORTCODE is missing.
+      """
+
+  at_username =
+    System.get_env("AT_USERNAME") ||
+      raise """
+      environment variable AT_USERNAME is missing.
+      """
+
   maybe_ipv6 = if System.get_env("ECTO_IPV6"), do: [:inet6], else: []
 
   config :smart_farm, SmartFarm.Repo,
@@ -81,6 +93,13 @@ if config_env() == :prod do
     secret: guardian_secret
 
   config :at_ex, api_key: at_api_key
+
+  config :smart_farm,
+    africastalking: [
+      api_key: at_api_key,
+      username: at_username,
+      shortcode: sms_shortcode
+    ]
 
   # ## Configuring the mailer
   #

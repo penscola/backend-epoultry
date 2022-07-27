@@ -10,7 +10,13 @@ import Config
 config :smart_farm,
   ecto_repos: [SmartFarm.Repo]
 
-config :smart_farm, SmartFarm.Repo, migration_primary_key: [name: :id, type: :binary_id]
+config :smart_farm, SmartFarm.Repo,
+  migration_primary_key: [name: :id, type: :binary_id],
+  migration_timestamps: [
+    type: :utc_datetime,
+    inserted_at: :created_at,
+    updated_at: :updated_at
+  ]
 
 config :smart_farm, SmartFarm.Guardian,
   issuer: "smart_farm",

@@ -13,13 +13,20 @@ defmodule SmartFarmWeb.Schema do
   # For file uploads
   import_types(Absinthe.Plug.Types)
 
+  import_types(Schema.BatchTypes)
+  import_types(Schema.FarmTypes)
+  import_types(Schema.UserTypes)
+
   query do
+    import_fields(:batch_queries)
+    import_fields(:farm_queries)
+    import_fields(:user_queries)
   end
 
   mutation do
-  end
-
-  subscription do
+    import_fields(:batch_mutations)
+    import_fields(:farm_mutations)
+    import_fields(:user_mutations)
   end
 
   def context(ctx) do

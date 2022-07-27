@@ -36,6 +36,7 @@ defmodule SmartFarm.Farms do
 
   """
   def get_farm!(id), do: Repo.get!(Farm, id)
+  def get_farm(id), do: Repo.fetch(Farm, id)
 
   @doc """
   Creates a farm.

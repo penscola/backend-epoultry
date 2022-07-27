@@ -8,6 +8,7 @@ defmodule SmartFarm.Accounts.Farmer do
     field :gender, :string
 
     belongs_to :user, User
+    has_many :farms, Farm, foreign_key: :owner_id, references: :user_id
 
     timestamps()
   end

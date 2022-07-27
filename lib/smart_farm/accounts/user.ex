@@ -7,6 +7,9 @@ defmodule SmartFarm.Accounts.User do
     field :last_name, :string
     field :phone_number, :string
 
+    has_one :farmer, Farmer
+    has_many :farms, Farm, foreign_key: :owner_id
+
     timestamps()
   end
 
