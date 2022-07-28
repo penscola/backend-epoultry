@@ -88,4 +88,72 @@ defmodule SmartFarm.BatchesTest do
       assert %Ecto.Changeset{} = Batches.change_batch(batch)
     end
   end
+
+  describe "bird_count_reports" do
+    alias SmartFarm.Batches.BirdCountReport
+
+    import SmartFarm.BatchesFixtures
+
+    @invalid_attrs %{quantity: nil, reason: nil, report_date: nil}
+
+    test "list_bird_count_reports/0 returns all bird_count_reports" do
+      bird_count_report = bird_count_report_fixture()
+      assert Batches.list_bird_count_reports() == [bird_count_report]
+    end
+
+    test "get_bird_count_report!/1 returns the bird_count_report with given id" do
+      bird_count_report = bird_count_report_fixture()
+      assert Batches.get_bird_count_report!(bird_count_report.id) == bird_count_report
+    end
+
+    test "create_bird_count_report/1 with valid data creates a bird_count_report" do
+      valid_attrs = %{quantity: 42, reason: "some reason", report_date: ~D[2022-07-27]}
+
+      assert {:ok, %BirdCountReport{} = bird_count_report} =
+               Batches.create_bird_count_report(valid_attrs)
+
+      assert bird_count_report.quantity == 42
+      assert bird_count_report.reason == "some reason"
+      assert bird_count_report.report_date == ~D[2022-07-27]
+    end
+
+    test "create_bird_count_report/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Batches.create_bird_count_report(@invalid_attrs)
+    end
+
+    test "update_bird_count_report/2 with valid data updates the bird_count_report" do
+      bird_count_report = bird_count_report_fixture()
+      update_attrs = %{quantity: 43, reason: "some updated reason", report_date: ~D[2022-07-28]}
+
+      assert {:ok, %BirdCountReport{} = bird_count_report} =
+               Batches.update_bird_count_report(bird_count_report, update_attrs)
+
+      assert bird_count_report.quantity == 43
+      assert bird_count_report.reason == "some updated reason"
+      assert bird_count_report.report_date == ~D[2022-07-28]
+    end
+
+    test "update_bird_count_report/2 with invalid data returns error changeset" do
+      bird_count_report = bird_count_report_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               Batches.update_bird_count_report(bird_count_report, @invalid_attrs)
+
+      assert bird_count_report == Batches.get_bird_count_report!(bird_count_report.id)
+    end
+
+    test "delete_bird_count_report/1 deletes the bird_count_report" do
+      bird_count_report = bird_count_report_fixture()
+      assert {:ok, %BirdCountReport{}} = Batches.delete_bird_count_report(bird_count_report)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Batches.get_bird_count_report!(bird_count_report.id)
+      end
+    end
+
+    test "change_bird_count_report/1 returns a bird_count_report changeset" do
+      bird_count_report = bird_count_report_fixture()
+      assert %Ecto.Changeset{} = Batches.change_bird_count_report(bird_count_report)
+    end
+  end
 end

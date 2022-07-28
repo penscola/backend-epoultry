@@ -11,6 +11,7 @@ defmodule SmartFarm.Batches.Batch do
 
     belongs_to :creator, User
     belongs_to :farm, Farm
+    has_many :bird_count_reports, BirdCountReport
 
     timestamps()
   end

@@ -8,6 +8,7 @@ defmodule SmartFarm.Shared do
         Accounts.Farmer,
         Batches,
         Batches.Batch,
+        Batches.BirdCountReport,
         Farms,
         Farms.Farm,
         Farms.FarmInvite,
