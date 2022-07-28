@@ -10,6 +10,7 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 use SmartFarm.Shared
+alias SmartFarm.Repo
 
 farmer_phone = "254712345678"
 farm_manager_phone = "254709876543"
@@ -29,8 +30,8 @@ farm_manager_phone = "254709876543"
   }
 } |> Repo.insert(on_conflict: :nothing)
 
-farmer = Accounts.get_user_by_phone_number(farmer_phone)
-farm_manager = Accounts.get_user_by_phone_number(farm_manager_phone)
+{:ok, farmer} = Accounts.get_user_by_phone_number(farmer_phone)
+{:ok, farm_manager} = Accounts.get_user_by_phone_number(farm_manager_phone)
 
 Accounts.create_user_totp(farmer)
 Accounts.create_user_totp(farm_manager)

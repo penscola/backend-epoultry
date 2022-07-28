@@ -13,9 +13,9 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
   end
 
   enum :bird_count_report_reason_enum do
-    :sold
-    :mortality
-    :curled
+    value(:sold)
+    value(:mortality)
+    value(:curled)
   end
 
   object :batch do
