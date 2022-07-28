@@ -57,7 +57,8 @@ defmodule SmartFarm.MixProject do
       {:nimble_totp, "~> 0.1.0"},
 
       # SMS
-      {:tesla, "~> 1.4"}
+      {:tesla, "~> 1.4"},
+      {:argon2_elixir, "~> 3.0"}
     ]
   end
 

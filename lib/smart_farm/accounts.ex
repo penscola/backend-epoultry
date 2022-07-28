@@ -36,7 +36,9 @@ defmodule SmartFarm.Accounts do
   def get_user!(id), do: Repo.get!(User, id)
 
   def get_user_by_phone_number(number) do
-    Repo.fetch_by(User, phone_number: number)
+    with {:ok, number} <- User.format_phone_number(number) do
+      Repo.fetch_by(User, phone_number: number)
+    end
   end
 
   @doc """
@@ -104,13 +106,30 @@ defmodule SmartFarm.Accounts do
     User.changeset(user, attrs)
   end
 
+  def register_user(attrs) do
+    Multi.new()
+    |> Multi.insert(:user, User.registration_changeset(%User{}, attrs))
+    |> Multi.run(:user_totp, fn _repo, %{user: user} ->
+      create_user_totp(%User{} = user)
+    end)
+    |> Multi.run(:send_otp, fn _repo, %{user_totp: totp, user: user} ->
+      case send_otp(user, totp) do
+        {:ok, response} ->
+          {:ok, response}
+
+        {:error, response} ->
+          {:ok, response}
+      end
+    end)
+  end
+
   def create_user_totp(%User{} = user) do
     %UserTOTP{user_id: user.id}
     |> UserTOTP.changeset(%{secret: NimbleTOTP.secret()})
     |> Repo.insert()
   end
 
-  def get_user_otp(%User{} = user) do
+  def get_user_totp(%User{} = user) do
     case Repo.get_by(UserTOTP, user_id: user.id) do
       nil ->
         create_user_totp(user)
@@ -121,14 +140,14 @@ defmodule SmartFarm.Accounts do
   end
 
   def request_login_otp(%User{} = user) do
-    with {:ok, totp} <- get_user_otp(user),
+    with {:ok, totp} <- get_user_totp(user),
          {:ok, _response} <- send_otp(user, totp) do
       :ok
     end
   end
 
   def verify_otp(%User{} = user, otp_code) do
-    with {:ok, totp} <- get_user_otp(user) do
+    with {:ok, totp} <- get_user_totp(user) do
       if valid_code?(totp.secret, otp_code) do
         :ok
       else

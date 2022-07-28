@@ -6,6 +6,7 @@ defmodule SmartFarmWeb.AuthSchema do
   import_types(Absinthe.Type.Custom)
 
   import_types(Schema.AuthTypes)
+  import_types(Schema.UserTypes)
 
   query do
     import_fields(:auth_queries)
@@ -13,5 +14,6 @@ defmodule SmartFarmWeb.AuthSchema do
 
   mutation do
     import_fields(:auth_mutations)
+    import_fields(:user_auth_mutations)
   end
 end

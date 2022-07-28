@@ -15,5 +15,6 @@ defmodule SmartFarm.Batches.Report do
     report
     |> cast(attrs, [:report_date, :batch_id, :reporter_id])
     |> validate_required([:report_date])
+    |> unique_constraint([:report_date, :batch_id])
   end
 end

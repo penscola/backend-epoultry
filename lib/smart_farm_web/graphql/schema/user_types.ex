@@ -29,6 +29,13 @@ defmodule SmartFarmWeb.Schema.UserTypes do
     end
   end
 
+  input_object :register_user_input do
+    field :first_name, non_null(:string)
+    field :last_name, non_null(:string)
+    field :phone_number, non_null(:string)
+    field :password, non_null(:string)
+  end
+
   object :user_queries do
     field :user, non_null(:user) do
       resolve(&Resolvers.User.get/2)
@@ -36,5 +43,13 @@ defmodule SmartFarmWeb.Schema.UserTypes do
   end
 
   object :user_mutations do
+  end
+
+  object :user_auth_mutations do
+    field :register_user, non_null(:user) do
+      arg(:data, non_null(:register_user_input))
+
+      resolve(&Resolvers.User.register_user/2)
+    end
   end
 end
