@@ -3,9 +3,14 @@ defmodule SmartFarmWeb.AuthSchema do
 
   alias SmartFarmWeb.Schema
 
+  # Custom Types
+  import_types(Schema.UUIDType)
+  import_types(Schema.JSONType)
   import_types(Absinthe.Type.Custom)
 
   import_types(Schema.AuthTypes)
+  import_types(Schema.BatchTypes)
+  import_types(Schema.FarmTypes)
   import_types(Schema.UserTypes)
 
   query do
