@@ -100,25 +100,6 @@ defmodule SmartFarm.Batches do
     Batch.changeset(batch, attrs)
   end
 
-  def current_bird_count(%Batch{} = batch) do
-    query = from r in BirdCountReport, where: r.batch_id == ^batch.id, select: r.quantity
-    removed_quantity = Repo.aggregate(query, :count) || 0
-    batch.bird_count - removed_quantity
-  end
-
-  @doc """
-  Returns the list of bird_count_reports.
-
-  ## Examples
-
-      iex> list_bird_count_reports()
-      [%BirdCountReport{}, ...]
-
-  """
-  def list_bird_count_reports do
-    Repo.all(BirdCountReport)
-  end
-
   @doc """
   Gets a single bird_count_report.
 
@@ -172,31 +153,76 @@ defmodule SmartFarm.Batches do
   end
 
   @doc """
-  Deletes a bird_count_report.
+  Gets a single egg_collection_report.
+
+  Raises `Ecto.NoResultsError` if the Egg collection report does not exist.
 
   ## Examples
 
-      iex> delete_bird_count_report(bird_count_report)
-      {:ok, %BirdCountReport{}}
+      iex> get_egg_collection_report!(123)
+      %EggCollectionReport{}
 
-      iex> delete_bird_count_report(bird_count_report)
+      iex> get_egg_collection_report!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_egg_collection_report!(id), do: Repo.get!(EggCollectionReport, id)
+
+  @doc """
+  Creates a egg_collection_report.
+
+  ## Examples
+
+      iex> create_egg_collection_report(%{field: value})
+      {:ok, %EggCollectionReport{}}
+
+      iex> create_egg_collection_report(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_bird_count_report(%BirdCountReport{} = bird_count_report) do
-    Repo.delete(bird_count_report)
+  def create_egg_collection_report(attrs \\ %{}) do
+    %EggCollectionReport{}
+    |> EggCollectionReport.changeset(attrs)
+    |> Repo.insert()
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking bird_count_report changes.
+  Updates a egg_collection_report.
 
   ## Examples
 
-      iex> change_bird_count_report(bird_count_report)
-      %Ecto.Changeset{data: %BirdCountReport{}}
+      iex> update_egg_collection_report(egg_collection_report, %{field: new_value})
+      {:ok, %EggCollectionReport{}}
+
+      iex> update_egg_collection_report(egg_collection_report, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
 
   """
-  def change_bird_count_report(%BirdCountReport{} = bird_count_report, attrs \\ %{}) do
-    BirdCountReport.changeset(bird_count_report, attrs)
+  def update_egg_collection_report(%EggCollectionReport{} = egg_collection_report, attrs) do
+    egg_collection_report
+    |> EggCollectionReport.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @spec create_report(map()) :: {:ok, %Report{}} | {:error, Ecto.Changeset.t()}
+  def create_report(args) do
+    Multi.new()
+    |> Multi.insert(:report, Report.changeset(%Report{}, args))
+    |> Multi.insert(:egg_collection, fn %{report: report} ->
+      report
+      |> Ecto.build_assoc(:egg_collection)
+      |> EggCollectionReport.changeset(args.egg_collection)
+    end)
+    |> Multi.insert_all(:bird_counts, BirdCountReport, fn %{report: report} ->
+      Enum.map(args.bird_counts, &Map.put(&1, :report_id, report.id))
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{report: report}} ->
+        {:ok, report}
+
+      {:error, _failed_key, changeset, _changes} ->
+        {:error, changeset}
+    end
   end
 end

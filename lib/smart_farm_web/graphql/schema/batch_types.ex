@@ -35,12 +35,21 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :name, :string
     field :created_at, :datetime
 
-    field :bird_count_reports, list_of(:bird_count_report) do
+    field :reports, list_of(:batch_report) do
+      resolve(dataloader(Repo))
+    end
+  end
+
+  object :batch_report do
+    field :id, :uuid
+    field :report_date, :date
+
+    field :bird_counts, list_of(:bird_count_report) do
       resolve(dataloader(Repo))
     end
 
-    field :current_bird_count, :integer do
-      resolve(&Resolvers.Batch.current_bird_count/3)
+    field :egg_collection, :egg_collection_report do
+      resolve(dataloader(Repo))
     end
   end
 
@@ -48,16 +57,26 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :id, :uuid
     field :quantity, :integer
     field :reason, :bird_count_report_reason_enum
-    field :report_date, :date
-    field :created_at, :datetime
+  end
 
-    field :batch, :batch do
-      resolve(dataloader(Repo))
-    end
+  object :bad_count_classification do
+    field :fully_broken, :integer
+    field :partially_broken, :integer
+    field :deformed, :integer
+  end
 
-    field :reporter, :user do
-      resolve(dataloader(Repo))
-    end
+  object :good_count_classification do
+    field :medium, :integer
+    field :large, :integer
+  end
+
+  object :egg_collection_report do
+    field :id, :uuid
+    field :bad_count, :integer
+    field :comments, :string
+    field :good_count, :integer
+    field :bad_count_classification, :bad_count_classification
+    field :good_count_classification, :good_count_classification
   end
 
   input_object :create_batch_input do
@@ -70,10 +89,27 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :farm_id, non_null(:uuid)
   end
 
-  input_object :create_bird_count_report_input do
+  input_object :create_batch_report_input do
+    field :report_date, :date, description: "defaults to the current date"
+    field :batch_id, non_null(:uuid)
+    field :bird_counts, non_null(list_of(non_null(:bird_count_report_input)))
+    field :egg_collection, non_null(:egg_collection_report_input)
+  end
+
+  input_object :bird_count_report_input do
     field :quantity, non_null(:integer)
     field :reason, non_null(:bird_count_report_reason_enum)
-    field :report_date, :date
+  end
+
+  input_object :egg_collection_report_input do
+    field :bad_count, non_null(:integer)
+    field :comments, non_null(:string)
+    field :good_count, non_null(:integer)
+    field :medium_count, non_null(:integer)
+    field :large_count, non_null(:integer)
+    field :fully_broken, non_null(:integer)
+    field :partially_broken, non_null(:integer)
+    field :deformed, non_null(:integer)
   end
 
   object :batch_queries do
@@ -89,9 +125,9 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
       resolve(&Resolvers.Batch.create_batch/2)
     end
 
-    field :create_bird_count_report, non_null(:bird_count_report) do
-      arg(:data, non_null(:create_bird_count_report_input))
-      resolve(&Resolvers.Batch.create_bird_count_report/2)
+    field :create_batch_report, non_null(:batch_report) do
+      arg(:data, non_null(:create_batch_report_input))
+      resolve(&Resolvers.Batch.create_batch_report/2)
     end
   end
 end

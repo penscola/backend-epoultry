@@ -156,4 +156,102 @@ defmodule SmartFarm.BatchesTest do
       assert %Ecto.Changeset{} = Batches.change_bird_count_report(bird_count_report)
     end
   end
+
+  describe "egg_collection_reports" do
+    alias SmartFarm.Batches.EggCollectionReport
+
+    import SmartFarm.BatchesFixtures
+
+    @invalid_attrs %{
+      bad_count: nil,
+      bad_count_classification: nil,
+      comments: nil,
+      good_count: nil,
+      good_count_classification: nil,
+      report_date: nil
+    }
+
+    test "list_egg_collection_reports/0 returns all egg_collection_reports" do
+      egg_collection_report = egg_collection_report_fixture()
+      assert Batches.list_egg_collection_reports() == [egg_collection_report]
+    end
+
+    test "get_egg_collection_report!/1 returns the egg_collection_report with given id" do
+      egg_collection_report = egg_collection_report_fixture()
+      assert Batches.get_egg_collection_report!(egg_collection_report.id) == egg_collection_report
+    end
+
+    test "create_egg_collection_report/1 with valid data creates a egg_collection_report" do
+      valid_attrs = %{
+        bad_count: 42,
+        bad_count_classification: %{},
+        comments: "some comments",
+        good_count: 42,
+        good_count_classification: %{},
+        report_date: ~D[2022-07-27]
+      }
+
+      assert {:ok, %EggCollectionReport{} = egg_collection_report} =
+               Batches.create_egg_collection_report(valid_attrs)
+
+      assert egg_collection_report.bad_count == 42
+      assert egg_collection_report.bad_count_classification == %{}
+      assert egg_collection_report.comments == "some comments"
+      assert egg_collection_report.good_count == 42
+      assert egg_collection_report.good_count_classification == %{}
+      assert egg_collection_report.report_date == ~D[2022-07-27]
+    end
+
+    test "create_egg_collection_report/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Batches.create_egg_collection_report(@invalid_attrs)
+    end
+
+    test "update_egg_collection_report/2 with valid data updates the egg_collection_report" do
+      egg_collection_report = egg_collection_report_fixture()
+
+      update_attrs = %{
+        bad_count: 43,
+        bad_count_classification: %{},
+        comments: "some updated comments",
+        good_count: 43,
+        good_count_classification: %{},
+        report_date: ~D[2022-07-28]
+      }
+
+      assert {:ok, %EggCollectionReport{} = egg_collection_report} =
+               Batches.update_egg_collection_report(egg_collection_report, update_attrs)
+
+      assert egg_collection_report.bad_count == 43
+      assert egg_collection_report.bad_count_classification == %{}
+      assert egg_collection_report.comments == "some updated comments"
+      assert egg_collection_report.good_count == 43
+      assert egg_collection_report.good_count_classification == %{}
+      assert egg_collection_report.report_date == ~D[2022-07-28]
+    end
+
+    test "update_egg_collection_report/2 with invalid data returns error changeset" do
+      egg_collection_report = egg_collection_report_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               Batches.update_egg_collection_report(egg_collection_report, @invalid_attrs)
+
+      assert egg_collection_report == Batches.get_egg_collection_report!(egg_collection_report.id)
+    end
+
+    test "delete_egg_collection_report/1 deletes the egg_collection_report" do
+      egg_collection_report = egg_collection_report_fixture()
+
+      assert {:ok, %EggCollectionReport{}} =
+               Batches.delete_egg_collection_report(egg_collection_report)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Batches.get_egg_collection_report!(egg_collection_report.id)
+      end
+    end
+
+    test "change_egg_collection_report/1 returns a egg_collection_report changeset" do
+      egg_collection_report = egg_collection_report_fixture()
+      assert %Ecto.Changeset{} = Batches.change_egg_collection_report(egg_collection_report)
+    end
+  end
 end

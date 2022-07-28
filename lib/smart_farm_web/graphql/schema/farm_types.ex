@@ -5,6 +5,14 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
     field :id, :uuid
     field :name, :string
 
+    field :bird_count, :integer do
+      resolve(&Resolvers.Farm.bird_count/3)
+    end
+
+    field :egg_count, :integer do
+      resolve(&Resolvers.Farm.egg_count/3)
+    end
+
     field :owner, :user do
       resolve(dataloader(Repo))
     end

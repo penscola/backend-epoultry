@@ -4,10 +4,8 @@ defmodule SmartFarm.Batches.BirdCountReport do
   schema "bird_count_reports" do
     field :quantity, :integer
     field :reason, :string
-    field :report_date, :date, autogenerate: {Date, :utc_today, []}
 
-    belongs_to :batch, Batch
-    belongs_to :reporter, User
+    belongs_to :report, Report
 
     timestamps()
   end
@@ -15,7 +13,7 @@ defmodule SmartFarm.Batches.BirdCountReport do
   @doc false
   def changeset(bird_count_report, attrs) do
     bird_count_report
-    |> cast(attrs, [:quantity, :reason, :report_date, :batch_id, :reporter_id])
+    |> cast(attrs, [:quantity, :reason, :report_id])
     |> validate_required([:quantity, :reason])
   end
 end

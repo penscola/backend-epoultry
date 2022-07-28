@@ -15,17 +15,22 @@ defmodule SmartFarmWeb.Resolvers.Batch do
     Batches.get_batch(batch_id)
   end
 
-  @spec create_bird_count_report(map(), %{context: %{current_user: %User{}}}) ::
-          {:ok, %BirdCountReport{}} | {:error, Ecto.Changeset.t()}
-  def create_bird_count_report(args, %{context: %{current_user: user}}) do
-    args.data
-    |> Map.merge(%{reporter_id: user.id})
-    |> Batches.create_bird_count_report()
-  end
+  @spec create_batch_report(map(), %{context: %{current_user: %User{}}}) ::
+          {:ok, %Report{}} | {:error, Ecto.Changeset.t()}
+  def create_batch_report(args, %{context: %{current_user: user}}) do
+    egg_collection =
+      Map.merge(args.egg_collection, %{
+        bad_count_classification:
+          Map.take(args.egg_collection, [:fully_broken, :partially_broken, :deformed]),
+        good_count_classification: %{
+          medium: args.egg_collection.medium,
+          large: args.egg_collection.large_count
+        }
+      })
 
-  @spec current_bird_count(%Batch{}, map(), %{context: %{current_user: %User{}}}) ::
-          {:ok, integer()}
-  def current_bird_count(batch, _args, %{context: %{current_user: _user}}) do
-    {:ok, Batches.current_bird_count(batch)}
+    args
+    |> Map.merge(egg_collection)
+    |> Map.merge(%{reporter_id: user.id})
+    |> Batches.create_report()
   end
 end

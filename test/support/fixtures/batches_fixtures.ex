@@ -38,4 +38,23 @@ defmodule SmartFarm.BatchesFixtures do
 
     bird_count_report
   end
+
+  @doc """
+  Generate a egg_collection_report.
+  """
+  def egg_collection_report_fixture(attrs \\ %{}) do
+    {:ok, egg_collection_report} =
+      attrs
+      |> Enum.into(%{
+        bad_count: 42,
+        bad_count_classification: %{},
+        comments: "some comments",
+        good_count: 42,
+        good_count_classification: %{},
+        report_date: ~D[2022-07-27]
+      })
+      |> SmartFarm.Batches.create_egg_collection_report()
+
+    egg_collection_report
+  end
 end

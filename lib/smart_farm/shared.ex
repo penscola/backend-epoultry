@@ -9,6 +9,8 @@ defmodule SmartFarm.Shared do
         Batches,
         Batches.Batch,
         Batches.BirdCountReport,
+        Batches.EggCollectionReport,
+        Batches.Report,
         Farms,
         Farms.Farm,
         Farms.FarmInvite,

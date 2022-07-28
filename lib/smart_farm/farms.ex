@@ -3,23 +3,7 @@ defmodule SmartFarm.Farms do
   The Farms context.
   """
 
-  import Ecto.Query, warn: false
-  alias SmartFarm.Repo
-
-  alias SmartFarm.Farms.Farm
-
-  @doc """
-  Returns the list of farms.
-
-  ## Examples
-
-      iex> list_farms()
-      [%Farm{}, ...]
-
-  """
-  def list_farms do
-    Repo.all(Farm)
-  end
+  use SmartFarm.Context
 
   @doc """
   Gets a single farm.
@@ -101,5 +85,29 @@ defmodule SmartFarm.Farms do
   """
   def change_farm(%Farm{} = farm, attrs \\ %{}) do
     Farm.changeset(farm, attrs)
+  end
+
+  def get_bird_count(%Farm{} = farm) do
+    query =
+      from b in Batch,
+        join: r in assoc(b, :reports),
+        join: c in assoc(r, :bird_counts),
+        group_by: b.id,
+        select: coalesce(b.bird_count - sum(coalesce(c.quantity, 0)), 0),
+        where: b.farm_id == ^farm.id
+
+    query
+    |> Repo.all()
+    |> Enum.sum()
+  end
+
+  def get_egg_count(%Farm{} = farm) do
+    query =
+      from ec in EggCollectionReport,
+        join: r in assoc(ec, :report),
+        join: b in assoc(r, :batch),
+        where: b.farm_id == ^farm.id
+
+    Repo.aggregate(query, :sum, :good_count)
   end
 end
