@@ -20,7 +20,7 @@ config :smart_farm, SmartFarm.Repo,
 
 config :smart_farm, SmartFarm.Guardian,
   issuer: "smart_farm",
-  secret: "+sBqESBgDk/ea4rZcTd2BzhSVCAJfBU/UwQZaS48pPyZUIjlP7Hu7JUbVuxiVuQ6"
+  secret_key: "+sBqESBgDk/ea4rZcTd2BzhSVCAJfBU/UwQZaS48pPyZUIjlP7Hu7JUbVuxiVuQ6"
 
 # Configures the endpoint
 config :smart_farm, SmartFarmWeb.Endpoint,

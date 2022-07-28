@@ -91,7 +91,7 @@ if config_env() == :prod do
 
   config :smart_farm, SmartFarm.Guardian,
     issuer: "smart_farm",
-    secret: guardian_secret
+    secret_key: guardian_secret
 
   config :smart_farm,
     africastalking: [
