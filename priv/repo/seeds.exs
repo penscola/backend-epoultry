@@ -35,3 +35,7 @@ farm_manager_phone = "254709876543"
 
 Accounts.create_user_totp(farmer)
 Accounts.create_user_totp(farm_manager)
+unless Repo.get_by(FarmInvite, invite_code: "0000") do
+farm = Repo.get_by(Farm, name: "Test Farm")
+Farms.create_invite(farm, %{})
+end

@@ -93,12 +93,20 @@ if config_env() == :prod do
     issuer: "smart_farm",
     secret_key: guardian_secret
 
+  smart_farm_env =
+    if env = System.get_env("SMART_FARM_ENV") do
+      String.to_atom(env)
+    else
+      :prod
+    end
+
   config :smart_farm,
     africastalking: [
       api_key: at_api_key,
       username: at_username,
       shortcode: sms_shortcode
-    ]
+    ],
+    env: smart_farm_env
 
   # ## Configuring the mailer
   #

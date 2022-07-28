@@ -17,4 +17,9 @@ defmodule SmartFarmWeb.Resolvers.Farm do
   def egg_count(farm, _args, %{context: %{current_user: _user}}) do
     {:ok, Farms.get_egg_count(farm)}
   end
+
+  @spec join_farm(map(), %{context: %{current_user: %User{}}}) :: {:ok, %Farm{}} | {:error, any()}
+  def join_farm(args, %{context: %{current_user: user}}) do
+    Farms.join_farm(args.invite_code, user)
+  end
 end

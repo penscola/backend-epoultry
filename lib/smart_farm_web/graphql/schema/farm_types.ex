@@ -26,5 +26,10 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
   end
 
   object :farm_mutations do
+    field :join_farm, non_null(:farm) do
+      arg(:invite_code, non_null(:string))
+
+      resolve(&Resolvers.Farm.join_farm/2)
+    end
   end
 end

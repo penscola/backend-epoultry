@@ -9,4 +9,10 @@ defmodule SmartFarm.Farms.FarmManager do
 
     timestamps()
   end
+
+  def changeset(schema, attrs) do
+    schema
+    |> cast(attrs, [:farm_id, :user_id])
+    |> unique_constraint([:farm_id, :user_id])
+  end
 end

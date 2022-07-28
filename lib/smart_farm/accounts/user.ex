@@ -10,7 +10,8 @@ defmodule SmartFarm.Accounts.User do
     field :password_hash, :string
 
     has_one :farmer, Farmer
-    has_many :farms, Farm, foreign_key: :owner_id
+    has_many :owned_farms, Farm, foreign_key: :owner_id
+    many_to_many :managing_farms, Farm, join_through: FarmManager
 
     timestamps()
   end
