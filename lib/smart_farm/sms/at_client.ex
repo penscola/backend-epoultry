@@ -14,7 +14,11 @@ defmodule SmartFarm.SMS.AtClient do
   plug Tesla.Middleware.DecodeJson
 
   defp base_url do
-    "https://api.sandbox.africastalking.com/version1"
+    if Application.get_env(:smart_farm, :env) == :dev do
+      "https://api.sandbox.africastalking.com/version1"
+    else
+      "https://api.africastalking.com/version1"
+    end
   end
 
   defp config do
