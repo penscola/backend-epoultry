@@ -35,6 +35,8 @@ defmodule SmartFarm.Accounts do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def get_user(id), do: Repo.fetch(User, id)
+
   def get_user_by_phone_number(number) do
     with {:ok, number} <- User.format_phone_number(number) do
       Repo.fetch_by(User, phone_number: number)
