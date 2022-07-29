@@ -11,10 +11,6 @@ defmodule SmartFarmWeb.Schema.UserTypes do
       resolve(dataloader(Repo))
     end
 
-    field :owned_farms, :farm do
-      resolve(dataloader(Repo))
-    end
-
     field :managing_farms, list_of(:farm) do
       resolve(dataloader(Repo))
     end

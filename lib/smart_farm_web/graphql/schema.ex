@@ -4,6 +4,7 @@ defmodule SmartFarmWeb.Schema do
   use Absinthe.Schema
   alias SmartFarm.Repo
   alias SmartFarmWeb.Schema
+  alias SmartFarmWeb.Middleware.ErrorHandler
 
   # Custom Types
   import_types(Schema.UUIDType)
@@ -46,7 +47,7 @@ defmodule SmartFarmWeb.Schema do
 
   def middleware(middleware, _field, %Absinthe.Type.Object{identifier: identifier})
       when identifier in [:query, :subscription, :mutation] do
-    [SmartFarmWeb.Middleware.Authorize] ++ middleware
+    [SmartFarmWeb.Middleware.Authorize] ++ middleware ++ [ErrorHandler]
   end
 
   def middleware(middleware, _field, _object) do

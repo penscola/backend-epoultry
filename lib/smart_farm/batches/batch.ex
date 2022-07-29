@@ -3,10 +3,10 @@ defmodule SmartFarm.Batches.Batch do
 
   schema "batches" do
     field :acquired_date, :date
-    field :age_type, :string
+    field :age_type, Ecto.Enum, values: [:weeks, :days, :months]
     field :bird_age, :integer
     field :bird_count, :integer
-    field :bird_type, :string
+    field :bird_type, Ecto.Enum, values: [:broilers, :layers]
     field :name, :string
 
     belongs_to :creator, User
