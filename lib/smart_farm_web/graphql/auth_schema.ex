@@ -21,4 +21,13 @@ defmodule SmartFarmWeb.AuthSchema do
     import_fields(:auth_mutations)
     import_fields(:user_auth_mutations)
   end
+
+  def middleware(middleware, _field, %Absinthe.Type.Object{identifier: identifier})
+      when identifier in [:query, :subscription, :mutation] do
+    middleware ++ [SmartFarmWeb.Middleware.ErrorHandler]
+  end
+
+  def middleware(middleware, _field, _object) do
+    middleware
+  end
 end

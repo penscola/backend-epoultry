@@ -16,6 +16,7 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     value(:sold)
     value(:mortality)
     value(:curled)
+    value(:stolen)
   end
 
   object :batch do
@@ -103,7 +104,7 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
 
   input_object :egg_collection_report_input do
     field :bad_count, non_null(:integer)
-    field :comments, non_null(:string)
+    field :comments, :string
     field :good_count, non_null(:integer)
     field :medium_count, non_null(:integer)
     field :large_count, non_null(:integer)

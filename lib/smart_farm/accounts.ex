@@ -123,6 +123,14 @@ defmodule SmartFarm.Accounts do
           {:ok, response}
       end
     end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} ->
+        {:ok, user}
+
+      {:error, _failed_operation, changeset, _changes} ->
+        {:error, changeset}
+    end
   end
 
   def create_user_totp(%User{} = user) do

@@ -3,7 +3,7 @@ defmodule SmartFarm.Batches.BirdCountReport do
 
   schema "bird_count_reports" do
     field :quantity, :integer
-    field :reason, :string
+    field :reason, Ecto.Enum, values: [:sold, :curled, :mortality, :stolen]
 
     belongs_to :report, Report
 

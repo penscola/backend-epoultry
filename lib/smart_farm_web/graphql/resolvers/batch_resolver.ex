@@ -17,19 +17,19 @@ defmodule SmartFarmWeb.Resolvers.Batch do
 
   @spec create_batch_report(map(), %{context: %{current_user: %User{}}}) ::
           {:ok, %Report{}} | {:error, Ecto.Changeset.t()}
-  def create_batch_report(args, %{context: %{current_user: user}}) do
+  def create_batch_report(%{data: data} = _args, %{context: %{current_user: user}}) do
     egg_collection =
-      Map.merge(args.egg_collection, %{
+      Map.merge(data.egg_collection, %{
         bad_count_classification:
-          Map.take(args.egg_collection, [:fully_broken, :partially_broken, :deformed]),
+          Map.take(data.egg_collection, [:fully_broken, :partially_broken, :deformed]),
         good_count_classification: %{
-          medium: args.egg_collection.medium,
-          large: args.egg_collection.large_count
+          medium: data.egg_collection.medium_count,
+          large: data.egg_collection.large_count
         }
       })
 
-    args
-    |> Map.merge(egg_collection)
+    data
+    |> Map.merge(%{egg_collection: egg_collection})
     |> Map.merge(%{reporter_id: user.id})
     |> Batches.create_report()
   end

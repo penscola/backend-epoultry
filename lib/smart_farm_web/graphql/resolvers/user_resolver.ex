@@ -8,6 +8,6 @@ defmodule SmartFarmWeb.Resolvers.User do
 
   @spec register_user(map(), %{context: map()}) :: {:ok, %User{}} | {:error, Ecto.Changeset.t()}
   def register_user(args, _context) do
-    Accounts.register_user(args)
+    Accounts.register_user(args.data)
   end
 end

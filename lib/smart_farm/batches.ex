@@ -214,7 +214,12 @@ defmodule SmartFarm.Batches do
       |> EggCollectionReport.changeset(args.egg_collection)
     end)
     |> Multi.insert_all(:bird_counts, BirdCountReport, fn %{report: report} ->
-      Enum.map(args.bird_counts, &Map.put(&1, :report_id, report.id))
+      timestamp = DateTime.utc_now() |> DateTime.truncate(:second)
+
+      Enum.map(
+        args.bird_counts,
+        &Map.merge(&1, %{report_id: report.id, created_at: timestamp, updated_at: timestamp})
+      )
     end)
     |> Repo.transaction()
     |> case do

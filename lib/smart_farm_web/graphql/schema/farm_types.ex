@@ -17,7 +17,7 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
       resolve(dataloader(Repo))
     end
 
-    field :batches, :batch do
+    field :batches, list_of(:batch) do
       resolve(dataloader(Repo))
     end
   end
