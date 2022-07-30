@@ -4,15 +4,16 @@ defmodule SmartFarm.SMS do
   def send(phone_number, message) when is_binary(phone_number) do
     config = Application.get_env(:smart_farm, :africastalking)
 
-    result =
-      AtClient.post("/messaging", %{
-        to: format_phone_number(phone_number),
-        message: message,
-        username: config[:username],
-        from: config[:shortcode]
-      })
+    attrs = %{
+      to: format_phone_number(phone_number),
+      message: message,
+      username: config[:username],
+      from: config[:shortcode]
+    }
 
-    case result do
+    attrs = maybe_remove_shortcode(attrs)
+
+    case AtClient.post("/messaging", attrs) do
       {:ok, %{status: status, body: body}} when status >= 200 and status <= 300 ->
         {:ok, body}
 
@@ -21,6 +22,14 @@ defmodule SmartFarm.SMS do
 
       other ->
         other
+    end
+  end
+
+  defp maybe_remove_shortcode(attrs) do
+    if Application.get_env(:smart_farm, :env) == :staging do
+      Map.drop(attrs, [:from])
+    else
+      attrs
     end
   end
 

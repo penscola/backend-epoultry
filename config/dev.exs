@@ -63,6 +63,6 @@ config :phoenix, :plug_init_mode, :runtime
 config :smart_farm,
   africastalking: [
     api_key: System.get_env("AT_API_KEY"),
-    username: "sandbox",
+    username: System.get_env("AT_USERNAME"),
     shortcode: System.get_env("SMS_SHORTCODE")
   ]
