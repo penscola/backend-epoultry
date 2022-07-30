@@ -113,7 +113,7 @@ defmodule SmartFarm.Farms do
 
   def get_valid_invite(invite_code) do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
-    query = from i in FarmInvite, where: i.expiry_date > ^now and not i.is_used
+    query = from i in FarmInvite, where: i.expiry > ^now and not i.is_used
 
     case Repo.fetch_by(query, invite_code: invite_code) do
       {:ok, invite} ->

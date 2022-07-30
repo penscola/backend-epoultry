@@ -13,6 +13,6 @@ defmodule SmartFarm.Farms.FarmManager do
   def changeset(schema, attrs) do
     schema
     |> cast(attrs, [:farm_id, :user_id])
-    |> unique_constraint([:farm_id, :user_id])
+    |> unique_constraint([:user_id, :farm_id], message: "user has already joined farm")
   end
 end
