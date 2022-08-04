@@ -170,7 +170,7 @@ defmodule SmartFarm.Accounts do
     time = System.os_time(:second)
 
     NimbleTOTP.valid?(secret, otp, time: time) or
-      NimbleTOTP.valid?(secret, otp, time: time - 60 * 10)
+      NimbleTOTP.valid?(secret, otp, time: time - 60 * 5)
   end
 
   defp send_otp(user, totp) do
@@ -180,6 +180,7 @@ defmodule SmartFarm.Accounts do
       Logger.info("Generated OTP CODE: #{otp_code}")
     end
 
-    SMS.send(user.phone_number, otp_code)
+    message = "Your Verification Code is: #{otp_code}"
+    SMS.send(user.phone_number, message)
   end
 end
