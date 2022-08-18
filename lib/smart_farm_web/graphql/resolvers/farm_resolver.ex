@@ -22,4 +22,8 @@ defmodule SmartFarmWeb.Resolvers.Farm do
   def join_farm(args, %{context: %{current_user: user}}) do
     Farms.join_farm(args.invite_code, user)
   end
+
+  def create_invite(args, %{context: %{current_user: user}}) do
+    Farms.create_farm_invite(args.farm_id, actor: user)
+  end
 end

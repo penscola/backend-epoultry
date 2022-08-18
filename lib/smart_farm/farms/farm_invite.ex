@@ -25,7 +25,7 @@ defmodule SmartFarm.Farms.FarmInvite do
   end
 
   def generate_code do
-    "4..0B"
+    "~4..0B"
     |> :io_lib.format([(10 |> :math.pow(4) |> round() |> :rand.uniform()) - 1])
     |> List.to_string()
   end

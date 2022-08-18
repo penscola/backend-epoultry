@@ -22,6 +22,11 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
     end
   end
 
+  object :invite do
+    field :invite_code, :string
+    field :expiry, :datetime
+  end
+
   object :farm_queries do
   end
 
@@ -30,6 +35,12 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
       arg(:invite_code, non_null(:string))
 
       resolve(&Resolvers.Farm.join_farm/2)
+    end
+
+    field :create_invite, non_null(:invite) do
+      arg(:farm_id, non_null(:uuid))
+
+      resolve(&Resolvers.Farm.create_invite/2)
     end
   end
 end

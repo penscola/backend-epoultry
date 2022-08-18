@@ -4,6 +4,7 @@ defmodule SmartFarm.Farms do
   """
 
   use SmartFarm.Context
+  import SmartFarm.Farms.FarmAuthorizer
 
   @doc """
   Gets a single farm.
@@ -154,7 +155,18 @@ defmodule SmartFarm.Farms do
     end
   end
 
-  def create_invite(%Farm{} = farm, attrs) do
+  @spec create_farm_invite(Ecto.UUID.t(), actor: %User{} | nil) ::
+          {:ok, %FarmInvite{}} | {:error, :unauthorized | :unauthenticated | Ecto.Changeset.t()}
+  def create_farm_invite(_farm_id, actor: nil), do: {:error, :unauthenticated}
+
+  def create_farm_invite(farm_id, actor: %User{} = user) do
+    with {:ok, farm} <- get_farm(farm_id),
+         :ok <- authorize(user, :create, %FarmInvite{farm_id: farm.id}) do
+      create_invite(farm)
+    end
+  end
+
+  defp create_invite(%Farm{} = farm, attrs \\ %{}) when is_map(attrs) do
     try do
       %FarmInvite{farm_id: farm.id}
       |> FarmInvite.changeset(attrs)
