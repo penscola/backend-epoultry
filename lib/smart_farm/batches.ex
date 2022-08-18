@@ -207,11 +207,19 @@ defmodule SmartFarm.Batches do
   @spec create_report(map()) :: {:ok, %Report{}} | {:error, Ecto.Changeset.t()}
   def create_report(args) do
     Multi.new()
+    |> Multi.run(:batch, fn _repo, _changes ->
+      get_batch(args.batch_id)
+    end)
     |> Multi.insert(:report, Report.changeset(%Report{}, args))
-    |> Multi.insert(:egg_collection, fn %{report: report} ->
-      report
-      |> Ecto.build_assoc(:egg_collection)
-      |> EggCollectionReport.changeset(args.egg_collection)
+    |> Multi.run(:egg_collection, fn repo, %{report: report} ->
+      if args[:egg_collection] do
+        report
+        |> Ecto.build_assoc(:egg_collection)
+        |> EggCollectionReport.changeset(args.egg_collection)
+        |> repo.insert()
+      else
+        {:ok, nil}
+      end
     end)
     |> Multi.insert_all(:bird_counts, BirdCountReport, fn %{report: report} ->
       timestamp = DateTime.utc_now() |> DateTime.truncate(:second)
@@ -220,6 +228,18 @@ defmodule SmartFarm.Batches do
         args.bird_counts,
         &Map.merge(&1, %{report_id: report.id, created_at: timestamp, updated_at: timestamp})
       )
+    end)
+    |> Multi.merge(fn %{batch: batch, report: report} ->
+      args.feeds_usage_reports
+      |> Enum.reduce(Multi.new(), fn feeds_usage, multi ->
+        changeset =
+          FeedsUsageReport.changeset(
+            %FeedsUsageReport{bird_type: batch.bird_type, report_id: report.id},
+            feeds_usage
+          )
+
+        Multi.insert(multi, feeds_usage.feed_type, changeset)
+      end)
     end)
     |> Repo.transaction()
     |> case do

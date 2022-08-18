@@ -6,7 +6,7 @@ defmodule SmartFarm.Batches.Batch do
     field :age_type, Ecto.Enum, values: [:weeks, :days, :months]
     field :bird_age, :integer
     field :bird_count, :integer
-    field :bird_type, Ecto.Enum, values: [:broilers, :layers]
+    field :bird_type, Ecto.Enum, values: [:broilers, :layers, :kienyeji]
     field :name, :string
 
     belongs_to :creator, User

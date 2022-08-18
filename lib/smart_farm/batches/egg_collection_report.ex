@@ -28,8 +28,7 @@ defmodule SmartFarm.Batches.EggCollectionReport do
     |> cast(attrs, [:comments, :good_count, :bad_count, :report_id])
     |> validate_required([:good_count, :bad_count])
     |> cast_embed(:bad_count_classification, with: &bad_count_changeset/2, required: true)
-
-    # |> cast_embed(:good_count_classification, with: &good_count_changeset/2, required: true)
+    |> cast_embed(:good_count_classification, with: &good_count_changeset/2, required: true)
   end
 
   def bad_count_changeset(bad_count, attrs) do
