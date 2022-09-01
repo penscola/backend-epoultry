@@ -61,6 +61,14 @@ defmodule SmartFarm.Accounts do
     |> Repo.insert()
   end
 
+  def create_farmer(user, attrs) do
+    user
+    |> Repo.preload([:farmer])
+    |> User.changeset(%{farmer: attrs})
+    |> Ecto.Changeset.cast_assoc(:farmer)
+    |> Repo.update()
+  end
+
   @doc """
   Updates a user.
 

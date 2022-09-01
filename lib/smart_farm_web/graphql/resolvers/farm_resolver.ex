@@ -6,6 +6,14 @@ defmodule SmartFarmWeb.Resolvers.Farm do
     Farms.get_farm(farm_id)
   end
 
+  @spec create_farm(map(), %{context: %{current_user: %User{}}}) ::
+          {:ok, %Farm{}} | {:error, Ecto.Changeset.t()}
+  def create_farm(%{data: data}, %{context: %{current_user: %User{} = user}}) do
+    address = Map.take(data, [:latitude, :longitude, :area_name])
+    data = Map.merge(data, %{address: address})
+    Farms.create_farm(data, actor: user)
+  end
+
   @spec bird_count(%Farm{}, map(), %{context: %{current_user: %User{}}}) ::
           {:ok, integer} | {:error, any}
   def bird_count(farm, _args, %{context: %{current_user: _user}}) do

@@ -12,4 +12,9 @@ defmodule SmartFarm.Accounts.Farmer do
 
     timestamps()
   end
+
+  def changeset(farmer, attrs) do
+    farmer
+    |> cast(attrs, [:birth_date, :gender])
+  end
 end

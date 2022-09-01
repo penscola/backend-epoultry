@@ -35,10 +35,35 @@ defmodule SmartFarm.Farms do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_farm(attrs \\ %{}) do
-    %Farm{}
-    |> Farm.changeset(attrs)
-    |> Repo.insert()
+  def create_farm(attrs, actor: %User{} = owner) do
+    Multi.new()
+    |> Multi.run(:farmer, fn _repo, _changes ->
+      owner = Repo.preload(owner, [:farmer])
+
+      if owner.farmer do
+        {:ok, owner}
+      else
+        Accounts.create_farmer(owner, %{})
+      end
+    end)
+    |> Multi.insert(:farm, Farm.changeset(%Farm{owner_id: owner.id}, attrs))
+    |> Multi.run(:contractor, fn _repo, %{farm: farm} ->
+      if attrs[:contractor_id] do
+        %FarmContractor{farm_id: farm.id, contractor_id: attrs[:contractor_id]}
+        |> FarmContractor.changeset(%{})
+        |> Repo.insert()
+      else
+        {:ok, nil}
+      end
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{farm: farm}} ->
+        {:ok, farm}
+
+      {:error, _operation, changeset, _changes} ->
+        {:error, changeset}
+    end
   end
 
   @doc """
