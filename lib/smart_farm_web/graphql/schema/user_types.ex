@@ -40,9 +40,19 @@ defmodule SmartFarmWeb.Schema.UserTypes do
     field :user, non_null(:user) do
       resolve(&Resolvers.User.get/2)
     end
+
+    field :farm_managers, list_of(non_null(:user)) do
+      resolve(&Resolvers.User.list_farm_managers/2)
+    end
   end
 
   object :user_mutations do
+    field :remove_farm_manager, non_null(:boolean) do
+      arg(:farm_manager_id, non_null(:uuid))
+      arg(:farm_id, non_null(:uuid))
+
+      resolve(&Resolvers.User.remove_farm_manager/2)
+    end
   end
 
   object :user_auth_mutations do

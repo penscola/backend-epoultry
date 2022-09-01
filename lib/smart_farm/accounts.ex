@@ -19,6 +19,16 @@ defmodule SmartFarm.Accounts do
     Repo.all(User)
   end
 
+  def list_farm_managers(actor: %User{} = user) do
+    query =
+      from u in User,
+        join: f in assoc(u, :managing_farms),
+        on: f.owner_id == ^user.id,
+        group_by: u.id
+
+    Repo.all(query)
+  end
+
   @doc """
   Gets a single user.
 
@@ -101,6 +111,17 @@ defmodule SmartFarm.Accounts do
   """
   def delete_user(%User{} = user) do
     Repo.delete(user)
+  end
+
+  def remove_farm_manager(farm_manager_id, farm_id, actor: %User{} = user) do
+    query =
+      from fm in FarmManager,
+        join: f in assoc(fm, :farm),
+        where: f.owner_id == ^user.id and fm.user_id == ^farm_manager_id and f.id == ^farm_id
+
+    with {:ok, farm_manager} <- Repo.fetch_one(query) do
+      Repo.delete(farm_manager)
+    end
   end
 
   @doc """
