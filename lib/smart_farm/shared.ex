@@ -19,6 +19,9 @@ defmodule SmartFarm.Shared do
         Farms.Farm,
         Farms.FarmInvite,
         Farms.FarmManager,
+        Quotations,
+        Quotations.QuotationRequest,
+        Quotations.QuotationRequestItem,
         SMS
       }
     end
