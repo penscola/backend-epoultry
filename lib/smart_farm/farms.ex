@@ -137,6 +137,16 @@ defmodule SmartFarm.Farms do
     Repo.aggregate(query, :sum, :good_count)
   end
 
+  def get_feeds_usage(%Farm{} = farm) do
+    query =
+      from fu in FeedsUsageReport,
+        join: r in assoc(fu, :report),
+        join: b in assoc(r, :batch),
+        where: b.farm_id == ^farm.id
+
+    Repo.aggregate(query, :sum, :quantity)
+  end
+
   def get_valid_invite(invite_code) do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
     query = from i in FarmInvite, where: i.expiry > ^now and not i.is_used

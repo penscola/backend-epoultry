@@ -20,6 +20,12 @@ defmodule SmartFarmWeb.Resolvers.Farm do
     {:ok, Farms.get_bird_count(farm)}
   end
 
+  @spec feeds_usage(%Farm{}, map(), %{context: %{current_user: %User{}}}) ::
+          {:ok, integer} | {:error, any}
+  def feeds_usage(farm, _args, %{context: %{current_user: _user}}) do
+    {:ok, Farms.get_feeds_usage(farm)}
+  end
+
   @spec egg_count(%Farm{}, map(), %{context: %{current_user: %User{}}}) ::
           {:ok, integer} | {:error, any}
   def egg_count(farm, _args, %{context: %{current_user: _user}}) do

@@ -14,6 +14,10 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
       resolve(&Resolvers.Farm.egg_count/3)
     end
 
+    field :feeds_usage, :integer do
+      resolve(&Resolvers.Farm.feeds_usage/3)
+    end
+
     field :owner, :user do
       resolve(dataloader(Repo))
     end
