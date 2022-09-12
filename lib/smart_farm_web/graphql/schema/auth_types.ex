@@ -5,6 +5,10 @@ defmodule SmartFarmWeb.Schema.AuthTypes do
     field :api_key, non_null(:string)
   end
 
+  object :login_result do
+    field :api_key, non_null(:string)
+  end
+
   object :auth_queries do
     field :ping, non_null(:string) do
       resolve(&Resolvers.Auth.ping/2)
@@ -16,6 +20,13 @@ defmodule SmartFarmWeb.Schema.AuthTypes do
       arg(:phone_number, non_null(:string))
 
       resolve(&Resolvers.Auth.request_login_otp/2)
+    end
+
+    field :login_with_password, non_null(:login_result) do
+      arg(:phone_number, non_null(:string))
+      arg(:password, non_null(:string))
+
+      resolve(&Resolvers.Auth.login_with_password/2)
     end
 
     field :verify_otp, non_null(:verify_otp_result) do

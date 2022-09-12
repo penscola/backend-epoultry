@@ -30,7 +30,7 @@ defmodule SmartFarm.Accounts.User do
     |> changeset(attrs)
     |> cast(attrs, [:password])
     |> validate_required([:password])
-    |> validate_length(:password, min: 6)
+    |> validate_length(:password, min: 4)
     |> put_pass_hash()
   end
 

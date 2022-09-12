@@ -195,6 +195,10 @@ defmodule SmartFarm.Accounts do
     end
   end
 
+  def verify_password(%User{} = user, password) do
+    Argon2.check_pass(user, password)
+  end
+
   def valid_code?(secret, otp) do
     time = System.os_time(:second)
 

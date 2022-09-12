@@ -20,6 +20,16 @@ defmodule SmartFarmWeb.Resolvers.Auth do
     end
   end
 
+  @spec login_with_password(%{phone_number: String.t(), password: String.t()}, %{context: map()}) ::
+          {:ok, map()} | {:error, any()}
+  def login_with_password(args, %{context: _context}) do
+    with {:ok, user} <- Accounts.get_user_by_phone_number(args.phone_number),
+         {:ok, _user} <- Accounts.verify_password(user, args.password),
+         {:ok, token, _claims} = SmartFarm.Guardian.encode_and_sign(user) do
+      {:ok, %{api_key: token}}
+    end
+  end
+
   def ping(_args, _context) do
     {:ok, "pong"}
   end
