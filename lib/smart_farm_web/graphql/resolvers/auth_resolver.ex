@@ -16,7 +16,7 @@ defmodule SmartFarmWeb.Resolvers.Auth do
     with {:ok, user} <- Accounts.get_user_by_phone_number(args.phone_number),
          :ok <- Accounts.verify_otp(user, args.otp_code),
          {:ok, token, _claims} = SmartFarm.Guardian.encode_and_sign(user) do
-      {:ok, %{api_key: token}}
+      {:ok, %{api_key: token, user: user}}
     end
   end
 
@@ -26,7 +26,7 @@ defmodule SmartFarmWeb.Resolvers.Auth do
     with {:ok, user} <- Accounts.get_user_by_phone_number(args.phone_number),
          {:ok, _user} <- Accounts.verify_password(user, args.password),
          {:ok, token, _claims} = SmartFarm.Guardian.encode_and_sign(user) do
-      {:ok, %{api_key: token}}
+      {:ok, %{api_key: token, user: user}}
     end
   end
 

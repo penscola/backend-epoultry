@@ -1,6 +1,7 @@
 defmodule SmartFarmWeb.AuthSchema do
   use Absinthe.Schema
 
+  alias SmartFarm.Repo
   alias SmartFarmWeb.Schema
 
   # Custom Types
@@ -20,6 +21,21 @@ defmodule SmartFarmWeb.AuthSchema do
   mutation do
     import_fields(:auth_mutations)
     import_fields(:user_auth_mutations)
+  end
+
+  def context(ctx) do
+    loader =
+      Dataloader.new()
+      |> Dataloader.add_source(
+        Repo,
+        Dataloader.Ecto.new(Repo)
+      )
+
+    Map.put(ctx, :loader, loader)
+  end
+
+  def plugins do
+    [Absinthe.Middleware.Dataloader] ++ Absinthe.Plugin.defaults()
   end
 
   def middleware(middleware, _field, %Absinthe.Type.Object{identifier: identifier})

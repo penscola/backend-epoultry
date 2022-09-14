@@ -3,10 +3,12 @@ defmodule SmartFarmWeb.Schema.AuthTypes do
 
   object :verify_otp_result do
     field :api_key, non_null(:string)
+    field :user, non_null(:user)
   end
 
   object :login_result do
     field :api_key, non_null(:string)
+    field :user, non_null(:user)
   end
 
   object :auth_queries do
