@@ -73,16 +73,16 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :id, :uuid
     field :quantity, :integer
     field :reason, :bird_count_report_reason_enum
+    field :selling_price, :integer
   end
 
   object :bad_count_classification do
-    field :fully_broken, :integer
-    field :partially_broken, :integer
+    field :broken, :integer
     field :deformed, :integer
   end
 
   object :good_count_classification do
-    field :medium, :integer
+    field :small, :integer
     field :large, :integer
   end
 
@@ -115,7 +115,7 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
   input_object :create_batch_report_input do
     field :report_date, :date, description: "defaults to the current date"
     field :batch_id, non_null(:uuid)
-    field :bird_counts, non_null(list_of(non_null(:bird_count_report_input)))
+    field :bird_counts, list_of(non_null(:bird_count_report_input))
     field :egg_collection, :egg_collection_report_input
     field :feeds_usage_reports, non_null(list_of(non_null(:feeds_usage_report_input)))
   end
@@ -123,23 +123,22 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
   input_object :bird_count_report_input do
     field :quantity, non_null(:integer)
     field :reason, non_null(:bird_count_report_reason_enum)
+    field :selling_price, :integer
   end
 
   input_object :egg_collection_report_input do
-    field :bad_count, non_null(:integer)
     field :comments, :string
-    field :good_count, non_null(:integer)
-    field :medium_count, non_null(:integer)
-    field :large_count, non_null(:integer)
-    field :fully_broken, non_null(:integer)
-    field :partially_broken, non_null(:integer)
-    field :deformed, non_null(:integer)
+    field :egg_count, non_null(:integer)
+    field :small_count, :integer
+    field :large_count, :integer
+    field :broken_count, non_null(:integer)
+    field :deformed_count, :integer, default_value: 0
   end
 
   input_object :feeds_usage_report_input do
     field :feed_type, non_null(:feed_types_enum)
     field :quantity, non_null(:integer)
-    field :measurement_unit, non_null(:measurement_unit_enum)
+    field :measurement_unit, :measurement_unit_enum, default_value: :kilograms
   end
 
   object :batch_queries do

@@ -7,13 +7,12 @@ defmodule SmartFarm.Batches.EggCollectionReport do
     field :good_count, :integer
 
     embeds_one :bad_count_classification, BadCount do
-      field :fully_broken, :integer, default: 0
-      field :partially_broken, :integer, default: 0
+      field :broken, :integer, default: 0
       field :deformed, :integer, default: 0
     end
 
     embeds_one :good_count_classification, GoodCount do
-      field :medium, :integer, default: 0
+      field :small, :integer, default: 0
       field :large, :integer, default: 0
     end
 
@@ -33,13 +32,12 @@ defmodule SmartFarm.Batches.EggCollectionReport do
 
   def bad_count_changeset(bad_count, attrs) do
     bad_count
-    |> cast(attrs, [:fully_broken, :partially_broken, :deformed])
-    |> validate_required([:fully_broken, :partially_broken, :deformed])
+    |> cast(attrs, [:broken, :deformed])
+    |> validate_required([:broken])
   end
 
   def good_count_changeset(schema, attrs) do
     schema
-    |> cast(attrs, [:medium, :large])
-    |> validate_required([:medium, :large])
+    |> cast(attrs, [:small, :large])
   end
 end

@@ -12,7 +12,7 @@ defmodule SmartFarm.Batches.FeedsUsageReport do
       values: Enum.uniq(@feed_types.layers ++ @feed_types.broilers ++ @feed_types.kienyeji)
 
     field :quantity, :integer
-    field :measurement_unit, Ecto.Enum, values: [:kilograms, :grams]
+    field :measurement_unit, Ecto.Enum, values: [:kilograms, :grams], default: :kilograms
     field :bird_type, Ecto.Enum, values: Ecto.Enum.values(Batch, :bird_type), virtual: true
     belongs_to :report, Report
 

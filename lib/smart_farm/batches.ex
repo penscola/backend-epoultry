@@ -225,7 +225,7 @@ defmodule SmartFarm.Batches do
       timestamp = DateTime.utc_now() |> DateTime.truncate(:second)
 
       Enum.map(
-        args.bird_counts,
+        args[:bird_counts] || [],
         &Map.merge(&1, %{report_id: report.id, created_at: timestamp, updated_at: timestamp})
       )
     end)
