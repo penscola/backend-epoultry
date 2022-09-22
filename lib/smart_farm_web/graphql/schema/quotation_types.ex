@@ -2,7 +2,7 @@ defmodule SmartFarmWeb.Schema.QuotationTypes do
   use SmartFarmWeb, :schema
 
   object :quotation_request do
-    field :created_at, :utc_datetime
+    field :created_at, :datetime
 
     field :items, list_of(:quotation_request_item) do
       resolve(dataloader(Repo))
@@ -14,8 +14,13 @@ defmodule SmartFarmWeb.Schema.QuotationTypes do
     field :quantity, :integer
   end
 
+  input_object :quotation_request_item_input do
+    field :name, :string
+    field :quantity, :integer
+  end
+
   input_object :request_quotation_input do
-    field :items, non_null(list_of(non_null(:quotation_request_item)))
+    field :items, non_null(list_of(non_null(:quotation_request_item_input)))
   end
 
   object :quotation_queries do
