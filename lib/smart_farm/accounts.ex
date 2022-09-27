@@ -175,16 +175,18 @@ defmodule SmartFarm.Accounts do
   end
 
   def get_valid_user_otp(phone_number) do
-    now = DateTime.utc_now() |> DateTime.truncate(:second)
+    with {:ok, phone_number} <- User.format_phone_number(phone_number) do
+      now = DateTime.utc_now() |> DateTime.truncate(:second)
 
-    query =
-      from q in UserOTP,
-        where: q.expiry > ^now and not q.is_used,
-        order_by: [desc: q.expiry],
-        limit: 1,
-        preload: [:user]
+      query =
+        from q in UserOTP,
+          where: q.expiry > ^now and not q.is_used,
+          order_by: [desc: q.expiry],
+          limit: 1,
+          preload: [:user]
 
-    Repo.fetch_by(query, phone_number: phone_number)
+      Repo.fetch_by(query, phone_number: phone_number)
+    end
   end
 
   def request_login_otp(%User{} = user) do
@@ -238,6 +240,7 @@ defmodule SmartFarm.Accounts do
 
     message = "Your Verification Code is: #{otp_code}"
     SMS.send(user_otp.phone_number, message)
+    {:ok, nil}
   end
 
   defp send_otp(_other), do: {:error, :missing_code}

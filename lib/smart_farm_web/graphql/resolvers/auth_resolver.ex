@@ -19,7 +19,7 @@ defmodule SmartFarmWeb.Resolvers.Auth do
       {:ok, %{api_key: token, user: user_otp.user}}
     else
       {:error, :not_found} ->
-        Accounts.request_login_otp_by_phone(args.phone_number) |> IO.inspect
+        Accounts.request_login_otp_by_phone(args.phone_number)
         {:error, :resending_otp}
 
       other ->
