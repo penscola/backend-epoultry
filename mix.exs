@@ -54,11 +54,10 @@ defmodule SmartFarm.MixProject do
 
       # Authentication
       {:guardian, "~> 2.0"},
-      {:nimble_totp, "~> 0.1.0"},
+      {:argon2_elixir, "~> 3.0"},
 
       # SMS
-      {:tesla, "~> 1.4"},
-      {:argon2_elixir, "~> 3.0"}
+      {:tesla, "~> 1.4"}
     ]
   end
 

@@ -140,11 +140,11 @@ defmodule SmartFarm.Accounts do
   def register_user(attrs) do
     Multi.new()
     |> Multi.insert(:user, User.registration_changeset(%User{}, attrs))
-    |> Multi.run(:user_totp, fn _repo, %{user: user} ->
-      create_user_totp(%User{} = user)
+    |> Multi.run(:user_otp, fn _repo, %{user: user} ->
+      create_user_otp(user)
     end)
-    |> Multi.run(:send_otp, fn _repo, %{user_totp: totp, user: user} ->
-      case send_otp(user, totp) do
+    |> Multi.run(:send_otp, fn _repo, %{user_otp: user_otp} ->
+      case send_otp(user_otp) do
         {:ok, response} ->
           {:ok, response}
 
@@ -162,36 +162,54 @@ defmodule SmartFarm.Accounts do
     end
   end
 
-  def create_user_totp(%User{} = user) do
-    %UserTOTP{user_id: user.id}
-    |> UserTOTP.changeset(%{secret: NimbleTOTP.secret()})
+  def create_user_otp(%User{} = user) do
+    %UserOTP{user_id: user.id}
+    |> UserOTP.create_changeset(%{phone_number: user.phone_number})
     |> Repo.insert()
   end
 
-  def get_user_totp(%User{} = user) do
-    case Repo.get_by(UserTOTP, user_id: user.id) do
-      nil ->
-        create_user_totp(user)
+  def update_user_otp!(user_otp, changes) do
+    user_otp
+    |> UserOTP.changeset(changes)
+    |> Repo.update!()
+  end
 
-      %UserTOTP{} = totp ->
-        {:ok, totp}
-    end
+  def get_valid_user_otp(phone_number) do
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+
+    query =
+      from q in UserOTP,
+        where: q.expiry > ^now and not q.is_used,
+        order_by: [desc: q.expiry],
+        limit: 1,
+        preload: [:user]
+
+    Repo.fetch_by(query, phone_number: phone_number)
   end
 
   def request_login_otp(%User{} = user) do
-    with {:ok, totp} <- get_user_totp(user),
-         {:ok, _response} <- send_otp(user, totp) do
+    with {:ok, user_otp} <- create_user_otp(user),
+         {:ok, _response} <- send_otp(user_otp) do
       :ok
     end
   end
 
-  def verify_otp(%User{} = user, otp_code) do
-    with {:ok, totp} <- get_user_totp(user) do
-      if valid_code?(totp.secret, otp_code) do
+  def request_login_otp_by_phone(phone_number) do
+    with {:ok, user} <- get_user_by_phone_number(phone_number) do
+      request_login_otp(user)
+    end
+  end
+
+  def verify_otp(%UserOTP{} = user_otp, otp_code) do
+    case validate_otp(user_otp, otp_code) do
+      {:ok, _changes} ->
+        update_user_otp!(user_otp, %{attempts: user_otp.attempts + 1, is_used: true})
         :ok
-      else
+
+      {:error, _changeset} ->
+        user_otp = update_user_otp!(user_otp, %{attempts: user_otp.attempts + 1})
+        request_another_login_otp(user_otp)
         {:error, :invalid_otp_code}
-      end
     end
   end
 
@@ -199,21 +217,28 @@ defmodule SmartFarm.Accounts do
     Argon2.check_pass(user, password)
   end
 
-  def valid_code?(secret, otp) do
-    time = System.os_time(:second)
+  defp request_another_login_otp(user_otp) do
+    user_otp = Repo.preload(user_otp, [:user])
 
-    NimbleTOTP.valid?(secret, otp, time: time) or
-      NimbleTOTP.valid?(secret, otp, time: time - 300) or "000000" == otp
+    if user_otp.attempts >= 3 do
+      :ok = request_login_otp(user_otp.user)
+    end
   end
 
-  defp send_otp(user, totp) do
-    otp_code = NimbleTOTP.verification_code(totp.secret)
+  defp validate_otp(user_otp, code) do
+    user_otp
+    |> UserOTP.verify_changeset(%{code: code})
+    |> Ecto.Changeset.apply_action(:update)
+  end
 
+  defp send_otp(%{code: otp_code} = user_otp) when is_binary(otp_code) do
     if Application.get_env(:smart_farm, :env) == :dev do
       Logger.info("Generated OTP CODE: #{otp_code}")
     end
 
     message = "Your Verification Code is: #{otp_code}"
-    SMS.send(user.phone_number, message)
+    SMS.send(user_otp.phone_number, message)
   end
+
+  defp send_otp(_other), do: {:error, :missing_code}
 end

@@ -5,7 +5,7 @@ defmodule SmartFarm.Farms.FarmInvite do
   schema "farms_invites" do
     field :expiry, :utc_datetime, autogenerate: {__MODULE__, :generate_expiry_date, []}
     field :is_used, :boolean, default: false
-    field :invite_code, :string, autogenerate: {__MODULE__, :generate_code, []}
+    field :invite_code, :string, autogenerate: {CodeGenerator, :generate, [4]}
 
     belongs_to :farm, Farm
     belongs_to :receiver, User, foreign_key: :receiver_user_id
@@ -22,11 +22,5 @@ defmodule SmartFarm.Farms.FarmInvite do
     DateTime.utc_now()
     |> DateTime.add(@expiry_allowance, :second)
     |> DateTime.truncate(:second)
-  end
-
-  def generate_code do
-    "~4..0B"
-    |> :io_lib.format([(10 |> :math.pow(4) |> round() |> :rand.uniform()) - 1])
-    |> List.to_string()
   end
 end

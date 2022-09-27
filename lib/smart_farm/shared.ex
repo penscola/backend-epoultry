@@ -4,7 +4,7 @@ defmodule SmartFarm.Shared do
       alias SmartFarm.{
         Accounts,
         Accounts.User,
-        Accounts.UserTOTP,
+        Accounts.UserOTP,
         Accounts.Farmer,
         Batches,
         Batches.Batch,
@@ -22,7 +22,8 @@ defmodule SmartFarm.Shared do
         Quotations,
         Quotations.QuotationRequest,
         Quotations.QuotationRequestItem,
-        SMS
+        SMS,
+        Util.CodeGenerator
       }
     end
   end

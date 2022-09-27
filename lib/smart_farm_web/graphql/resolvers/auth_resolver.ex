@@ -13,10 +13,17 @@ defmodule SmartFarmWeb.Resolvers.Auth do
   @spec verify_otp(%{phone_number: String.t(), otp_code: String.t()}, %{context: map()}) ::
           {:ok, map()} | {:error, any()}
   def verify_otp(args, %{context: _context}) do
-    with {:ok, user} <- Accounts.get_user_by_phone_number(args.phone_number),
-         :ok <- Accounts.verify_otp(user, args.otp_code),
-         {:ok, token, _claims} = SmartFarm.Guardian.encode_and_sign(user) do
-      {:ok, %{api_key: token, user: user}}
+    with {:ok, user_otp} <- Accounts.get_valid_user_otp(args.phone_number),
+         :ok <- Accounts.verify_otp(user_otp, args.otp_code),
+         {:ok, token, _claims} = SmartFarm.Guardian.encode_and_sign(user_otp.user) do
+      {:ok, %{api_key: token, user: user_otp.user}}
+    else
+      {:error, :not_found} ->
+        Accounts.request_login_otp_by_phone(args.phone_number)
+        {:error, :resending_otp}
+
+      other ->
+        other
     end
   end
 
