@@ -6,6 +6,7 @@ defmodule SmartFarm.Accounts.User do
     field :first_name, :string
     field :last_name, :string
     field :phone_number, :string
+    field :recovery_phone_number, :string
     field :password, :string, virtual: true
     field :password_hash, :string
 
@@ -19,7 +20,7 @@ defmodule SmartFarm.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:first_name, :last_name, :phone_number])
+    |> cast(attrs, [:first_name, :last_name, :phone_number, :recovery_phone_number])
     |> validate_required([:first_name, :last_name, :phone_number])
     |> unique_constraint(:phone_number)
     |> convert_to_254()

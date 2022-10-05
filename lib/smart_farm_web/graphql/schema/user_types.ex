@@ -40,6 +40,13 @@ defmodule SmartFarmWeb.Schema.UserTypes do
     field :password, non_null(:string)
   end
 
+  input_object :update_user_input do
+    field :first_name, non_null(:string)
+    field :last_name, non_null(:string)
+    field :phone_number, non_null(:string)
+    field :recovery_phone_number, non_null(:string)
+  end
+
   object :user_queries do
     field :user, non_null(:user) do
       resolve(&Resolvers.User.get/2)
@@ -56,6 +63,12 @@ defmodule SmartFarmWeb.Schema.UserTypes do
       arg(:farm_id, non_null(:uuid))
 
       resolve(&Resolvers.User.remove_farm_manager/2)
+    end
+
+    field :update_user, non_null(:user) do
+      arg(:data, non_null(:update_user_input))
+
+      resolve(&Resolvers.User.update_user/2)
     end
   end
 

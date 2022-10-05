@@ -11,6 +11,12 @@ defmodule SmartFarmWeb.Resolvers.User do
     Accounts.register_user(args.data)
   end
 
+  @spec update_user(map(), %{context: %{current_user: %User{}}}) ::
+          {:ok, %User{}} | {:error, Ecto.Changeset.t()}
+  def update_user(args, %{context: %{current_user: user}}) do
+    Accounts.update_user(user, args.data)
+  end
+
   @spec remove_farm_manager(map(), %{context: map()}) ::
           {:ok, true} | {:error, Ecto.Changeset.t()}
   def remove_farm_manager(args, %{context: %{current_user: %User{} = user}}) do
