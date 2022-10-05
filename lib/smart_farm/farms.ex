@@ -116,8 +116,8 @@ defmodule SmartFarm.Farms do
   def get_bird_count(%Farm{} = farm) do
     query =
       from b in Batch,
-        join: r in assoc(b, :reports),
-        join: c in assoc(r, :bird_counts),
+        left_join: r in assoc(b, :reports),
+        left_join: c in assoc(r, :bird_counts),
         group_by: b.id,
         select: coalesce(b.bird_count - sum(coalesce(c.quantity, 0)), 0),
         where: b.farm_id == ^farm.id
