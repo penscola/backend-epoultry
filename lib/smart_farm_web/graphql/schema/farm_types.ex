@@ -22,6 +22,10 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
       resolve(dataloader(Repo))
     end
 
+    field :medications, :farm_medication do
+      resolve(dataloader(Repo))
+    end
+
     # field :contractor, :contractor do
     #   resolve(dataloader(Repo))
     # end
@@ -42,6 +46,12 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
   object :invite do
     field :invite_code, :string
     field :expiry, :datetime
+  end
+
+  object :farm_medication do
+    field :id, :uuid
+    field :name, :string
+    field :initial_quantity, :integer
   end
 
   input_object :create_farm_input do

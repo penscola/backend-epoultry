@@ -25,6 +25,10 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     value(:grams)
   end
 
+  enum :medication_measurement_unit_enum do
+    value(:litres)
+  end
+
   enum :feed_types_enum do
     value(:layers_mash)
     value(:chicken_duck_mash)
@@ -67,6 +71,10 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :egg_collection, :egg_collection_report do
       resolve(dataloader(Repo))
     end
+
+    field :medications, list_of(:medication_report) do
+      resolve(dataloader(Repo))
+    end
   end
 
   object :bird_count_report do
@@ -102,6 +110,16 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :measurement_unit, :measurement_unit_enum
   end
 
+  object :medication_report do
+    field :id, :uuid
+    field :quantity, :integer
+    field :measurement_unit, :medication_measurement_unit_enum
+
+    field :medication, :farm_medication do
+      resolve(dataloader(Repo))
+    end
+  end
+
   input_object :create_batch_input do
     field :acquired_date, non_null(:date)
     field :age_type, non_null(:age_type_enum)
@@ -118,6 +136,7 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :bird_counts, list_of(non_null(:bird_count_report_input))
     field :egg_collection, :egg_collection_report_input
     field :feeds_usage_reports, non_null(list_of(non_null(:feeds_usage_report_input)))
+    field :medications, list_of(non_null(:medication_report_input))
   end
 
   input_object :bird_count_report_input do
@@ -139,6 +158,12 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :feed_type, non_null(:feed_types_enum)
     field :quantity, non_null(:integer)
     field :measurement_unit, :measurement_unit_enum, default_value: :kilograms
+  end
+
+  input_object :medication_report_input do
+    field :medication_id, non_null(:uuid)
+    field :quantity, non_null(:integer)
+    field :measurement_unit, :medication_measurement_unit_enum, default_value: :litres
   end
 
   object :batch_queries do

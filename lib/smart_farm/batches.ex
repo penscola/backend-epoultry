@@ -229,6 +229,14 @@ defmodule SmartFarm.Batches do
         &Map.merge(&1, %{report_id: report.id, created_at: timestamp, updated_at: timestamp})
       )
     end)
+    |> Multi.insert_all(:medications, MedicationReport, fn %{report: report} ->
+      timestamp = DateTime.utc_now() |> DateTime.truncate(:second)
+
+      Enum.map(
+        args[:medications] || [],
+        &Map.merge(&1, %{report_id: report.id, created_at: timestamp, updated_at: timestamp})
+      )
+    end)
     |> Multi.merge(fn %{batch: batch, report: report} ->
       args.feeds_usage_reports
       |> Enum.reduce(Multi.new(), fn feeds_usage, multi ->
