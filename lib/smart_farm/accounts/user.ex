@@ -12,6 +12,8 @@ defmodule SmartFarm.Accounts.User do
 
     has_one :farmer, Farmer
     has_many :owned_farms, Farm, foreign_key: :owner_id
+    has_many :quotations, Quotation
+    has_many :quotation_requests, QuotationRequest
     many_to_many :managing_farms, Farm, join_through: FarmManager
 
     timestamps()

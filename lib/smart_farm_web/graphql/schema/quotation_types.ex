@@ -1,6 +1,27 @@
 defmodule SmartFarmWeb.Schema.QuotationTypes do
   use SmartFarmWeb, :schema
 
+  object :quotation do
+    field :title, :string
+    field :total_cost, :integer
+    field :created_at, :datetime
+
+    field :items, list_of(:quotation_item) do
+      resolve(dataloader(Repo))
+    end
+  end
+
+  object :quotation_item do
+    field :name, :string
+    field :quantity, :integer
+    field :unit_cost, :integer
+    field :total_cost, :integer
+
+    field :quotation, :quotation do
+      resolve(dataloader(Repo))
+    end
+  end
+
   object :quotation_request do
     field :created_at, :datetime
 

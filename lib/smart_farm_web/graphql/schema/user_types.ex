@@ -18,6 +18,10 @@ defmodule SmartFarmWeb.Schema.UserTypes do
     field :managing_farms, list_of(:farm) do
       resolve(dataloader(Repo))
     end
+
+    field :quotations, list_of(:quotation) do
+      resolve(dataloader(Repo))
+    end
   end
 
   object :farmer do

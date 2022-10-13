@@ -1,4 +1,4 @@
-defmodule SmartFarm.Repo.Migrations.CreateQuotationsTable do
+defmodule SmartFarm.Repo.Migrations.CreateQuotationRequestsTable do
   use Ecto.Migration
 
   def change do

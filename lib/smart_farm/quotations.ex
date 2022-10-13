@@ -7,4 +7,14 @@ defmodule SmartFarm.Quotations do
     |> QuotationRequest.changeset(attrs)
     |> Repo.insert()
   end
+
+  def list_quotations(actor: %User{} = user) do
+    query = from q in Quotation, where: q.user_id == ^user.id
+    Repo.all(query)
+  end
+
+  def get_quotation(id) do
+    Quotation
+    |> Repo.fetch(id)
+  end
 end
