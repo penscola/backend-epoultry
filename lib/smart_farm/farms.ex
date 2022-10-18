@@ -23,6 +23,12 @@ defmodule SmartFarm.Farms do
   def get_farm!(id), do: Repo.get!(Farm, id)
   def get_farm(id), do: Repo.fetch(Farm, id)
 
+  def get_farm(farm_id, actor: %User{} = user) do
+    with {:ok, farm} <- get_farm(farm_id), :ok <- authorize(user, :get, farm) do
+      {:ok, farm}
+    end
+  end
+
   @doc """
   Creates a farm.
 

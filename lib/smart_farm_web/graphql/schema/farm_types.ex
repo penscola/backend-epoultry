@@ -63,6 +63,11 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
   end
 
   object :farm_queries do
+    field :get_farm, non_null(:farm) do
+      arg(:farm_id, non_null(:uuid))
+
+      resolve(&Resolvers.Farm.get/2)
+    end
   end
 
   object :farm_mutations do
