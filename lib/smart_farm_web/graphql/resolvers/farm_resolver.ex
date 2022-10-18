@@ -1,5 +1,6 @@
 defmodule SmartFarmWeb.Resolvers.Farm do
   use SmartFarm.Shared
+  import Absinthe.Resolution.Helpers, only: [batch: 3]
 
   @spec get(map(), %{context: %{current_user: %User{}}}) :: {:ok, %Farm{}} | {:error, :not_found}
   def get(%{farm_id: farm_id}, %{context: %{current_user: user}}) do
@@ -45,5 +46,13 @@ defmodule SmartFarmWeb.Resolvers.Farm do
 
   def create_invite(args, %{context: %{current_user: user}}) do
     Farms.create_farm_invite(args.farm_id, actor: user)
+  end
+
+  @spec batch_by_batches(Absinthe.Resolution.t(), map(), %{context: map()}) ::
+          {:ok, map()} | {:error, any}
+  def batch_by_batches(farm, _args, %{context: %{current_user: _user}}) do
+    batch({Farms, :batch_by_batches}, farm.id, fn results ->
+      {:ok, Map.get(results, farm.id, [])}
+    end)
   end
 end

@@ -32,8 +32,8 @@ defmodule SmartFarm.Batches do
       ** (Ecto.NoResultsError)
 
   """
-  def get_batch!(id), do: Repo.get!(Batch, id)
-  def get_batch(id), do: Repo.fetch(Batch, id)
+  def get_batch!(id), do: Repo.get!(Batch.todays_submission_query(), id)
+  def get_batch(id), do: Repo.fetch(Batch.todays_submission_query(), id)
 
   @doc """
   Creates a batch.

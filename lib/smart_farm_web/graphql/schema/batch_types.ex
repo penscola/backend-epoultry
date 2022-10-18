@@ -54,6 +54,7 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :bird_type, :bird_type_enum
     field :name, :string
     field :created_at, :datetime
+    field :todays_submission, :boolean
 
     field :reports, list_of(:batch_report) do
       resolve(dataloader(Repo))

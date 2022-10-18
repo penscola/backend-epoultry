@@ -3,7 +3,7 @@ defmodule SmartFarm.Schema do
     quote do
       use Ecto.Schema
       use SmartFarm.Shared
-
+      import Ecto.Query
       import Ecto.Changeset
 
       @timestamps_opts [

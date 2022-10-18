@@ -227,4 +227,11 @@ defmodule SmartFarm.Farms do
         create_invite(farm, attrs)
     end
   end
+
+  def batch_by_batches(farm_ids) do
+    Batch.todays_submission_query()
+    |> where([b], b.farm_id in ^Enum.uniq(farm_ids))
+    |> Repo.all()
+    |> Enum.group_by(& &1.farm_id)
+  end
 end
