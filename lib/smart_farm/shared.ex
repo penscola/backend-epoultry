@@ -18,6 +18,7 @@ defmodule SmartFarm.Shared do
         Contractors.FarmContractor,
         Farms,
         Farms.Farm,
+        Farms.FarmFeed,
         Farms.FarmInvite,
         Farms.FarmManager,
         Farms.FarmMedication,

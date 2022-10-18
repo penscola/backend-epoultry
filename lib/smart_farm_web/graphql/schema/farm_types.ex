@@ -22,7 +22,11 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
       resolve(dataloader(Repo))
     end
 
-    field :medications, :farm_medication do
+    field :medications, list_of(:farm_medication) do
+      resolve(dataloader(Repo))
+    end
+
+    field :feeds, list_of(:farm_feed) do
       resolve(dataloader(Repo))
     end
 
@@ -54,12 +58,24 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
     field :initial_quantity, :integer
   end
 
+  object :farm_feed do
+    field :id, :uuid
+    field :name, :feed_types_enum
+    field :initial_quantity, :integer
+  end
+
   input_object :create_farm_input do
     field :name, non_null(:string)
     field :area_name, :string
     field :latitude, :float
     field :longitude, :float
     field :contractor_id, :uuid
+  end
+
+  input_object :create_farm_feed_input do
+    field :name, non_null(:feed_types_enum)
+    field :initial_quantity, non_null(:integer)
+    field :farm_id, non_null(:uuid)
   end
 
   object :farm_queries do
@@ -87,6 +103,12 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
       arg(:data, non_null(:create_farm_input))
 
       resolve(&Resolvers.Farm.create_farm/2)
+    end
+
+    field :create_farm_feed, non_null(:farm_feed) do
+      arg(:data, non_null(:create_farm_feed_input))
+
+      resolve(&Resolvers.Farm.create_farm_feed/2)
     end
   end
 end

@@ -14,6 +14,12 @@ defmodule SmartFarmWeb.Resolvers.Farm do
     Farms.create_farm(data, actor: user)
   end
 
+  @spec create_farm_feed(map(), %{context: %{current_user: %User{}}}) ::
+          {:ok, %FarmFeed{}} | {:error, Ecto.Changeset.t()}
+  def create_farm_feed(%{data: data}, %{context: %{current_user: %User{} = user}}) do
+    Farms.create_farm_feed(data, actor: user)
+  end
+
   @spec bird_count(%Farm{}, map(), %{context: %{current_user: %User{}}}) ::
           {:ok, integer} | {:error, any}
   def bird_count(farm, _args, %{context: %{current_user: _user}}) do

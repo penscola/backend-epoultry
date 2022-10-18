@@ -72,6 +72,16 @@ defmodule SmartFarm.Farms do
     end
   end
 
+  def create_farm_feed(_attrs, actor: nil), do: {:error, :unauthenticated}
+
+  def create_farm_feed(attrs, actor: %User{} = user) do
+    with :ok <- authorize(user, :create, struct(FarmFeed, attrs)) do
+      %FarmFeed{}
+      |> FarmFeed.changeset(attrs)
+      |> Repo.insert()
+    end
+  end
+
   @doc """
   Updates a farm.
 
