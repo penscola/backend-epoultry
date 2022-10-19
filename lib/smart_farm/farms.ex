@@ -228,7 +228,7 @@ defmodule SmartFarm.Farms do
     end
   end
 
-  def batch_by_batches(farm_ids) do
+  def batch_by_batches(_opts, farm_ids) do
     Batch.todays_submission_query()
     |> where([b], b.farm_id in ^Enum.uniq(farm_ids))
     |> Repo.all()

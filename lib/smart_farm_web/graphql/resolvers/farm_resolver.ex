@@ -51,7 +51,7 @@ defmodule SmartFarmWeb.Resolvers.Farm do
   @spec batch_by_batches(Absinthe.Resolution.t(), map(), %{context: map()}) ::
           {:ok, map()} | {:error, any}
   def batch_by_batches(farm, _args, %{context: %{current_user: _user}}) do
-    batch({Farms, :batch_by_batches}, farm.id, fn results ->
+    batch({Farms, :batch_by_batches, []}, farm.id, fn results ->
       {:ok, Map.get(results, farm.id, [])}
     end)
   end
