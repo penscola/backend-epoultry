@@ -30,4 +30,14 @@ defmodule SmartFarm.Repo do
         {:ok, resource}
     end
   end
+
+  def transact(fun_or_multi, opts \\ []) do
+    case transaction(fun_or_multi, opts) do
+      {:error, failed_operation, failed_value, changes} ->
+        {:error, %{operation: failed_operation, value: failed_value, changes: changes}}
+
+      other ->
+        other
+    end
+  end
 end

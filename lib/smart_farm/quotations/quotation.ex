@@ -17,5 +17,6 @@ defmodule SmartFarm.Quotations.Quotation do
     quotation
     |> cast(attrs, [:title, :total_cost, :user_id, :requested_item_id])
     |> validate_required([:title])
+    |> cast_assoc(:items, required: true)
   end
 end

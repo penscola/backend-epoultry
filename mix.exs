@@ -57,7 +57,10 @@ defmodule SmartFarm.MixProject do
       {:argon2_elixir, "~> 3.0"},
 
       # SMS
-      {:tesla, "~> 1.4"}
+      {:tesla, "~> 1.4"},
+
+      # Testing
+      {:ex_machina, "~> 2.7.0", only: :test}
     ]
   end
 

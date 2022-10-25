@@ -24,6 +24,7 @@ defmodule SmartFarm.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import SmartFarm.DataCase
+      import SmartFarm.Factory
     end
   end
 
