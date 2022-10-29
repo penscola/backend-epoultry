@@ -245,6 +245,7 @@ defmodule SmartFarm.Farms do
         join: f in assoc(b, :farm),
         as: :farm,
         left_join: m in assoc(f, :managers),
+        as: :manager,
         where: m.id == ^user.id or f.owner_id == ^user.id,
         group_by: [r.report_date, f.id],
         order_by: [desc: r.report_date],
@@ -257,7 +258,7 @@ defmodule SmartFarm.Farms do
 
   defp filter_reports_query(query, args) do
     args
-    |> Enum.reject(fn {_key, val} -> is_nil(val) end)
+    |> Enum.reject(fn {_key, val} -> is_nil(val) or val == "" end)
     |> Enum.reduce(query, fn
       {:limit, value}, base ->
         from q in base, limit: ^value
@@ -267,6 +268,12 @@ defmodule SmartFarm.Farms do
 
       {:end_date, value}, base ->
         from q in base, where: q.report_date <= ^value
+
+      {:name, value}, base ->
+        from [batch: b, manager: m] in base,
+          where:
+            ilike(b.name, ^"%#{value}%") or ilike(m.first_name, ^"#{value}%") or
+              ilike(m.last_name, ^"#{value}%")
 
       _other, base ->
         base

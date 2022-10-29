@@ -123,6 +123,7 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
     field :start_date, :date
     field :end_date, :date
     field :limit, :integer, default_value: 10
+    field :name, :string
   end
 
   object :farm_queries do
