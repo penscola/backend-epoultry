@@ -64,6 +64,46 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
     field :initial_quantity, :integer
   end
 
+  object :farm_report do
+    field :report_date, :date
+    field :farm_id, :uuid
+
+    field :bird_counts, list_of(:farm_bird_count_report),
+      description: "only loaded for getFarmReport"
+
+    field :feeds_usage, list_of(:farm_feed_usage_report),
+      description: "only loaded for getFarmReport"
+
+    field :egg_collection, :farm_egg_collection_report,
+      description: "only loaded for getFarmReport"
+  end
+
+  object :farm_bird_count_report do
+    field :bird_type, :bird_type_enum
+    field :current_quantity, :integer
+    field :reports, list_of(:batch_report)
+    field :reasons, non_null(list_of(non_null(:bird_count_reason)))
+  end
+
+  object :bird_count_reason do
+    field :reason, :bird_count_report_reason_enum
+    field :quantity, :integer
+  end
+
+  object :farm_feed_usage_report do
+    field :feed_type, :feed_types_enum
+    field :current_quantity, :integer
+    field :used_quantity, :integer
+    field :reports, list_of(:batch_report)
+  end
+
+  object :farm_egg_collection_report do
+    field :good_count, :integer
+    field :deformed_count, :integer
+    field :broken_count, :integer
+    field :reports, list_of(:batch_report)
+  end
+
   input_object :create_farm_input do
     field :name, non_null(:string)
     field :area_name, :string
@@ -78,11 +118,31 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
     field :farm_id, non_null(:uuid)
   end
 
+  input_object :farm_reports_filter_input do
+    field :farm_id, non_null(:uuid)
+    field :start_date, :date
+    field :end_date, :date
+    field :limit, :integer, default_value: 10
+  end
+
   object :farm_queries do
     field :get_farm, non_null(:farm) do
       arg(:farm_id, non_null(:uuid))
 
       resolve(&Resolvers.Farm.get/2)
+    end
+
+    field :farm_reports, list_of(non_null(:farm_report)) do
+      arg(:filter, non_null(:farm_reports_filter_input))
+
+      resolve(&Resolvers.Farm.list_farm_reports/2)
+    end
+
+    field :get_farm_report, non_null(:farm_report) do
+      arg(:farm_id, non_null(:uuid))
+      arg(:report_date, non_null(:date))
+
+      resolve(&Resolvers.Farm.get_farm_report/2)
     end
   end
 

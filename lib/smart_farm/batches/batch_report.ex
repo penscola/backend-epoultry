@@ -7,6 +7,7 @@ defmodule SmartFarm.Batches.Report do
     belongs_to :reporter, User
     has_many :bird_counts, BirdCountReport
     has_one :egg_collection, EggCollectionReport
+    has_many :feeds_usage, FeedsUsageReport
     has_many :medications, MedicationReport
 
     timestamps()
@@ -16,5 +17,9 @@ defmodule SmartFarm.Batches.Report do
     report
     |> cast(attrs, [:report_date, :batch_id, :reporter_id])
     |> unique_constraint([:report_date, :batch_id])
+  end
+
+  def by_id(query, ids) when is_list(ids) do
+    from r in query, join: b in assoc(r, :batch), preload: [batch: b], where: r.id in ^ids
   end
 end

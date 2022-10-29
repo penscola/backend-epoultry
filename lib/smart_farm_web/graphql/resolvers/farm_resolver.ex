@@ -55,4 +55,17 @@ defmodule SmartFarmWeb.Resolvers.Farm do
       {:ok, Map.get(results, farm.id, [])}
     end)
   end
+
+  @spec list_farm_reports(map(), %{context: %{current_user: %User{}}}) :: {:ok, [map(), ...]}
+  def list_farm_reports(%{filter: filter}, %{context: %{current_user: user}}) do
+    Farms.list_farm_reports(filter, actor: user)
+  end
+
+  @spec get_farm_report(map(), %{context: %{current_user: %User{}}}) ::
+          {:ok, map()} | {:error, :not_found}
+  def get_farm_report(%{farm_id: farm_id, report_date: report_date}, %{
+        context: %{current_user: user}
+      }) do
+    Farms.get_farm_report(farm_id, report_date, actor: user)
+  end
 end

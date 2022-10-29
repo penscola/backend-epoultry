@@ -234,4 +234,166 @@ defmodule SmartFarm.Farms do
     |> Repo.all()
     |> Enum.group_by(& &1.farm_id)
   end
+
+  def list_farm_reports(_args, actor: nil), do: {:error, :unauthenticated}
+
+  def list_farm_reports(args, actor: %User{} = user) do
+    query =
+      from r in Report,
+        join: b in assoc(r, :batch),
+        as: :batch,
+        join: f in assoc(b, :farm),
+        as: :farm,
+        left_join: m in assoc(f, :managers),
+        where: m.id == ^user.id or f.owner_id == ^user.id,
+        group_by: [r.report_date, f.id],
+        order_by: [desc: r.report_date],
+        select: %{farm_id: f.id, report_date: r.report_date}
+
+    query = filter_reports_query(query, args)
+
+    {:ok, Repo.all(query)}
+  end
+
+  defp filter_reports_query(query, args) do
+    args
+    |> Enum.reject(fn {_key, val} -> is_nil(val) end)
+    |> Enum.reduce(query, fn
+      {:limit, value}, base ->
+        from q in base, limit: ^value
+
+      {:start_date, value}, base ->
+        from q in base, where: q.report_date >= ^value
+
+      {:end_date, value}, base ->
+        from q in base, where: q.report_date <= ^value
+
+      _other, base ->
+        base
+    end)
+  end
+
+  def get_farm_report(_farm_id, _date, actor: nil), do: {:error, :unauthenticated}
+
+  def get_farm_report(farm_id, report_date, actor: %User{} = user) do
+    bird_count_query =
+      from b in Batch,
+        join: r in assoc(b, :reports),
+        on: r.report_date <= ^report_date,
+        join: bcr in assoc(r, :bird_counts),
+        where: b.farm_id == ^farm_id,
+        group_by: b.id,
+        select: %{batch_id: b.id, current_quantity: b.bird_count - sum(bcr.quantity)}
+
+    bird_reports_query =
+      from bcr in BirdCountReport,
+        join: r in assoc(bcr, :report),
+        on: r.report_date == ^report_date,
+        join: b in assoc(r, :batch),
+        on: b.farm_id == ^farm_id,
+        join: f in assoc(b, :farm),
+        left_join: m in assoc(f, :managers),
+        where: m.id == ^user.id or f.owner_id == ^user.id,
+        join: bcq in subquery(bird_count_query),
+        on: bcq.batch_id == b.id,
+        group_by: [b.bird_type, r.report_date],
+        select: %{
+          report_date: r.report_date,
+          bird_type: b.bird_type,
+          current_quantity: sum(bcq.current_quantity),
+          reports: fragment("ARRAY_AGG(?)", type(r.id, :string)),
+          reasons:
+            fragment(
+              "ARRAY_AGG(JSONB_BUILD_OBJECT('reason', ?, 'quantity', ?))",
+              bcr.reason,
+              bcr.quantity
+            )
+        }
+
+    feeds_usage_query =
+      from fur in FeedsUsageReport,
+        join: r in assoc(fur, :report),
+        on: r.report_date == ^report_date,
+        join: b in assoc(r, :batch),
+        on: b.farm_id == ^farm_id,
+        join: f in assoc(b, :farm),
+        left_join: m in assoc(f, :managers),
+        where: m.id == ^user.id or f.owner_id == ^user.id,
+        group_by: [fur.feed_type, r.report_date],
+        select: %{
+          report_date: r.report_date,
+          feed_type: fur.feed_type,
+          used_quantity: sum(fur.quantity),
+          reports: fragment("ARRAY_AGG(?)", type(r.id, :string))
+        }
+
+    egg_collection_query =
+      from ecr in EggCollectionReport,
+        join: r in assoc(ecr, :report),
+        on: r.report_date == ^report_date,
+        join: b in assoc(r, :batch),
+        on: b.farm_id == ^farm_id,
+        join: f in assoc(b, :farm),
+        left_join: m in assoc(f, :managers),
+        where: m.id == ^user.id or f.owner_id == ^user.id,
+        group_by: b.farm_id,
+        select: %{
+          reports: fragment("ARRAY_AGG(?)", type(r.id, :string)),
+          good_count: sum(ecr.good_count),
+          deformed_count:
+            sum(fragment("(? ->> ?)::integer", ecr.bad_count_classification, "deformed")),
+          broken_count:
+            sum(fragment("(? ->> ?)::integer", ecr.bad_count_classification, "broken"))
+        }
+
+    bird_reports = Repo.all(bird_reports_query)
+    feeds_reports = Repo.all(feeds_usage_query)
+    egg_report = Repo.one(egg_collection_query)
+    batch_reports = batch_reports_from_reports([egg_report] ++ feeds_reports ++ bird_reports)
+
+    if length(batch_reports) > 0 do
+      {:ok,
+       %{
+         report_date: hd(batch_reports).report_date,
+         farm_id: farm_id,
+         feeds_usage:
+           Enum.map(feeds_reports, fn report -> matching_batch_reports(report, batch_reports) end),
+         egg_collection: matching_batch_reports(egg_report, batch_reports),
+         bird_counts: format_bird_reports(bird_reports, batch_reports)
+       }}
+    else
+      {:error, :not_found}
+    end
+  end
+
+  defp format_bird_reports(farm_reports, batch_reports) do
+    Enum.map(farm_reports, fn report ->
+      report = matching_batch_reports(report, batch_reports)
+
+      reasons =
+        report.reasons
+        |> Enum.group_by(& &1.reason)
+        |> Enum.map(fn {reason, values} ->
+          %{reason: reason, quantity: Enum.reduce(values, 0, fn x, acc -> acc + x.quantity end)}
+        end)
+
+      %{report | reasons: reasons}
+    end)
+  end
+
+  defp matching_batch_reports(nil, _reports), do: nil
+
+  defp matching_batch_reports(farm_report, batch_reports) do
+    reports = Enum.filter(batch_reports, &(&1.id in farm_report.reports))
+    %{farm_report | reports: reports}
+  end
+
+  defp batch_reports_from_reports(reports) do
+    report_ids =
+      reports |> Enum.reject(&is_nil/1) |> Enum.map(& &1.reports) |> List.flatten() |> Enum.uniq()
+
+    Report
+    |> Report.by_id(report_ids)
+    |> Repo.all()
+  end
 end

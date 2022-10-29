@@ -65,7 +65,15 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :id, :uuid
     field :report_date, :date
 
+    field :batch, :batch do
+      resolve(dataloader(Repo))
+    end
+
     field :bird_counts, list_of(:bird_count_report) do
+      resolve(dataloader(Repo))
+    end
+
+    field :feeds_usage, list_of(:feeds_usage_report) do
       resolve(dataloader(Repo))
     end
 
