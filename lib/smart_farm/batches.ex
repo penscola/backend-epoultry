@@ -213,9 +213,31 @@ defmodule SmartFarm.Batches do
     |> Multi.insert(:report, Report.changeset(%Report{}, args))
     |> Multi.run(:egg_collection, fn repo, %{report: report, batch: batch} ->
       if batch.bird_type != :broilers && args[:egg_collection] do
+        %{
+          egg_count: total,
+          broken_count: broken,
+          deformed_count: deformed,
+          small_count: small,
+          large_count: large
+        } = args.egg_collection
+
+        egg_collection =
+          Map.merge(args.egg_collection, %{
+            good_count: total - broken - deformed,
+            bad_count: broken + deformed,
+            bad_count_classification: %{
+              broken: broken,
+              deformed: deformed
+            },
+            good_count_classification: %{
+              small: small,
+              large: large
+            }
+          })
+
         report
         |> Ecto.build_assoc(:egg_collection)
-        |> EggCollectionReport.changeset(args.egg_collection)
+        |> EggCollectionReport.changeset(egg_collection)
         |> repo.insert()
       else
         {:ok, nil}
