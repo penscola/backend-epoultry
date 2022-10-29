@@ -12,7 +12,7 @@ defmodule SmartFarm.Batches.Batch do
 
     belongs_to :creator, User
     belongs_to :farm, Farm
-    has_many :reports, Report
+    has_many :reports, Report, preload_order: [desc: :report_date]
 
     timestamps()
   end

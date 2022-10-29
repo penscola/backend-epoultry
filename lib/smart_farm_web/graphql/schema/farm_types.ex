@@ -30,9 +30,9 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
       resolve(dataloader(Repo))
     end
 
-    # field :contractor, :contractor do
-    #   resolve(dataloader(Repo))
-    # end
+    field :contractor, :contractor do
+      resolve(dataloader(Repo))
+    end
 
     field :batches, list_of(:batch) do
       resolve(&Resolvers.Farm.batch_by_batches/3)

@@ -211,8 +211,8 @@ defmodule SmartFarm.Batches do
       get_batch(args.batch_id)
     end)
     |> Multi.insert(:report, Report.changeset(%Report{}, args))
-    |> Multi.run(:egg_collection, fn repo, %{report: report} ->
-      if args[:egg_collection] do
+    |> Multi.run(:egg_collection, fn repo, %{report: report, batch: batch} ->
+      if batch.bird_type != :broilers && args[:egg_collection] do
         report
         |> Ecto.build_assoc(:egg_collection)
         |> EggCollectionReport.changeset(args.egg_collection)
@@ -223,22 +223,25 @@ defmodule SmartFarm.Batches do
     end)
     |> Multi.insert_all(:bird_counts, BirdCountReport, fn %{report: report} ->
       timestamp = DateTime.utc_now() |> DateTime.truncate(:second)
+      bird_counts = Enum.filter(args[:bird_counts] || [], &(&1.quantity > 0))
 
       Enum.map(
-        args[:bird_counts] || [],
+        bird_counts,
         &Map.merge(&1, %{report_id: report.id, created_at: timestamp, updated_at: timestamp})
       )
     end)
     |> Multi.insert_all(:medications, MedicationReport, fn %{report: report} ->
       timestamp = DateTime.utc_now() |> DateTime.truncate(:second)
+      medications = Enum.filter(args[:medications] || [], &(&1.quantity > 0))
 
       Enum.map(
-        args[:medications] || [],
+        medications,
         &Map.merge(&1, %{report_id: report.id, created_at: timestamp, updated_at: timestamp})
       )
     end)
     |> Multi.merge(fn %{batch: batch, report: report} ->
       args.feeds_usage_reports
+      |> Enum.filter(&(&1.quantity > 0))
       |> Enum.reduce(Multi.new(), fn feeds_usage, multi ->
         changeset =
           FeedsUsageReport.changeset(
