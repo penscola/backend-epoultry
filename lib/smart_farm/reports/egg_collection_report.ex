@@ -1,4 +1,4 @@
-defmodule SmartFarm.Batches.EggCollectionReport do
+defmodule SmartFarm.Reports.EggCollectionReport do
   use SmartFarm.Schema
 
   schema "egg_collection_reports" do

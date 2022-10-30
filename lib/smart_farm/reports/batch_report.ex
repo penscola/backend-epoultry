@@ -1,4 +1,4 @@
-defmodule SmartFarm.Batches.Report do
+defmodule SmartFarm.Reports.Report do
   use SmartFarm.Schema
 
   schema "batches_reports" do
@@ -7,7 +7,6 @@ defmodule SmartFarm.Batches.Report do
     belongs_to :reporter, User
     has_many :bird_counts, BirdCountReport
     has_one :egg_collection, EggCollectionReport
-    has_many :feeds_usage, FeedsUsageReport
     has_many :medications, MedicationReport
 
     timestamps()

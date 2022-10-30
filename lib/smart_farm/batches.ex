@@ -252,28 +252,28 @@ defmodule SmartFarm.Batches do
         &Map.merge(&1, %{report_id: report.id, created_at: timestamp, updated_at: timestamp})
       )
     end)
-    |> Multi.insert_all(:medications, MedicationReport, fn %{report: report} ->
-      timestamp = DateTime.utc_now() |> DateTime.truncate(:second)
-      medications = Enum.filter(args[:medications] || [], &(&1.quantity > 0))
+    # |> Multi.insert_all(:medications, MedicationReport, fn %{report: report} ->
+    #   timestamp = DateTime.utc_now() |> DateTime.truncate(:second)
+    #   medications = Enum.filter(args[:medications] || [], &(&1.quantity > 0))
 
-      Enum.map(
-        medications,
-        &Map.merge(&1, %{report_id: report.id, created_at: timestamp, updated_at: timestamp})
-      )
-    end)
-    |> Multi.merge(fn %{batch: batch, report: report} ->
-      args.feeds_usage_reports
-      |> Enum.filter(&(&1.quantity > 0))
-      |> Enum.reduce(Multi.new(), fn feeds_usage, multi ->
-        changeset =
-          FeedsUsageReport.changeset(
-            %FeedsUsageReport{bird_type: batch.bird_type, report_id: report.id},
-            feeds_usage
-          )
+    #   Enum.map(
+    #     medications,
+    #     &Map.merge(&1, %{report_id: report.id, created_at: timestamp, updated_at: timestamp})
+    #   )
+    # end)
+    # |> Multi.merge(fn %{batch: batch, report: report} ->
+    #   args.feeds_usage_reports
+    #   |> Enum.filter(&(&1.quantity > 0))
+    #   |> Enum.reduce(Multi.new(), fn feeds_usage, multi ->
+    #     changeset =
+    #       FeedsUsageReport.changeset(
+    #         %FeedsUsageReport{bird_type: batch.bird_type, report_id: report.id},
+    #         feeds_usage
+    #       )
 
-        Multi.insert(multi, feeds_usage.feed_type, changeset)
-      end)
-    end)
+    #     Multi.insert(multi, feeds_usage.feed_type, changeset)
+    #   end)
+    # end)
     |> Repo.transaction()
     |> case do
       {:ok, %{report: report}} ->

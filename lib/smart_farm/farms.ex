@@ -155,12 +155,11 @@ defmodule SmartFarm.Farms do
 
   def get_feeds_usage(%Farm{} = farm) do
     query =
-      from fu in FeedsUsageReport,
-        join: r in assoc(fu, :report),
-        join: b in assoc(r, :batch),
-        where: b.farm_id == ^farm.id
+      from si in StoreItem,
+        where: si.farm_id == ^farm.id,
+        where: si.item_type == ^:feed
 
-    Repo.aggregate(query, :sum, :quantity)
+    Repo.aggregate(query, :sum, :quantity_used)
   end
 
   def get_valid_invite(invite_code) do
@@ -318,19 +317,21 @@ defmodule SmartFarm.Farms do
         }
 
     feeds_usage_query =
-      from fur in FeedsUsageReport,
-        join: r in assoc(fur, :report),
+      from siu in StoreItemUsageReport,
+        join: si in assoc(siu, :store_item),
+        on: si.item_type == ^"feed",
+        join: r in assoc(siu, :report),
         on: r.report_date == ^report_date,
         join: b in assoc(r, :batch),
         on: b.farm_id == ^farm_id,
         join: f in assoc(b, :farm),
         left_join: m in assoc(f, :managers),
         where: m.id == ^user.id or f.owner_id == ^user.id,
-        group_by: [fur.feed_type, r.report_date],
+        group_by: [si.name, r.report_date],
         select: %{
           report_date: r.report_date,
-          feed_type: fur.feed_type,
-          used_quantity: sum(fur.quantity),
+          feed_type: si.name,
+          used_quantity: sum(siu.quantity),
           reports: fragment("ARRAY_AGG(?)", type(r.id, :string))
         }
 

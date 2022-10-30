@@ -1,4 +1,4 @@
-defmodule SmartFarm.Batches.BirdCountReport do
+defmodule SmartFarm.Reports.BirdCountReport do
   use SmartFarm.Schema
 
   schema "bird_count_reports" do

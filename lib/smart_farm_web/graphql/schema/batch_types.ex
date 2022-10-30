@@ -73,15 +73,11 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
       resolve(dataloader(Repo))
     end
 
-    field :feeds_usage, list_of(:feeds_usage_report) do
-      resolve(dataloader(Repo))
-    end
-
     field :egg_collection, :egg_collection_report do
       resolve(dataloader(Repo))
     end
 
-    field :medications, list_of(:medication_report) do
+    field :reporter, :user do
       resolve(dataloader(Repo))
     end
   end
@@ -112,23 +108,6 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :good_count_classification, :good_count_classification
   end
 
-  object :feeds_usage_report do
-    field :id, :uuid
-    field :feed_type, :feed_types_enum
-    field :quantity, :integer
-    field :measurement_unit, :measurement_unit_enum
-  end
-
-  object :medication_report do
-    field :id, :uuid
-    field :quantity, :integer
-    field :measurement_unit, :medication_measurement_unit_enum
-
-    field :medication, :farm_medication do
-      resolve(dataloader(Repo))
-    end
-  end
-
   input_object :create_batch_input do
     field :acquired_date, non_null(:date)
     field :age_type, non_null(:age_type_enum)
@@ -144,8 +123,10 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :batch_id, non_null(:uuid)
     field :bird_counts, list_of(non_null(:bird_count_report_input))
     field :egg_collection, :egg_collection_report_input
-    field :feeds_usage_reports, non_null(list_of(non_null(:feeds_usage_report_input)))
-    field :medications, list_of(non_null(:medication_report_input))
+    field :feeds_report, non_null(:feeds_report)
+    field :medications_report, :medications_report
+    field :sawdust_report, :sawdust_report
+    field :briquettes_report, :briquettes_report
   end
 
   input_object :bird_count_report_input do
@@ -163,16 +144,50 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :deformed_count, :integer, default_value: 0
   end
 
-  input_object :feeds_usage_report_input do
+  input_object :feeds_report do
+    field :used, non_null(list_of(non_null(:feeds_report_input)))
+    field :in_store, list_of(non_null(:feeds_report_input))
+    field :received, list_of(non_null(:feeds_report_input))
+  end
+
+  input_object :feeds_report_input do
     field :feed_type, non_null(:feed_types_enum)
     field :quantity, non_null(:integer)
     field :measurement_unit, :measurement_unit_enum, default_value: :kilograms
   end
 
+  input_object :medications_report do
+    field :used, list_of(non_null(:medication_report_input))
+    field :in_store, list_of(non_null(:medication_report_input))
+    field :received, list_of(non_null(:medication_report_input))
+  end
+
   input_object :medication_report_input do
-    field :medication_id, non_null(:uuid)
+    field :name, non_null(:string)
     field :quantity, non_null(:integer)
     field :measurement_unit, :medication_measurement_unit_enum, default_value: :litres
+  end
+
+  input_object :sawdust_report do
+    field :used, :sawdust_report_input
+    field :in_store, :sawdust_report_input
+    field :received, :sawdust_report_input
+  end
+
+  input_object :sawdust_report_input do
+    field :quantity, non_null(:float)
+    field :measurement_unit, :measurement_unit_enum, default_value: :kilograms
+  end
+
+  input_object :briquettes_report do
+    field :used, :briquettes_report_input
+    field :in_store, :briquettes_report_input
+    field :received, :briquettes_report_input
+  end
+
+  input_object :briquettes_report_input do
+    field :quantity, non_null(:float)
+    field :measurement_unit, :measurement_unit_enum, default_value: :kilograms
   end
 
   object :batch_queries do

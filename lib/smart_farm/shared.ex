@@ -8,11 +8,6 @@ defmodule SmartFarm.Shared do
         Accounts.Farmer,
         Batches,
         Batches.Batch,
-        Batches.BirdCountReport,
-        Batches.EggCollectionReport,
-        Batches.FeedsUsageReport,
-        Batches.MedicationReport,
-        Batches.Report,
         Contractors,
         Contractors.Contractor,
         Contractors.FarmContractor,
@@ -28,7 +23,13 @@ defmodule SmartFarm.Shared do
         Quotations.QuotationItem,
         Quotations.QuotationRequest,
         Quotations.QuotationRequestItem,
+        Reports.Report,
+        Reports.BirdCountReport,
+        Reports.EggCollectionReport,
+        Reports.StoreItemUsageReport,
         SMS,
+        Stores.Restock,
+        Stores.StoreItem,
         Util.CodeGenerator
       }
     end
