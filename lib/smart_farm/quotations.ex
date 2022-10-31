@@ -39,7 +39,8 @@ defmodule SmartFarm.Quotations do
       query =
         from c in Cluster,
           where:
-            c.bird_type == ^item.name and c.min_count <= ^item.quantity and
+            type(c.bird_type, :string) == type(^item.name, :string) and
+              c.min_count <= ^item.quantity and
               c.max_count >= ^item.quantity
 
       case Repo.fetch_one(query) do

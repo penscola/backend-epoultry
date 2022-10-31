@@ -14,5 +14,6 @@ defmodule SmartFarm.Quotations.QuotationRequestItem do
     item
     |> cast(attrs, [:name, :quantity])
     |> validate_required([:name, :quantity])
+    |> update_change(:name, &String.downcase/1)
   end
 end
