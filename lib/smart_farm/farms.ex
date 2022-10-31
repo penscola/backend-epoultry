@@ -162,6 +162,24 @@ defmodule SmartFarm.Farms do
     Repo.aggregate(query, :sum, :quantity_used)
   end
 
+  def get_feeds_remaining(%Farm{} = farm) do
+    query =
+      from si in StoreItem,
+        where: si.farm_id == ^farm.id,
+        where: si.item_type == ^:feed,
+        select: %{
+          used: sum(si.quantity_used),
+          received: sum(si.quantity_received),
+          started: sum(si.starting_quantity)
+        }
+
+    if result = Repo.one(query) do
+      result.started + result.received - result.used
+    else
+      0.0
+    end
+  end
+
   def get_valid_invite(invite_code) do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
     query = from i in FarmInvite, where: i.expiry > ^now and not i.is_used
@@ -306,7 +324,7 @@ defmodule SmartFarm.Farms do
         select: %{
           report_date: r.report_date,
           bird_type: b.bird_type,
-          current_quantity: sum(bcq.current_quantity),
+          current_quantity: type(avg(bcq.current_quantity), :integer),
           reports: fragment("ARRAY_AGG(?)", type(r.id, :string)),
           reasons:
             fragment(
@@ -316,23 +334,45 @@ defmodule SmartFarm.Farms do
             )
         }
 
+    feeds_received_to_date =
+      from s in StoreItem,
+        left_join: r in assoc(s, :restocks),
+        on: r.date_restocked <= ^report_date,
+        where: s.item_type == ^:feed and s.farm_id == ^farm_id,
+        group_by: s.id,
+        select: %{id: s.id, quantity_received: coalesce(sum(r.quantity), 0.0)}
+
+    feeds_used_to_date =
+      from s in StoreItem,
+        left_join: sr in assoc(s, :store_reports),
+        left_join: r in assoc(sr, :report),
+        on: r.report_date <= ^report_date,
+        where: s.item_type == ^:feed and s.farm_id == ^farm_id,
+        group_by: s.id,
+        select: %{id: s.id, quantity_used: coalesce(sum(sr.quantity), 0.0)}
+
     feeds_usage_query =
-      from siu in StoreItemUsageReport,
-        join: si in assoc(siu, :store_item),
-        on: si.item_type == ^"feed",
-        join: r in assoc(siu, :report),
+      from s in StoreItem,
+        join: f in assoc(s, :farm),
+        on: f.id == ^farm_id,
+        join: sr in assoc(s, :store_reports),
+        join: r in assoc(sr, :report),
         on: r.report_date == ^report_date,
-        join: b in assoc(r, :batch),
-        on: b.farm_id == ^farm_id,
-        join: f in assoc(b, :farm),
         left_join: m in assoc(f, :managers),
+        left_join: frd in subquery(feeds_received_to_date),
+        on: frd.id == s.id,
+        left_join: fud in subquery(feeds_used_to_date),
+        on: fud.id == s.id,
         where: m.id == ^user.id or f.owner_id == ^user.id,
-        group_by: [si.name, r.report_date],
+        where: s.item_type == ^"feed",
+        group_by: [s.id, r.report_date],
         select: %{
           report_date: r.report_date,
-          feed_type: si.name,
-          used_quantity: sum(siu.quantity),
-          reports: fragment("ARRAY_AGG(?)", type(r.id, :string))
+          feed_type: s.name,
+          used_quantity: avg(sr.quantity),
+          reports: fragment("ARRAY_AGG(?)", type(r.id, :string)),
+          current_quantity:
+            s.starting_quantity + avg(frd.quantity_received) - avg(fud.quantity_used)
         }
 
     egg_collection_query =

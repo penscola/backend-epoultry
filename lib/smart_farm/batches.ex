@@ -252,28 +252,91 @@ defmodule SmartFarm.Batches do
         &Map.merge(&1, %{report_id: report.id, created_at: timestamp, updated_at: timestamp})
       )
     end)
-    # |> Multi.insert_all(:medications, MedicationReport, fn %{report: report} ->
-    #   timestamp = DateTime.utc_now() |> DateTime.truncate(:second)
-    #   medications = Enum.filter(args[:medications] || [], &(&1.quantity > 0))
+    |> Multi.insert_all(
+      :feeds_in_store,
+      StoreItem,
+      fn %{batch: batch} ->
+        feed_store_items_params(args[:feeds_report][:in_store] || [], batch)
+      end,
+      on_conflict: :nothing
+    )
+    |> Multi.merge(fn %{batch: batch, report: report} ->
+      used_feeds = Enum.filter(args[:feeds_report][:used] || [], &(&1.quantity > 0))
 
-    #   Enum.map(
-    #     medications,
-    #     &Map.merge(&1, %{report_id: report.id, created_at: timestamp, updated_at: timestamp})
-    #   )
-    # end)
-    # |> Multi.merge(fn %{batch: batch, report: report} ->
-    #   args.feeds_usage_reports
-    #   |> Enum.filter(&(&1.quantity > 0))
-    #   |> Enum.reduce(Multi.new(), fn feeds_usage, multi ->
-    #     changeset =
-    #       FeedsUsageReport.changeset(
-    #         %FeedsUsageReport{bird_type: batch.bird_type, report_id: report.id},
-    #         feeds_usage
-    #       )
+      used_feeds =
+        Enum.map(used_feeds, fn feed -> Map.merge(feed, %{name: to_string(feed.feed_type)}) end)
 
-    #     Multi.insert(multi, feeds_usage.feed_type, changeset)
-    #   end)
-    # end)
+      received_feeds = feed_store_items_params(args[:feeds_report][:received] || [], batch)
+
+      Multi.new()
+      |> received_store_items_multi(received_feeds, batch, report)
+      |> used_store_items_multi(used_feeds, batch, report)
+    end)
+    |> Multi.insert_all(
+      :medication_in_store,
+      StoreItem,
+      fn %{batch: batch} ->
+        medication_store_items_params(args[:medications_report][:in_store] || [], batch)
+      end,
+      on_conflict: :nothing
+    )
+    |> Multi.merge(fn %{batch: batch, report: report} ->
+      used_meds = Enum.filter(args[:medications_report][:used] || [], &(&1.quantity > 0))
+
+      used_meds = Enum.map(used_meds, fn med -> Map.merge(med, %{name: med.name}) end)
+
+      received_meds =
+        medication_store_items_params(args[:medications_report][:received] || [], batch)
+
+      Multi.new()
+      |> received_store_items_multi(received_meds, batch, report)
+      |> used_store_items_multi(used_meds, batch, report)
+    end)
+    |> Multi.insert_all(
+      :sawdust_in_store,
+      StoreItem,
+      fn %{batch: batch} ->
+        sawdust_store_items_params(args[:sawdust_report][:in_store], batch)
+      end,
+      on_conflict: :nothing
+    )
+    |> Multi.merge(fn %{batch: batch, report: report} ->
+      used_sawdust = sawdust_store_items_params(args[:sawdust_report][:used], batch)
+
+      used_sawdust =
+        Enum.map(used_sawdust, fn sawdust ->
+          Map.merge(sawdust, %{quantity: sawdust.starting_quantity})
+        end)
+
+      received_sawdust = sawdust_store_items_params(args[:sawdust_report][:received] || [], batch)
+
+      Multi.new()
+      |> received_store_items_multi(received_sawdust, batch, report)
+      |> used_store_items_multi(used_sawdust, batch, report)
+    end)
+    |> Multi.insert_all(
+      :briquettes_in_store,
+      StoreItem,
+      fn %{batch: batch} ->
+        briquettes_store_items_params(args[:briquettes_report][:in_store], batch)
+      end,
+      on_conflict: :nothing
+    )
+    |> Multi.merge(fn %{batch: batch, report: report} ->
+      used_briquettes = briquettes_store_items_params(args[:briquettes_report][:used], batch)
+
+      used_briquettes =
+        Enum.map(used_briquettes, fn briquettes ->
+          Map.merge(briquettes, %{quantity: briquettes.starting_quantity})
+        end)
+
+      received_briquettes =
+        briquettes_store_items_params(args[:briquettes_report][:received] || [], batch)
+
+      Multi.new()
+      |> received_store_items_multi(received_briquettes, batch, report)
+      |> used_store_items_multi(used_briquettes, batch, report)
+    end)
     |> Repo.transaction()
     |> case do
       {:ok, %{report: report}} ->
@@ -283,4 +346,122 @@ defmodule SmartFarm.Batches do
         {:error, changeset}
     end
   end
+
+  defp received_store_items_multi(multi, items, batch, report) do
+    items
+    |> Enum.reduce(multi, fn item, multi ->
+      if store_item = Repo.get_by(StoreItem, farm_id: batch.farm_id, name: item.name) do
+        Multi.insert(multi, "restock_#{store_item.id}", fn _changes ->
+          store_item
+          |> Ecto.build_assoc(:restocks)
+          |> Restock.changeset(
+            Map.merge(item, %{
+              date_restocked: report.report_date,
+              quantity: item.starting_quantity
+            })
+          )
+        end)
+      else
+        Multi.insert_all(multi, "item_#{item.name}", StoreItem, [item])
+      end
+    end)
+  end
+
+  defp used_store_items_multi(multi, items, batch, report) do
+    items
+    |> Enum.reduce(multi, fn item, multi ->
+      if store_item = Repo.get_by(StoreItem, farm_id: batch.farm_id, name: item.name) do
+        Multi.insert(multi, item.name, fn _changes ->
+          StoreItemUsageReport.changeset(
+            %StoreItemUsageReport{report_id: report.id},
+            batch,
+            store_item,
+            item
+          )
+        end)
+      else
+        Multi.error(multi, item.name, "#{item.name} feed does not exist in your farm")
+      end
+    end)
+  end
+
+  defp feed_store_items_params(feeds, batch) do
+    timestamp = DateTime.utc_now() |> DateTime.truncate(:second)
+
+    feeds
+    |> Enum.filter(&(&1.quantity > 0))
+    |> Enum.map(fn item ->
+      %{
+        name: to_string(item.feed_type),
+        starting_quantity: item.quantity,
+        measurement_unit: item.measurement_unit,
+        item_type: :feed,
+        farm_id: batch.farm_id,
+        created_at: timestamp,
+        updated_at: timestamp
+      }
+    end)
+  end
+
+  defp medication_store_items_params(meds, batch) do
+    timestamp = DateTime.utc_now() |> DateTime.truncate(:second)
+
+    meds
+    |> Enum.filter(&(&1.quantity > 0))
+    |> Enum.map(fn item ->
+      %{
+        name: to_string(item.name),
+        starting_quantity: item.quantity,
+        measurement_unit: item.measurement_unit,
+        item_type: :medication,
+        farm_id: batch.farm_id,
+        created_at: timestamp,
+        updated_at: timestamp
+      }
+    end)
+  end
+
+  defp sawdust_store_items_params(sawdust, batch) when is_map(sawdust) do
+    if sawdust.quantity > 0 do
+      timestamp = DateTime.utc_now() |> DateTime.truncate(:second)
+
+      [
+        %{
+          name: "sawdust",
+          starting_quantity: sawdust.quantity,
+          measurement_unit: sawdust.measurument_unit,
+          item_type: :sawdust,
+          farm_id: batch.farm_id,
+          created_at: timestamp,
+          updated_at: timestamp
+        }
+      ]
+    else
+      []
+    end
+  end
+
+  defp sawdust_store_items_params(_sawdust, _batch), do: []
+
+  defp briquettes_store_items_params(briquette, batch) when is_map(briquette) do
+    if briquette.quantity > 0 do
+      timestamp = DateTime.utc_now() |> DateTime.truncate(:second)
+
+      [
+        %{
+          name: "briquettes",
+          starting_quantity: briquette.quantity,
+          measurement_unit: briquette.measurment_unit,
+          item_type: :briquettes,
+          farm_id: batch.farm_id,
+          created_at: timestamp,
+          updated_at: timestamp
+        }
+      ]
+    else
+      []
+    end
+  end
+
+  defp briquettes_store_items_params(_briquette, _batch), do: []
 end

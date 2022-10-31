@@ -19,8 +19,9 @@ defmodule SmartFarm.Reports.StoreItemUsageReport do
 
   def changeset(%__MODULE__{} = report, %Batch{} = batch, %StoreItem{} = item, attrs) do
     report
-    |> cast(attrs, [:store_item_id, :quantity, :measurement_unit, :report_id])
-    |> validate_required([:store_item_id, :quantity, :measurement_unit, :report_id])
+    |> cast(attrs, [:quantity, :measurement_unit, :report_id])
+    |> validate_required([:quantity, :measurement_unit, :report_id])
+    |> put_assoc(:store_item, item)
     |> unique_constraint([:store_item_id, :report_id])
     |> validate_feed_type(batch, item)
   end

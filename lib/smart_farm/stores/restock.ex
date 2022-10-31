@@ -12,7 +12,7 @@ defmodule SmartFarm.Stores.Restock do
 
   def changeset(restock, attrs) do
     restock
-    |> cast(attrs, [:date_restocked, :quantity, :measurement_unit, :item_id])
-    |> validate_required([:date_restocked, :quantity, :measurement_unit, :item_id])
+    |> cast(attrs, [:date_restocked, :quantity, :measurement_unit, :store_item_id])
+    |> validate_required([:date_restocked, :quantity, :measurement_unit, :store_item_id])
   end
 end

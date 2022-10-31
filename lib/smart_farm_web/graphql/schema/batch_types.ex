@@ -22,7 +22,8 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
 
   enum :measurement_unit_enum do
     value(:kilograms)
-    value(:grams)
+    # value(:grams)
+    value(:litres)
   end
 
   enum :medication_measurement_unit_enum do
@@ -59,6 +60,10 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :reports, list_of(:batch_report) do
       resolve(dataloader(Repo))
     end
+
+    field :farm, :farm do
+      resolve(dataloader(Repo))
+    end
   end
 
   object :batch_report do
@@ -74,6 +79,10 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     end
 
     field :egg_collection, :egg_collection_report do
+      resolve(dataloader(Repo))
+    end
+
+    field :store_reports, list_of(:store_item_report) do
       resolve(dataloader(Repo))
     end
 
@@ -106,6 +115,16 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :good_count, :integer
     field :bad_count_classification, :bad_count_classification
     field :good_count_classification, :good_count_classification
+  end
+
+  object :store_item_report do
+    field :id, :uuid
+    field :quantity, :float
+    field :measurement_unit, :measurement_unit_enum
+
+    field :store_item, :store_item do
+      resolve(dataloader(Repo))
+    end
   end
 
   input_object :create_batch_input do
@@ -152,7 +171,7 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
 
   input_object :feeds_report_input do
     field :feed_type, non_null(:feed_types_enum)
-    field :quantity, non_null(:integer)
+    field :quantity, non_null(:float)
     field :measurement_unit, :measurement_unit_enum, default_value: :kilograms
   end
 
@@ -164,7 +183,7 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
 
   input_object :medication_report_input do
     field :name, non_null(:string)
-    field :quantity, non_null(:integer)
+    field :quantity, non_null(:float)
     field :measurement_unit, :medication_measurement_unit_enum, default_value: :litres
   end
 

@@ -33,6 +33,12 @@ defmodule SmartFarmWeb.Resolvers.Farm do
     {:ok, Farms.get_feeds_usage(farm)}
   end
 
+  @spec feeds_remaining(%Farm{}, map(), %{context: %{current_user: %User{}}}) ::
+          {:ok, integer} | {:error, any}
+  def feeds_remaining(farm, _args, %{context: %{current_user: _user}}) do
+    {:ok, Farms.get_feeds_remaining(farm)}
+  end
+
   @spec egg_count(%Farm{}, map(), %{context: %{current_user: %User{}}}) ::
           {:ok, integer} | {:error, any}
   def egg_count(farm, _args, %{context: %{current_user: _user}}) do

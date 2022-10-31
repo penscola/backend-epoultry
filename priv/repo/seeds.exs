@@ -30,12 +30,9 @@ farm_manager_phone = "254709876543"
   }
 } |> Repo.insert(on_conflict: :nothing)
 
-{:ok, farmer} = Accounts.get_user_by_phone_number(farmer_phone)
-{:ok, farm_manager} = Accounts.get_user_by_phone_number(farm_manager_phone)
 
-Accounts.create_user_totp(farmer)
-Accounts.create_user_totp(farm_manager)
-unless Repo.get_by(FarmInvite, invite_code: "0000") do
 farm = Repo.get_by(Farm, name: "Test Farm")
-Farms.create_invite(farm, %{})
-end
+
+%FarmInvite{farm_id: farm.id, invite_code: "0000"}
+|> FarmInvite.changeset(%{})
+|> Repo.insert(on_conflict: :nothing)

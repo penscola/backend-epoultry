@@ -7,7 +7,7 @@ defmodule SmartFarm.Reports.Report do
     belongs_to :reporter, User
     has_many :bird_counts, BirdCountReport
     has_one :egg_collection, EggCollectionReport
-    has_many :medications, MedicationReport
+    has_many :store_reports, StoreItemUsageReport
 
     timestamps()
   end

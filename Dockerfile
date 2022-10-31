@@ -25,6 +25,7 @@ COPY lib lib
 RUN mix deps.compile
 # compile the release
 RUN mix compile
-RUN mix release --overwrite
 
-CMD /app/_build/dev/rel/smart_farm start
+RUN mix ecto.setup
+
+CMD mix phx.server

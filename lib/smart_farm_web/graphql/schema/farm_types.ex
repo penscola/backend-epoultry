@@ -14,8 +14,12 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
       resolve(&Resolvers.Farm.egg_count/3)
     end
 
-    field :feeds_usage, :integer do
+    field :feeds_usage, :float do
       resolve(&Resolvers.Farm.feeds_usage/3)
+    end
+
+    field :feeds_remaining, :float do
+      resolve(&Resolvers.Farm.feeds_remaining/3)
     end
 
     field :owner, :user do
@@ -92,8 +96,8 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
 
   object :farm_feed_usage_report do
     field :feed_type, :feed_types_enum
-    field :current_quantity, :integer
-    field :used_quantity, :integer
+    field :current_quantity, :float
+    field :used_quantity, :float
     field :reports, list_of(:batch_report)
   end
 

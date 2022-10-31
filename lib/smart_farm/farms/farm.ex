@@ -16,7 +16,7 @@ defmodule SmartFarm.Farms.Farm do
     has_one :farm_contractor, FarmContractor
     has_one :contractor, through: [:farm_contractor, :contractor]
     has_many :batches, Batch
-    has_many :medications, FarmMedication
+    has_many :store_items, StoreItem
     many_to_many :managers, User, join_through: FarmManager
     has_many :feeds, FarmFeed
 
