@@ -86,6 +86,10 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
       resolve(dataloader(Repo))
     end
 
+    field :weight_report, :weight_report do
+      resolve(dataloader(Repo))
+    end
+
     field :reporter, :user do
       resolve(dataloader(Repo))
     end
@@ -127,6 +131,11 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     end
   end
 
+  object :weight_report do
+    field :average_weight, :float
+    field :measurement_unit, :measurement_unit_enum
+  end
+
   input_object :create_batch_input do
     field :acquired_date, non_null(:date)
     field :age_type, non_null(:age_type_enum)
@@ -146,6 +155,7 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :medications_report, :medications_report
     field :sawdust_report, :sawdust_report
     field :briquettes_report, :briquettes_report
+    field :weight_report, :weight_report_input
   end
 
   input_object :bird_count_report_input do
@@ -207,6 +217,11 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
   input_object :briquettes_report_input do
     field :quantity, non_null(:float)
     field :measurement_unit, :measurement_unit_enum, default_value: :kilograms
+  end
+
+  input_object :weight_report_input do
+    field :measurement_unit, :measurement_unit_enum, default_value: :kilograms
+    field :average_weight, non_null(:float)
   end
 
   object :batch_queries do

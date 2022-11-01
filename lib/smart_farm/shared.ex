@@ -27,6 +27,7 @@ defmodule SmartFarm.Shared do
         Reports.BirdCountReport,
         Reports.EggCollectionReport,
         Reports.StoreItemUsageReport,
+        Reports.WeightReport,
         SMS,
         Stores.Restock,
         Stores.StoreItem,

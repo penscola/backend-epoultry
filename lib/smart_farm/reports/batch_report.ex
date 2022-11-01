@@ -8,6 +8,7 @@ defmodule SmartFarm.Reports.Report do
     has_many :bird_counts, BirdCountReport
     has_one :egg_collection, EggCollectionReport
     has_many :store_reports, StoreItemUsageReport
+    has_one :weight_report, WeightReport
 
     timestamps()
   end

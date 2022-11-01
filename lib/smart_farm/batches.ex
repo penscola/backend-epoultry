@@ -337,6 +337,16 @@ defmodule SmartFarm.Batches do
       |> received_store_items_multi(received_briquettes, batch, report)
       |> used_store_items_multi(used_briquettes, batch, report)
     end)
+    |> Multi.run(:weight_report, fn repo, %{batch: batch, report: report} ->
+      if batch.bird_type == :broilers and is_float(args[:weight_report][:average_weight]) and
+           args[:weight_report][:average_weight] > 0.0 do
+        %WeightReport{report_id: report.id}
+        |> WeightReport.changeset(args.weight_report)
+        |> repo.insert()
+      else
+        {:ok, nil}
+      end
+    end)
     |> Repo.transaction()
     |> case do
       {:ok, %{report: report}} ->
