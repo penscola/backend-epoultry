@@ -26,11 +26,7 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
       resolve(dataloader(Repo))
     end
 
-    field :medications, list_of(:farm_medication) do
-      resolve(dataloader(Repo))
-    end
-
-    field :feeds, list_of(:farm_feed) do
+    field :store_items, list_of(:store_item) do
       resolve(dataloader(Repo))
     end
 
@@ -54,18 +50,6 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
   object :invite do
     field :invite_code, :string
     field :expiry, :datetime
-  end
-
-  object :farm_medication do
-    field :id, :uuid
-    field :name, :string
-    field :initial_quantity, :integer
-  end
-
-  object :farm_feed do
-    field :id, :uuid
-    field :name, :feed_types_enum
-    field :initial_quantity, :integer
   end
 
   object :farm_report do
@@ -168,12 +152,6 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
       arg(:data, non_null(:create_farm_input))
 
       resolve(&Resolvers.Farm.create_farm/2)
-    end
-
-    field :create_farm_feed, non_null(:farm_feed) do
-      arg(:data, non_null(:create_farm_feed_input))
-
-      resolve(&Resolvers.Farm.create_farm_feed/2)
     end
   end
 end

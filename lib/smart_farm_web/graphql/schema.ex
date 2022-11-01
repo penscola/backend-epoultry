@@ -25,6 +25,7 @@ defmodule SmartFarmWeb.Schema do
     import_fields(:contractor_queries)
     import_fields(:farm_queries)
     import_fields(:quotation_queries)
+    import_fields(:store_queries)
     import_fields(:user_queries)
   end
 

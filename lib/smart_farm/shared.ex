@@ -29,6 +29,7 @@ defmodule SmartFarm.Shared do
         Reports.StoreItemUsageReport,
         Reports.WeightReport,
         SMS,
+        Stores,
         Stores.Restock,
         Stores.StoreItem,
         Util.CodeGenerator

@@ -15,6 +15,7 @@ defmodule SmartFarmWeb.Schema.StoreTypes do
     field :quantity_used, :float
     field :quantity_received, :float
     field :measurement_unit, :measurement_unit_enum
+    field :item_type, :item_types_enum
 
     field :restocks, list_of(:restock) do
       resolve(dataloader(Repo))
@@ -26,5 +27,18 @@ defmodule SmartFarmWeb.Schema.StoreTypes do
     field :quantity, :float
     field :measurement_unit, :measurement_unit_enum
     field :date_restocked, :date
+  end
+
+  input_object :store_items_filter_input do
+    field :farm_id, non_null(:uuid)
+    field :item_type, :item_types_enum
+  end
+
+  object :store_queries do
+    field :store_items, list_of(:store_item) do
+      arg(:filter, non_null(:store_items_filter_input))
+
+      resolve(&Resolvers.Store.store_items/2)
+    end
   end
 end

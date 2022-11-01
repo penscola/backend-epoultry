@@ -18,7 +18,6 @@ defmodule SmartFarm.Farms.Farm do
     has_many :batches, Batch
     has_many :store_items, StoreItem
     many_to_many :managers, User, join_through: FarmManager
-    has_many :feeds, FarmFeed
 
     timestamps()
   end
