@@ -439,7 +439,7 @@ defmodule SmartFarm.Batches do
         %{
           name: "sawdust",
           starting_quantity: sawdust.quantity,
-          measurement_unit: sawdust.measurument_unit,
+          measurement_unit: sawdust.measurement_unit,
           item_type: :sawdust,
           farm_id: batch.farm_id,
           created_at: timestamp,
@@ -461,7 +461,7 @@ defmodule SmartFarm.Batches do
         %{
           name: "briquettes",
           starting_quantity: briquette.quantity,
-          measurement_unit: briquette.measurment_unit,
+          measurement_unit: briquette.measurement_unit,
           item_type: :briquettes,
           farm_id: batch.farm_id,
           created_at: timestamp,
