@@ -54,6 +54,7 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
 
   object :farm_report do
     field :report_date, :date
+    field :report_time, :time
     field :farm_id, :uuid
 
     field :bird_counts, list_of(:farm_bird_count_report),
@@ -74,7 +75,7 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
   end
 
   object :bird_count_reason do
-    field :reason, :bird_count_report_reason_enum
+    field :reason, :string
     field :quantity, :integer
   end
 

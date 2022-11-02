@@ -300,19 +300,17 @@ defmodule SmartFarm.Farms do
         select: %{batch_id: b.id, current_quantity: b.bird_count - sum(bcr.quantity)}
 
     bird_reports_query =
-      from bcr in BirdCountReport,
-        join: r in assoc(bcr, :report),
-        on: r.report_date == ^report_date,
-        join: b in assoc(r, :batch),
-        on: b.farm_id == ^farm_id,
+      from b in Batch,
         join: f in assoc(b, :farm),
         left_join: m in assoc(f, :managers),
-        where: m.id == ^user.id or f.owner_id == ^user.id,
         join: bcq in subquery(bird_count_query),
         on: bcq.batch_id == b.id,
-        group_by: [b.bird_type, r.report_date],
+        left_join: r in assoc(b, :reports),
+        on: r.report_date == ^report_date,
+        left_join: bcr in assoc(r, :bird_counts),
+        where: m.id == ^user.id or f.owner_id == ^user.id,
+        group_by: b.bird_type,
         select: %{
-          report_date: r.report_date,
           bird_type: b.bird_type,
           current_quantity: type(avg(bcq.current_quantity), :integer),
           reports: fragment("ARRAY_AGG(?)", type(r.id, :string)),
@@ -390,9 +388,15 @@ defmodule SmartFarm.Farms do
     batch_reports = batch_reports_from_reports([egg_report] ++ feeds_reports ++ bird_reports)
 
     if length(batch_reports) > 0 do
+      latest_report = hd(batch_reports)
+
       {:ok,
        %{
-         report_date: hd(batch_reports).report_date,
+         report_date: latest_report.report_date,
+         report_time:
+           latest_report.created_at
+           |> DateTime.shift_zone!("Africa/Nairobi")
+           |> DateTime.to_time(),
          farm_id: farm_id,
          feeds_usage:
            Enum.map(feeds_reports, fn report -> matching_batch_reports(report, batch_reports) end),
@@ -410,9 +414,13 @@ defmodule SmartFarm.Farms do
 
       reasons =
         report.reasons
-        |> Enum.group_by(& &1.reason)
+        |> Enum.reject(fn reason -> is_nil(reason["quantity"]) or reason["quantity"] == 0 end)
+        |> Enum.group_by(& &1["reason"])
         |> Enum.map(fn {reason, values} ->
-          %{reason: reason, quantity: Enum.reduce(values, 0, fn x, acc -> acc + x.quantity end)}
+          %{
+            reason: reason,
+            quantity: Enum.reduce(values, 0, fn x, acc -> acc + x["quantity"] end)
+          }
         end)
 
       %{report | reasons: reasons}
@@ -432,6 +440,7 @@ defmodule SmartFarm.Farms do
 
     Report
     |> Report.by_id(report_ids)
+    |> order_by([r], desc: r.created_at)
     |> Repo.all()
   end
 end

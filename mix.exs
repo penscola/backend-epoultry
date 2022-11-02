@@ -45,6 +45,7 @@ defmodule SmartFarm.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:corsica, "~> 1.2"},
+      {:tz, "~> 0.22.0"},
 
       # Absinthe for GraphQL
       {:absinthe, "~> 1.7"},
