@@ -270,6 +270,9 @@ defmodule SmartFarm.Farms do
       {:limit, value}, base ->
         from q in base, limit: ^value
 
+      {:farm_id, value}, base ->
+        from [farm: f] in base, where: f.id == ^value
+
       {:start_date, value}, base ->
         from q in base, where: q.report_date >= ^value
 
