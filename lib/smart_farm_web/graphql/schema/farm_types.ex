@@ -79,7 +79,7 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
   end
 
   object :farm_feed_usage_report do
-    field :feed_type, :feed_types_enum
+    field :feed_type, :string
     field :current_quantity, :float
     field :used_quantity, :float
     field :reports, list_of(:batch_report)
