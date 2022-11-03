@@ -43,4 +43,16 @@ defmodule SmartFarmWeb.UserLive.Index do
   defp list_users do
     Accounts.list_users_for_dashboard()
   end
+
+  defp mask_phone_number(number) when is_binary(number) do
+    with {:ok, number} <- User.format_phone_number(number) do
+      <<"254", first::binary-size(3), _middle::binary-size(4), last::binary>> = number
+      "254" <> first <> "****" <> last
+    else
+      _other ->
+        number
+    end
+  end
+
+  defp mask_phone_number(number), do: number
 end

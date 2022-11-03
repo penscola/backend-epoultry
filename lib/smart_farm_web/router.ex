@@ -28,7 +28,7 @@ defmodule SmartFarmWeb.Router do
     pipe_through :browser
     pipe_through :authenticate
 
-    live "/dashboard", DashboardLive.Index, :index
+    live "/", DashboardLive.Index, :index
     live "/users", UserLive.Index, :index
     live "/users/:id", UserLive.Show, :show
   end

@@ -1,7 +1,6 @@
 defmodule SmartFarmWeb.SessionController do
   use SmartFarmWeb, :controller
-  alias SmartFarm.Accounts
-  alias SmartFarm.Accounts.User
+
   alias SmartFarmWeb.Auth
 
   def new(conn, _params) do
