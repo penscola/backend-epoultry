@@ -32,6 +32,7 @@ defmodule SmartFarmWeb.Schema.StoreTypes do
   input_object :store_items_filter_input do
     field :farm_id, non_null(:uuid)
     field :item_type, :item_types_enum
+    field :bird_type, :bird_type_enum
   end
 
   object :store_queries do

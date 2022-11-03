@@ -2,6 +2,12 @@ defmodule SmartFarm.Stores do
   @moduledoc false
   use SmartFarm.Context
 
+  @feed_types %{
+    layers: ["chicken_duck_mash", "growers_mash", "layers_mash"],
+    broilers: ["starter_crumbs", "finisher_pellets"],
+    kienyeji: ["kienyeji_growers_mash", "chicken_duck_mash"]
+  }
+
   @spec store_items(map(), actor: nil | %User{}) ::
           {:ok, [%StoreItem{}, ...]} | {:error, :unauthenticated}
   def store_items(_filter, actor: nil), do: {:error, :unauthenticated}
@@ -26,6 +32,9 @@ defmodule SmartFarm.Stores do
 
       {:item_type, value}, query ->
         from s in query, where: s.item_type == ^value
+
+      {:bird_type, value}, query ->
+        from s in query, where: s.item_type == :feed and s.name in ^@feed_types[value]
 
       _other, query ->
         query
