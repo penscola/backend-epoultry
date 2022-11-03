@@ -1,6 +1,20 @@
 defmodule SmartFarmWeb.Router do
   use SmartFarmWeb, :router
 
+  pipeline :browser do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_live_flash
+    plug :put_root_layout, {SmartFarmWeb.LayoutView, :root}
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+    plug SmartFarmWeb.Auth
+  end
+
+  pipeline :authenticate do
+    plug SmartFarmWeb.Authorize
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -8,6 +22,22 @@ defmodule SmartFarmWeb.Router do
   pipeline :graphql do
     plug :accepts, ["json"]
     plug SmartFarmWeb.Context
+  end
+
+  scope "/", SmartFarmWeb do
+    pipe_through :browser
+    pipe_through :authenticate
+
+    live "/dashboard", DashboardLive.Index, :index
+    live "/users", UserLive.Index, :index
+    live "/users/:id", UserLive.Show, :show
+  end
+
+  scope "/", SmartFarmWeb do
+    pipe_through :browser
+    get "/login", SessionController, :new
+    post "/login", SessionController, :create
+    delete "/logout", SessionController, :delete
   end
 
   scope "/api/graphql" do

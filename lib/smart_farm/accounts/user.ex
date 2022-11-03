@@ -9,6 +9,7 @@ defmodule SmartFarm.Accounts.User do
     field :recovery_phone_number, :string
     field :password, :string, virtual: true
     field :password_hash, :string
+    field :role, Ecto.Enum, values: [:admin, :user]
 
     has_one :farmer, Farmer
     has_many :owned_farms, Farm, foreign_key: :owner_id

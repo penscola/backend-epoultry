@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content={csrf_token_value()} />
+    <%= live_title_tag(assigns[:page_title] || "", suffix: " · E-Poultry") %>
+    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")} />
+    <script
+      defer
+      phx-track-static
+      type="text/javascript"
+      src={Routes.static_path(@conn, "/assets/app.js")}
+    >
+    </script>
+  </head>
+  <body>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a href="" class="phx-logo">
+          E-Poultry
+        </a>
+        <a
+          role="button"
+          class="navbar-burger burger"
+          aria-label="menu"
+          aria-expanded="false"
+          data-target="navbarBasicExample"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+
+      <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start"></div>
+
+        <div class="navbar-end">
+          <%= if  @current_user do %>
+            <%= link("Dashboard",
+              to: Routes.dashboard_index_path(@conn, :index),
+              class: "navbar-item"
+            ) %>
+            <%= link("Users", to: Routes.user_index_path(@conn, :index), class: "navbar-item") %>
+
+            <div class="navbar-item">
+              <div class="">
+                <%= link("Log out",
+                  to: Routes.session_path(@conn, :delete),
+                  method: "delete",
+                  class: "navbar-item is-danger button"
+                ) %>
+              </div>
+            </div>
+          <% else %>
+            <div class="navbar-item">
+              <div class="button is-primary">
+                <a href={Routes.session_path(@conn, :new)} class="navbar-item is-primary button">
+                  <strong>Log in</strong>
+                </a>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </nav>
+
+    <%= @inner_content %>
+  </body>
+</html>

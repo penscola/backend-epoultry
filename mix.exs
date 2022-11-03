@@ -46,6 +46,9 @@ defmodule SmartFarm.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:corsica, "~> 1.2"},
       {:tz, "~> 0.22.0"},
+      {:esbuild, "~> 0.4", runtime: Mix.env() == :dev},
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:phoenix_live_view, "~> 0.17.12"},
 
       # Absinthe for GraphQL
       {:absinthe, "~> 1.7"},
@@ -76,7 +79,8 @@ defmodule SmartFarm.MixProject do
       setup: ["deps.get", "ecto.setup"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      "assets.deploy": ["esbuild default --minify", "phx.digest"]
     ]
   end
 end

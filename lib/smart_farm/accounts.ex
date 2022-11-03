@@ -19,6 +19,22 @@ defmodule SmartFarm.Accounts do
     Repo.all(User)
   end
 
+  def list_users_for_dashboard do
+    query =
+      from u in User,
+        left_join: f in assoc(u, :owned_farms),
+        group_by: u.id,
+        select: %{u | owned_farms: coalesce(count(f.id), 0)}
+
+    Repo.all(query)
+  end
+
+  def verify_admin_credentials(phone, password) do
+    phone
+    |> get_admin_by_phone_number()
+    |> Argon2.check_pass(password)
+  end
+
   def list_farm_managers(actor: %User{} = user) do
     query =
       from u in User,
@@ -50,6 +66,12 @@ defmodule SmartFarm.Accounts do
   def get_user_by_phone_number(number) do
     with {:ok, number} <- User.format_phone_number(number) do
       Repo.fetch_by(User, phone_number: number)
+    end
+  end
+
+  def get_admin_by_phone_number(number) do
+    with {:ok, number} <- User.format_phone_number(number) do
+      Repo.get_by(User, phone_number: number, role: :admin)
     end
   end
 
