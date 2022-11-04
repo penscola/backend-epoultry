@@ -47,10 +47,8 @@ defmodule SmartFarmWeb.Router do
     forward "/", Absinthe.Plug, schema: SmartFarmWeb.Schema
   end
 
-  if Mix.env() == :dev do
-    forward "/graphiql/auth", SmartFarmWeb.AbsinthePlug.GraphiQL, schema: SmartFarmWeb.AuthSchema
-    forward "/graphiql", Absinthe.Plug.GraphiQL, schema: SmartFarmWeb.Schema
-  end
+  forward "/graphiql/auth", SmartFarmWeb.AbsinthePlug.GraphiQL, schema: SmartFarmWeb.AuthSchema
+  forward "/graphiql", Absinthe.Plug.GraphiQL, schema: SmartFarmWeb.Schema
 
   # Enables LiveDashboard only for development
   #
