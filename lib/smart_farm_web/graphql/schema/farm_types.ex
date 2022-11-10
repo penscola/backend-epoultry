@@ -42,9 +42,17 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
   object :farm_address do
     field :latitude, :float
     field :longitude, :float
-    field :region, :string
+    field :county, :string
+    field :subcounty, :string
+    field :ward, :string
     field :area_name, :string
     field :directions, :string
+  end
+
+  object :address do
+    field :county, :string
+    field :subcounty, :string
+    field :ward, :string
   end
 
   object :invite do
@@ -93,12 +101,18 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
     field :reports, list_of(:batch_report)
   end
 
-  input_object :create_farm_input do
-    field :name, non_null(:string)
-    field :area_name, :string
+  input_object :address_input do
+    field :county, non_null(:string)
+    field :subcounty, non_null(:string)
+    field :ward, non_null(:string)
     field :latitude, :float
     field :longitude, :float
+  end
+
+  input_object :create_farm_input do
+    field :name, non_null(:string)
     field :contractor_id, :uuid
+    field :address, :address_input
   end
 
   input_object :create_farm_feed_input do
@@ -133,6 +147,12 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
       arg(:report_date, non_null(:date))
 
       resolve(&Resolvers.Farm.get_farm_report/2)
+    end
+
+    field :search_addresses, non_null(list_of(non_null(:address))) do
+      arg(:query, non_null(:string))
+      arg(:limit, :integer, default_value: 10)
+      resolve(&Resolvers.Farm.search_addresses/2)
     end
   end
 

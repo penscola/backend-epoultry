@@ -1,0 +1,682 @@
+[
+    {
+        "name": "Kisumu",
+        "subcounties": [
+            {
+                "name": "Kisumu East",
+                "wards": [
+                    {
+                        "name": "Kajulu"
+                    },
+                    {
+                        "name": "Kolwa East"
+                    },
+                    {
+                        "name": "Manyatta B"
+                    },
+                    {
+                        "name": "Nyalenda A"
+                    },
+                    {
+                        "name": "Kolwa Central"
+                    }
+                ]
+            },
+            {
+                "name": "Kisumu West",
+                "wards": [
+                    {
+                        "name": "South West Kisumu"
+                    },
+                    {
+                        "name": "Central Kisumu"
+                    },
+                    {
+                        "name": "Kisumu North"
+                    },
+                    {
+                        "name": "West Kisumu"
+                    },
+                    {
+                        "name": "North West Kisumu"
+                    }
+                ]
+            },
+            {
+                "name": "Kisumu Central",
+                "wards": [
+                    {
+                        "name": "Railways"
+                    },
+                    {
+                        "name": "Migosi"
+                    },
+                    {
+                        "name": "Shaurimoyo Kaloleni"
+                    },
+                    {
+                        "name": "Market Milimani"
+                    },
+                    {
+                        "name": "Kondele"
+                    },
+                    {
+                        "name": "Nyalenda B"
+                    }
+                ]
+            },
+            {
+                "name": "Seme",
+                "wards": [
+                    {
+                        "name": "West Seme"
+                    },
+                    {
+                        "name": "Central Seme"
+                    },
+                    {
+                        "name": "East Seme"
+                    },
+                    {
+                        "name": "North Seme"
+                    }
+                ]
+            },
+            {
+                "name": "Nyando",
+                "wards": [
+                    {
+                        "name": "East Kano/Wawidhi"
+                    },
+                    {
+                        "name": "Awasi/Onjiko"
+                    },
+                    {
+                        "name": "Ahero"
+                    },
+                    {
+                        "name": "Kabonyo/Kanyagwal"
+                    },
+                    {
+                        "name": "Kobura"
+                    }
+                ]
+            },
+            {
+                "name": "Muhoroni",
+                "wards": [
+                    {
+                        "name": "Miwani"
+                    },
+                    {
+                        "name": "Ombeyi"
+                    },
+                    {
+                        "name": "Masogo/Nyang'oma"
+                    },
+                    {
+                        "name": "Chemelil"
+                    },
+                    {
+                        "name": "Muhoroni/Koru"
+                    }
+                ]
+            },
+            {
+                "name": "Nyakach",
+                "wards": [
+                    {
+                        "name": "South West Nyakach"
+                    },
+                    {
+                        "name": "North Nyakach"
+                    },
+                    {
+                        "name": "Central Nyakach"
+                    },
+                    {
+                        "name": "West Nyakach"
+                    },
+                    {
+                        "name": "South East Nyakach"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Bungoma",
+        "subcounties": [
+            {
+                "name": "Mt. Elgon",
+                "wards": [
+                    {
+                        "name": "Cheptais"
+                    },
+                    {
+                        "name": "Chesikaki"
+                    },
+                    {
+                        "name": "Chepyuk"
+                    },
+                    {
+                        "name": "Kapkateny"
+                    },
+                    {
+                        "name": "Kaptama"
+                    },
+                    {
+                        "name": "Elgon"
+                    }
+                ]
+            },
+            {
+                "name": "Sirisia",
+                "wards": [
+                    {
+                        "name": "Namwela"
+                    },
+                    {
+                        "name": "Malakisi/South Kulisiru"
+                    },
+                    {
+                        "name": "Lwandanyi"
+                    }
+                ]
+            },
+            {
+                "name": "Kabuchai",
+                "wards": [
+                    {
+                        "name": "Kabuchai/Chwele"
+                    },
+                    {
+                        "name": "West Nalondo"
+                    },
+                    {
+                        "name": "Bwake/Luuya"
+                    },
+                    {
+                        "name": "Mukuyuni"
+                    }
+                ]
+            },
+            {
+                "name": "Bumula",
+                "wards": [
+                    {
+                        "name": "South Bukusu"
+                    },
+                    {
+                        "name": "Bumula"
+                    },
+                    {
+                        "name": "Khasoko"
+                    },
+                    {
+                        "name": "Kabula"
+                    },
+                    {
+                        "name": "Kimaeti"
+                    },
+                    {
+                        "name": "West Bukusu"
+                    },
+                    {
+                        "name": "Siboti"
+                    }
+                ]
+            },
+            {
+                "name": "Kanduyi",
+                "wards": [
+                    {
+                        "name": "Bukembe West"
+                    },
+                    {
+                        "name": "Bukembe East"
+                    },
+                    {
+                        "name": "Township"
+                    },
+                    {
+                        "name": "Khalaba"
+                    },
+                    {
+                        "name": "Musikoma"
+                    },
+                    {
+                        "name": "East Sang'Alo"
+                    },
+                    {
+                        "name": "Marakaru/Tuuti"
+                    },
+                    {
+                        "name": "West Sang'alo"
+                    }
+                ]
+            },
+            {
+                "name": "Webuye East",
+                "wards": [
+                    {
+                        "name": "Mihuu"
+                    },
+                    {
+                        "name": "Ndivisi"
+                    },
+                    {
+                        "name": "Maraka"
+                    }
+                ]
+            },
+            {
+                "name": "Webuye West",
+                "wards": [
+                    {
+                        "name": "Misikhu"
+                    },
+                    {
+                        "name": "Sitikho"
+                    },
+                    {
+                        "name": "Matulo"
+                    },
+                    {
+                        "name": "Bokoli"
+                    }
+                ]
+            },
+            {
+                "name": "Kimilili",
+                "wards": [
+                    {
+                        "name": "Kibingei"
+                    },
+                    {
+                        "name": "Kimilili"
+                    },
+                    {
+                        "name": "Maeni"
+                    },
+                    {
+                        "name": "Kamukuywa"
+                    }
+                ]
+            },
+            {
+                "name": "Tongaren",
+                "wards": [
+                    {
+                        "name": "Mbakalo"
+                    },
+                    {
+                        "name": "Naitiri/Kabuyefwe"
+                    },
+                    {
+                        "name": "Milima"
+                    },
+                    {
+                        "name": "Ndalu/ Tabani"
+                    },
+                    {
+                        "name": "Tongaren"
+                    },
+                    {
+                        "name": "Soysambu/ Mitua"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Vihiga",
+        "subcounties": [
+            {
+                "name": "Vihiga",
+                "wards": [
+                    {
+                        "name": "Lugaga-Wamuluma"
+                    },
+                    {
+                        "name": "South Maragoli"
+                    },
+                    {
+                        "name": "Central Maragoli"
+                    },
+                    {
+                        "name": "Mungoma"
+                    }
+                ]
+            },
+            {
+                "name": "Sabatia",
+                "wards": [
+                    {
+                        "name": "Lyaduywa/Izava"
+                    },
+                    {
+                        "name": "West Sabatia"
+                    },
+                    {
+                        "name": "Chavakali"
+                    },
+                    {
+                        "name": "North Maragoli"
+                    },
+                    {
+                        "name": "Wodanga"
+                    },
+                    {
+                        "name": "Busali"
+                    }
+                ]
+            },
+            {
+                "name": "Hamisi",
+                "wards": [
+                    {
+                        "name": "Shiru"
+                    },
+                    {
+                        "name": "Gisambai"
+                    },
+                    {
+                        "name": "Shamakhokho"
+                    },
+                    {
+                        "name": "Banja"
+                    },
+                    {
+                        "name": "Muhudu"
+                    },
+                    {
+                        "name": "Tambua"
+                    },
+                    {
+                        "name": "Jepkoyai"
+                    }
+                ]
+            },
+            {
+                "name": "Luanda",
+                "wards": [
+                    {
+                        "name": "Luanda Township"
+                    },
+                    {
+                        "name": "Wemilabi"
+                    },
+                    {
+                        "name": "Mwibona"
+                    },
+                    {
+                        "name": "Luanda South"
+                    },
+                    {
+                        "name": "Emabungo"
+                    }
+                ]
+            },
+            {
+                "name": "Emahaya",
+                "wards": [
+                    {
+                        "name": "North East Bunyore"
+                    },
+                    {
+                        "name": "Central Bunyore"
+                    },
+                    {
+                        "name": "West Bunyore"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Kakamega",
+        "subcounties": [
+            {
+                "name": "Lugari",
+                "wards": [
+                    {
+                        "name": "Mautuma"
+                    },
+                    {
+                        "name": "Lugari"
+                    },
+                    {
+                        "name": "Lumakanda"
+                    },
+                    {
+                        "name": "Chekalini"
+                    },
+                    {
+                        "name": "Chevaywa"
+                    },
+                    {
+                        "name": "Lwandeti"
+                    }
+                ]
+            },
+            {
+                "name": "Likuyani",
+                "wards": [
+                    {
+                        "name": "Likuyani"
+                    },
+                    {
+                        "name": "Sango"
+                    },
+                    {
+                        "name": "Kongoni"
+                    },
+                    {
+                        "name": "Nzoia"
+                    },
+                    {
+                        "name": "Sinoko"
+                    }
+                ]
+            },
+            {
+                "name": "Malava",
+                "wards": [
+                    {
+                        "name": "West Kabras"
+                    },
+                    {
+                        "name": "Chemuche"
+                    },
+                    {
+                        "name": "East Kabras"
+                    },
+                    {
+                        "name": "Butali/Chegulo"
+                    },
+                    {
+                        "name": "Manda-Shivanga"
+                    },
+                    {
+                        "name": "Shirugu-Mugai"
+                    },
+                    {
+                        "name": "South Kabras"
+                    }
+                ]
+            },
+            {
+                "name": "Lurambi",
+                "wards": [
+                    {
+                        "name": "Butsotso East"
+                    },
+                    {
+                        "name": "Butsotso South"
+                    },
+                    {
+                        "name": "Butsotso Central"
+                    },
+                    {
+                        "name": "Sheywe"
+                    },
+                    {
+                        "name": "Mahiakalo"
+                    },
+                    {
+                        "name": "Shirere"
+                    }
+                ]
+            },
+            {
+                "name": "Navakholo",
+                "wards": [
+                    {
+                        "name": "Ingostse-Mathia"
+                    },
+                    {
+                        "name": "Shinoyi-Shikomari-Esumeyia"
+                    },
+                    {
+                        "name": "Bunyala West"
+                    },
+                    {
+                        "name": "Bunyala East"
+                    },
+                    {
+                        "name": "Bunyala Central"
+                    }
+                ]
+            },
+            {
+                "name": "Mumias West",
+                "wards": [
+                    {
+                        "name": "Mumias Central"
+                    },
+                    {
+                        "name": "Mumias North"
+                    },
+                    {
+                        "name": "Etenje"
+                    },
+                    {
+                        "name": "Musanda"
+                    }
+                ]
+            },
+            {
+                "name": "Mumias East",
+                "wards": [
+                    {
+                        "name": "Lusheya/Lubinu"
+                    },
+                    {
+                        "name": "Malaha/Isongo/Makunga"
+                    },
+                    {
+                        "name": "East Wanga"
+                    }
+                ]
+            },
+            {
+                "name": "Matungu",
+                "wards": [
+                    {
+                        "name": "Koyonzo"
+                    },
+                    {
+                        "name": "Kholera"
+                    },
+                    {
+                        "name": "Khalaba"
+                    },
+                    {
+                        "name": "Mayoni"
+                    },
+                    {
+                        "name": "Namamali"
+                    }
+                ]
+            },
+            {
+                "name": "Butere",
+                "wards": [
+                    {
+                        "name": "Marama West"
+                    },
+                    {
+                        "name": "Marama Central"
+                    },
+                    {
+                        "name": "Marenyo - Shianda"
+                    },
+                    {
+                        "name": "Marama North"
+                    },
+                    {
+                        "name": "Marama South"
+                    }
+                ]
+            },
+            {
+                "name": "Khwisero",
+                "wards": [
+                    {
+                        "name": "Kisa North"
+                    },
+                    {
+                        "name": "Kisa East"
+                    },
+                    {
+                        "name": "Kisa West"
+                    },
+                    {
+                        "name": "Kisa Central"
+                    }
+                ]
+            },
+            {
+                "name": "Shinyalu",
+                "wards": [
+                    {
+                        "name": "Isukha North"
+                    },
+                    {
+                        "name": "Murhanda"
+                    },
+                    {
+                        "name": "Isukha Central"
+                    },
+                    {
+                        "name": "Isukha South"
+                    },
+                    {
+                        "name": "Isukha East"
+                    },
+                    {
+                        "name": "Isukha West"
+                    }
+                ]
+            },
+            {
+                "name": "Ikolomani",
+                "wards": [
+                    {
+                        "name": "Idakho South"
+                    },
+                    {
+                        "name": "Idakho East"
+                    },
+                    {
+                        "name": "Idakho North"
+                    },
+                    {
+                        "name": "Idakho Central"
+                    }
+                ]
+            }
+        ]
+    }
+]

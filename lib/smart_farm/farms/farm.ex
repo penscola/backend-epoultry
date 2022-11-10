@@ -7,9 +7,11 @@ defmodule SmartFarm.Farms.Farm do
     embeds_one :address, Address do
       field :latitude, :float
       field :longitude, :float
-      field :region, :string
       field :area_name, :string
       field :directions, :string
+      field :county, :string
+      field :subcounty, :string
+      field :ward, :string
     end
 
     belongs_to :owner, User
@@ -32,6 +34,6 @@ defmodule SmartFarm.Farms.Farm do
 
   def address_changeset(schema, attrs) do
     schema
-    |> cast(attrs, [:latitude, :longitude, :directions, :region, :area_name])
+    |> cast(attrs, [:latitude, :longitude, :directions, :county, :subcounty, :ward, :area_name])
   end
 end

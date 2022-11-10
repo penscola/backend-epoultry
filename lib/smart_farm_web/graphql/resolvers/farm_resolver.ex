@@ -10,8 +10,6 @@ defmodule SmartFarmWeb.Resolvers.Farm do
   @spec create_farm(map(), %{context: %{current_user: %User{}}}) ::
           {:ok, %Farm{}} | {:error, Ecto.Changeset.t()}
   def create_farm(%{data: data}, %{context: %{current_user: %User{} = user}}) do
-    address = Map.take(data, [:latitude, :longitude, :area_name])
-    data = Map.merge(data, %{address: address})
     Farms.create_farm(data, actor: user)
   end
 
@@ -67,5 +65,11 @@ defmodule SmartFarmWeb.Resolvers.Farm do
         context: %{current_user: user}
       }) do
     Farms.get_farm_report(farm_id, report_date, actor: user)
+  end
+
+  @spec search_addresses(map(), %{context: %{current_user: %User{}}}) ::
+          {:ok, [map(), ...]}
+  def search_addresses(%{query: query, limit: limit}, %{context: %{current_user: _user}}) do
+    {:ok, Addresses.find_address(query, limit)}
   end
 end
