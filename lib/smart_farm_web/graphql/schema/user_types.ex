@@ -57,6 +57,7 @@ defmodule SmartFarmWeb.Schema.UserTypes do
     end
 
     field :farm_managers, list_of(non_null(:user)) do
+      arg(:farm_id, :uuid)
       resolve(&Resolvers.User.list_farm_managers/2)
     end
   end

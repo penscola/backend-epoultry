@@ -30,7 +30,7 @@ defmodule SmartFarmWeb.Resolvers.User do
   end
 
   @spec list_farm_managers(map(), %{context: %{current_user: %User{}}}) :: {:ok, [%User{}, ...]}
-  def list_farm_managers(_args, %{context: %{current_user: user}}) do
-    {:ok, Accounts.list_farm_managers(actor: user)}
+  def list_farm_managers(args, %{context: %{current_user: user}}) do
+    {:ok, Accounts.list_farm_managers(args, actor: user)}
   end
 end

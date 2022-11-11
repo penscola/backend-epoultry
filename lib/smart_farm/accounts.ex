@@ -35,14 +35,29 @@ defmodule SmartFarm.Accounts do
     |> Argon2.check_pass(password)
   end
 
-  def list_farm_managers(actor: %User{} = user) do
-    query =
+  def list_farm_managers(args, actor: %User{} = user) do
+    base_query =
       from u in User,
         join: f in assoc(u, :managing_farms),
+        as: :managing_farms,
         on: f.owner_id == ^user.id,
         group_by: u.id
 
-    Repo.all(query)
+    args
+    |> filter_farm_managers(base_query)
+    |> Repo.all()
+  end
+
+  defp filter_farm_managers(args, base) do
+    args
+    |> Enum.reject(fn {_key, val} -> is_nil(val) end)
+    |> Enum.reduce(base, fn
+      {:farm_id, farm_id}, query ->
+        from [managing_farms: f] in query, where: f.farm_id == ^farm_id
+
+      _other, query ->
+        query
+    end)
   end
 
   @doc """
