@@ -53,7 +53,7 @@ defmodule SmartFarm.Accounts do
     |> Enum.reject(fn {_key, val} -> is_nil(val) end)
     |> Enum.reduce(base, fn
       {:farm_id, farm_id}, query ->
-        from [managing_farms: f] in query, where: f.farm_id == ^farm_id
+        from [managing_farms: f] in query, where: f.id == ^farm_id
 
       _other, query ->
         query
