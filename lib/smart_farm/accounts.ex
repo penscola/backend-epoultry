@@ -199,6 +199,34 @@ defmodule SmartFarm.Accounts do
     end
   end
 
+  def register_group(attrs) do
+    Multi.new()
+    |> Multi.insert(:user, User.group_registration_changeset(%User{}, attrs))
+    |> Multi.insert(:group, fn %{user: user} ->
+      Group.changeset(%Group{owner_id: user.id}, attrs)
+    end)
+    |> Multi.run(:user_otp, fn _repo, %{user: user} ->
+      create_user_otp(user)
+    end)
+    |> Multi.run(:send_otp, fn _repo, %{user_otp: user_otp} ->
+      case send_otp(user_otp) do
+        {:ok, response} ->
+          {:ok, response}
+
+        {:error, response} ->
+          {:ok, response}
+      end
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{group: group}} ->
+        {:ok, group}
+
+      {:error, _failed_operation, changeset, _changes} ->
+        {:error, changeset}
+    end
+  end
+
   def create_user_otp(%User{} = user) do
     %UserOTP{user_id: user.id}
     |> UserOTP.create_changeset(%{phone_number: user.phone_number})

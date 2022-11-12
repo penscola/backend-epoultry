@@ -13,6 +13,7 @@ defmodule SmartFarmWeb.AuthSchema do
   import_types(Schema.BatchTypes)
   import_types(Schema.ContractorTypes)
   import_types(Schema.FarmTypes)
+  import_types(Schema.GroupTypes)
   import_types(Schema.QuotationTypes)
   import_types(Schema.StoreTypes)
   import_types(Schema.UserTypes)
@@ -24,6 +25,7 @@ defmodule SmartFarmWeb.AuthSchema do
   mutation do
     import_fields(:auth_mutations)
     import_fields(:user_auth_mutations)
+    import_fields(:group_auth_mutations)
   end
 
   def context(ctx) do

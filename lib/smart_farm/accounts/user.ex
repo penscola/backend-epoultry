@@ -12,6 +12,7 @@ defmodule SmartFarm.Accounts.User do
     field :role, Ecto.Enum, values: [:admin, :user]
 
     has_one :farmer, Farmer
+    has_one :group, Group, foreign_key: :owner_id
     has_many :owned_farms, Farm, foreign_key: :owner_id
     has_many :quotations, Quotation
     has_many :quotation_requests, QuotationRequest
@@ -35,6 +36,15 @@ defmodule SmartFarm.Accounts.User do
     |> cast(attrs, [:password])
     |> validate_required([:password])
     |> validate_length(:password, min: 4)
+    |> put_pass_hash()
+  end
+
+  def group_registration_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:password, :phone_number])
+    |> validate_required([:password, :phone_number])
+    |> validate_length(:password, min: 4)
+    |> convert_to_254()
     |> put_pass_hash()
   end
 

@@ -3,9 +3,10 @@ defmodule SmartFarm.Shared do
     quote do
       alias SmartFarm.{
         Accounts,
-        Accounts.User,
-        Accounts.UserOTP,
         Accounts.Farmer,
+        Accounts.Group,
+        Accounts.User,
+        Accounts.UserOTP,        
         Addresses,
         Batches,
         Batches.Batch,
