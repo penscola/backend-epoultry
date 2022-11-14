@@ -111,7 +111,7 @@ defmodule SmartFarm.Accounts do
   def create_farmer(user, attrs) do
     user
     |> Repo.preload([:farmer])
-    |> User.changeset(%{farmer: attrs})
+    |> Ecto.Changeset.cast(%{farmer: attrs}, [:phone_number])
     |> Ecto.Changeset.cast_assoc(:farmer)
     |> Repo.update()
   end

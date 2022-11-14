@@ -6,7 +6,7 @@ defmodule SmartFarm.Shared do
         Accounts.Farmer,
         Accounts.Group,
         Accounts.User,
-        Accounts.UserOTP,        
+        Accounts.UserOTP,
         Addresses,
         Batches,
         Batches.Batch,
