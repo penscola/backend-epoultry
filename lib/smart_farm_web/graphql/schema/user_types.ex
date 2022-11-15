@@ -36,6 +36,8 @@ defmodule SmartFarmWeb.Schema.UserTypes do
   end
 
   object :farmer do
+    field :birth_date, :date
+    field :gender, :string
     field :user, :user do
       resolve(dataloader(Repo))
     end
