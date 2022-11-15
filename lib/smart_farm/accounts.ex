@@ -134,6 +134,25 @@ defmodule SmartFarm.Accounts do
     |> Repo.update()
   end
 
+  def update_extension_officer(%User{} = user, attrs) do
+    Multi.new()
+    |> Multi.run(:extension_officer, fn _repo, _changes ->
+      Repo.fetch_by(ExtensionOfficer, user_id: user.id)
+    end)
+    |> Multi.update(:user, User.extension_officer_changeset(user, attrs))
+    |> Multi.update(:update_officer, fn %{extension_officers: officer} ->
+      ExtensionOfficer.changeset(officer, attrs)
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} ->
+        {:ok, user}
+
+      {:error, _failed_operation, changeset, _changes} ->
+        {:error, changeset}
+    end
+  end
+
   @doc """
   Deletes a user.
 
@@ -177,6 +196,31 @@ defmodule SmartFarm.Accounts do
   def register_user(attrs) do
     Multi.new()
     |> Multi.insert(:user, User.registration_changeset(%User{}, attrs))
+    |> Multi.run(:user_otp, fn _repo, %{user: user} ->
+      create_user_otp(user)
+    end)
+    |> Multi.run(:send_otp, fn _repo, %{user_otp: user_otp} ->
+      case send_otp(user_otp) do
+        {:ok, response} ->
+          {:ok, response}
+
+        {:error, response} ->
+          {:ok, response}
+      end
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} ->
+        {:ok, user}
+
+      {:error, _failed_operation, changeset, _changes} ->
+        {:error, changeset}
+    end
+  end
+
+  def register_extension_officer(attrs) do
+    Multi.new()
+    |> Multi.insert(:user, User.extension_officer_registration_changeset(%User{}, attrs))
     |> Multi.run(:user_otp, fn _repo, %{user: user} ->
       create_user_otp(user)
     end)

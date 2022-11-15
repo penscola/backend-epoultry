@@ -3,6 +3,7 @@ defmodule SmartFarm.Shared do
     quote do
       alias SmartFarm.{
         Accounts,
+        Accounts.ExtensionOfficer,
         Accounts.Farmer,
         Accounts.Group,
         Accounts.User,

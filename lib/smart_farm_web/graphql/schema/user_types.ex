@@ -6,8 +6,15 @@ defmodule SmartFarmWeb.Schema.UserTypes do
     field :first_name, :string
     field :last_name, :string
     field :phone_number, :string
+    field :birth_date, :date
+    field :gender, :string
+    field :national_id, :string
 
     field :farmer, :farmer do
+      resolve(dataloader(Repo))
+    end
+
+    field :extension_officer, :extension_officer do
       resolve(dataloader(Repo))
     end
 
@@ -29,9 +36,6 @@ defmodule SmartFarmWeb.Schema.UserTypes do
   end
 
   object :farmer do
-    field :birth_date, :date
-    field :gender, :string
-
     field :user, :user do
       resolve(dataloader(Repo))
     end
@@ -39,6 +43,15 @@ defmodule SmartFarmWeb.Schema.UserTypes do
     field :owned_farms, :farm do
       resolve(dataloader(Repo))
     end
+  end
+
+  object :extension_officer do
+    field :user, :user do
+      resolve(dataloader(Repo))
+    end
+
+    field :date_approved, :datetime
+    field :address, :address
   end
 
   input_object :register_user_input do
@@ -53,6 +66,22 @@ defmodule SmartFarmWeb.Schema.UserTypes do
     field :last_name, non_null(:string)
     field :phone_number, non_null(:string)
     field :recovery_phone_number, non_null(:string)
+  end
+
+  input_object :register_extension_officer_input do
+    field :first_name, non_null(:string)
+    field :last_name, non_null(:string)
+    field :phone_number, non_null(:string)
+    field :password, non_null(:string)
+    field :national_id, non_null(:string)
+  end
+
+  input_object :update_extension_officer_input do
+    field :first_name, non_null(:string)
+    field :last_name, non_null(:string)
+    field :phone_number, non_null(:string)
+    field :recovery_phone_number, non_null(:string)
+    field :address, non_null(:address_input)
   end
 
   object :user_queries do
@@ -79,6 +108,12 @@ defmodule SmartFarmWeb.Schema.UserTypes do
 
       resolve(&Resolvers.User.update_user/2)
     end
+
+    field :update_extension_officer, non_null(:user) do
+      arg(:data, non_null(:update_extension_officer_input))
+
+      resolve(&Resolvers.User.update_extension_officer/2)
+    end
   end
 
   object :user_auth_mutations do
@@ -86,6 +121,12 @@ defmodule SmartFarmWeb.Schema.UserTypes do
       arg(:data, non_null(:register_user_input))
 
       resolve(&Resolvers.User.register_user/2)
+    end
+
+    field :register_extension_officer, non_null(:user) do
+      arg(:data, non_null(:register_extension_officer_input))
+
+      resolve(&Resolvers.User.register_extension_officer/2)
     end
   end
 end

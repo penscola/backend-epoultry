@@ -10,9 +10,13 @@ defmodule SmartFarm.Accounts.User do
     field :password, :string, virtual: true
     field :password_hash, :string
     field :role, Ecto.Enum, values: [:admin, :user]
+    field :birth_date, :date
+    field :gender, :string
+    field :national_id, :string
 
     has_one :farmer, Farmer
     has_one :group, Group, foreign_key: :owner_id
+    has_one :extension_officer, ExtensionOfficer
     has_many :owned_farms, Farm, foreign_key: :owner_id
     has_many :quotations, Quotation
     has_many :quotation_requests, QuotationRequest
@@ -46,6 +50,23 @@ defmodule SmartFarm.Accounts.User do
     |> validate_length(:password, min: 4)
     |> convert_to_254()
     |> put_pass_hash()
+  end
+
+  def extension_officer_registration_changeset(user, attrs) do
+    user
+    |> changeset(attrs)
+    |> cast(attrs, [:password, :national_id])
+    |> validate_required([:password, :national_id])
+    |> validate_length(:password, min: 4)
+    |> put_pass_hash()
+    |> put_assoc(:extension_officer, %ExtensionOfficer{})
+  end
+
+  def extension_officer_changeset(user, attrs) do
+    user
+    |> changeset(attrs)
+    |> cast(attrs, [:national_id])
+    |> validate_required([:national_id])
   end
 
   def format_phone_number("254" <> rest) when byte_size(rest) == 9 do

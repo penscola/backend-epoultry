@@ -4,9 +4,6 @@ defmodule SmartFarm.Accounts.Farmer do
 
   @primary_key false
   schema "farmers" do
-    field :birth_date, :date
-    field :gender, :string
-
     belongs_to :user, User
     has_many :farms, Farm, foreign_key: :owner_id, references: :user_id
 
@@ -15,6 +12,6 @@ defmodule SmartFarm.Accounts.Farmer do
 
   def changeset(farmer, attrs) do
     farmer
-    |> cast(attrs, [:birth_date, :gender])
+    |> cast(attrs, [:user_id])
   end
 end
