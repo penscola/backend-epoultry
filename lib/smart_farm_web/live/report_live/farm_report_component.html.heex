@@ -1,3 +1,40 @@
 <div class="content">
   <h2>Overview</h2>
+  <table class="table">
+    <tbody>
+      <tr>
+        <th>Farm Name</th>
+        <td><%= @farm.name %></td>
+      </tr>
+      <tr>
+        <th>Date</th>
+        <td><%= @farm_report.report_date %></td>
+      </tr>
+      <tr>
+        <th>Time</th>
+        <td><%= @farm_report.report_time %></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Birds</h2>
+  <%= for report <- @farm_report.bird_counts do %>
+    <div class="card">
+      <div class="card-content">
+        <div class="content is-flex is-justify-content-space-between">
+          <div class="">
+            <p><%= report.bird_type %></p>
+          </div>
+          <div class="">
+            <p><strong><%= report.current_quantity %></strong></p>
+            <div class="tags">
+              <%= for reason <- report.reasons do %>
+                <span class="tag"><%= reason.quantity %> <%= reason.reason %></span>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
 </div>
