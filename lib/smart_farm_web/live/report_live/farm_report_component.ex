@@ -7,4 +7,12 @@ defmodule SmartFarmWeb.ReportLive.FarmReportComponent do
      socket
      |> assign(assigns)}
   end
+
+  defp batch_names(reports) do
+    reports
+    |> Enum.map(fn report ->
+      report.batch.name
+    end)
+    |> Enum.join(",")
+  end
 end

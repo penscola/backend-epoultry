@@ -18,12 +18,13 @@
   </table>
 
   <h2>Birds</h2>
-  <%= for report <- @farm_report.bird_counts do %>
+  <%= for report <- @farm_report.bird_counts || [] do %>
     <div class="card">
       <div class="card-content">
         <div class="content is-flex is-justify-content-space-between">
           <div class="">
             <p><%= report.bird_type %></p>
+            <p>Batch <%= batch_names(report.reports) %></p>
           </div>
           <div class="">
             <p><strong><%= report.current_quantity %></strong></p>
@@ -39,12 +40,13 @@
   <% end %>
 
   <h2>Feeds</h2>
-  <%= for report <- @farm_report.feeds_usage do %>
+  <%= for report <- @farm_report.feeds_usage || [] do %>
     <div class="card">
       <div class="card-content">
         <div class="content is-flex is-justify-content-space-between">
           <div class="">
             <p><%= report.feed_type %></p>
+            <p>Batch <%= batch_names(report.reports) %></p>
           </div>
           <div class="">
             <p><strong><%= report.current_quantity %> Kgs</strong></p>
@@ -56,4 +58,27 @@
       </div>
     </div>
   <% end %>
+
+  <h2>Eggs</h2>
+  <div class="card">
+    <div class="card-content">
+      <div class="content is-flex is-justify-content-space-between">
+        <%= if report = @farm_report[:egg_collection] do %>
+          <div class="">
+            <p>Good Eggs</p>
+            <p>Batch <%= batch_names(report.reports) %></p>
+          </div>
+          <div class="">
+            <p><strong><%= report.good_count %></strong></p>
+            <div class="tags">
+              <span class="tag is-danger is-light"><%= report.broken_count %> broken</span>
+              <span class="tag is-warning is-light"><%= report.deformed_count %> deformed</span>
+            </div>
+          </div>
+        <% else %>
+          <p>No eggs were collected</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </div>

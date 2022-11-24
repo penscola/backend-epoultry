@@ -578,7 +578,9 @@ defmodule SmartFarm.Farms do
 
     Report
     |> Report.by_id(report_ids)
+    |> join(:inner, [r], b in assoc(r, :batch))
     |> order_by([r], desc: r.created_at)
+    |> preload([r, b], batch: b)
     |> Repo.all()
   end
 end
