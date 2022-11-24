@@ -37,4 +37,23 @@
       </div>
     </div>
   <% end %>
+
+  <h2>Feeds</h2>
+  <%= for report <- @farm_report.feeds_usage do %>
+    <div class="card">
+      <div class="card-content">
+        <div class="content is-flex is-justify-content-space-between">
+          <div class="">
+            <p><%= report.feed_type %></p>
+          </div>
+          <div class="">
+            <p><strong><%= report.current_quantity %> Kgs</strong></p>
+            <div class="tags">
+              <span class="tag is-danger is-light"><%= report.used_quantity %> Kgs used</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
 </div>
