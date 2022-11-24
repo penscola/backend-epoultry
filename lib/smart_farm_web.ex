@@ -114,6 +114,12 @@ defmodule SmartFarmWeb do
     end
   end
 
+  defimpl Phoenix.Param, for: Date do
+    def to_param(date) do
+      Date.to_iso8601(date)
+    end
+  end
+
   @doc """
   When used, dispatch to the appropriate controller/view/etc.
   """

@@ -1,0 +1,39 @@
+<h1 class="title">Farm Reports</h1>
+
+<%= if @live_action in [:show] do %>
+  <.modal return_to={Routes.report_index_path(@socket, :index)} modal_title="Farm Report">
+    <.live_component
+      module={SmartFarmWeb.ReportLive.FarmReportComponent}
+      id={:farm_report}
+      title={@page_title}
+      action={@live_action}
+      current_user={@current_user}
+      farm_report={@farm_report}
+      farm={@farm}
+      return_to={Routes.report_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table class="table is-fullwidth">
+  <thead>
+    <tr>
+      <th>Farm</th>
+      <th>Report Date</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="reports">
+    <%= for report <- @reports do %>
+      <tr id="">
+        <td><%= report.farm_name %></td>
+        <td><%= report.report_date %></td>
+        <td>
+          <%= live_patch("View",
+            to: Routes.report_index_path(@socket, :show, report.farm_id, report.report_date)
+          ) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

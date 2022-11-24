@@ -18,7 +18,7 @@
   <body>
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a href="" class="phx-logo">
+        <a href="" class="navbar-item">
           E-Poultry
         </a>
         <a
@@ -44,6 +44,10 @@
               class: "navbar-item"
             ) %>
             <%= link("Users", to: Routes.user_index_path(@conn, :index), class: "navbar-item") %>
+            <%= link("Farm Reports",
+              to: Routes.report_index_path(@conn, :index),
+              class: "navbar-item"
+            ) %>
 
             <div class="navbar-item">
               <div class="">

@@ -1,4 +1,4 @@
-<h1>Users</h1>
+<h1 class="title">Users</h1>
 
 <%= if @live_action in [:new, :edit] do %>
   <.modal return_to={Routes.user_index_path(@socket, :index)}>
@@ -13,7 +13,7 @@
   </.modal>
 <% end %>
 
-<table>
+<table class="table is-fullwidth">
   <thead>
     <tr>
       <th>First name</th>

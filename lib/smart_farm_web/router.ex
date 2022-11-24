@@ -31,6 +31,8 @@ defmodule SmartFarmWeb.Router do
     live "/", DashboardLive.Index, :index
     live "/users", UserLive.Index, :index
     live "/users/:id", UserLive.Show, :show
+    live "/farms/reports", ReportLive.Index, :index
+    live "/farms/:farm_id/report/:date", ReportLive.Index, :show
   end
 
   scope "/", SmartFarmWeb do

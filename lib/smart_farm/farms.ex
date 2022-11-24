@@ -244,6 +244,25 @@ defmodule SmartFarm.Farms do
 
   def list_farm_reports(_args, actor: nil), do: {:error, :unauthenticated}
 
+  # NOTE(frank): this is duplicate code. Fix me ASAP!
+  def list_farm_reports(args, actor: %User{role: :admin}) do
+    query =
+      from r in Report,
+        join: b in assoc(r, :batch),
+        as: :batch,
+        join: f in assoc(b, :farm),
+        as: :farm,
+        left_join: m in assoc(f, :managers),
+        as: :manager,
+        group_by: [r.report_date, f.id],
+        order_by: [desc: r.report_date, asc: f.name],
+        select: %{farm_id: f.id, report_date: r.report_date, farm_name: f.name}
+
+    query = filter_reports_query(query, args)
+
+    {:ok, Repo.all(query)}
+  end
+
   def list_farm_reports(args, actor: %User{} = user) do
     query =
       from r in Report,
@@ -291,6 +310,122 @@ defmodule SmartFarm.Farms do
   end
 
   def get_farm_report(_farm_id, _date, actor: nil), do: {:error, :unauthenticated}
+  # NOTE(frank): this is duplicate code. Fix me ASAP!
+  def get_farm_report(farm_id, report_date, actor: %User{role: :admin}) do
+    bird_count_query =
+      from b in Batch,
+        join: r in assoc(b, :reports),
+        on: r.report_date <= ^report_date,
+        join: bcr in assoc(r, :bird_counts),
+        where: b.farm_id == ^farm_id,
+        group_by: b.id,
+        select: %{batch_id: b.id, current_quantity: b.bird_count - sum(bcr.quantity)}
+
+    bird_reports_query =
+      from b in Batch,
+        join: f in assoc(b, :farm),
+        left_join: m in assoc(f, :managers),
+        join: bcq in subquery(bird_count_query),
+        on: bcq.batch_id == b.id,
+        left_join: r in assoc(b, :reports),
+        on: r.report_date == ^report_date,
+        left_join: bcr in assoc(r, :bird_counts),
+        group_by: b.bird_type,
+        select: %{
+          bird_type: b.bird_type,
+          current_quantity: type(avg(bcq.current_quantity), :integer),
+          reports: fragment("ARRAY_AGG(?)", type(r.id, :string)),
+          reasons:
+            fragment(
+              "ARRAY_AGG(JSONB_BUILD_OBJECT('reason', ?, 'quantity', ?))",
+              bcr.reason,
+              bcr.quantity
+            )
+        }
+
+    feeds_received_to_date =
+      from s in StoreItem,
+        left_join: r in assoc(s, :restocks),
+        on: r.date_restocked <= ^report_date,
+        where: s.item_type == ^:feed and s.farm_id == ^farm_id,
+        group_by: s.id,
+        select: %{id: s.id, quantity_received: coalesce(sum(r.quantity), 0.0)}
+
+    feeds_used_to_date =
+      from s in StoreItem,
+        left_join: sr in assoc(s, :store_reports),
+        left_join: r in assoc(sr, :report),
+        on: r.report_date <= ^report_date,
+        where: s.item_type == ^:feed and s.farm_id == ^farm_id,
+        group_by: s.id,
+        select: %{id: s.id, quantity_used: coalesce(sum(sr.quantity), 0.0)}
+
+    feeds_usage_query =
+      from s in StoreItem,
+        join: f in assoc(s, :farm),
+        on: f.id == ^farm_id,
+        join: sr in assoc(s, :store_reports),
+        join: r in assoc(sr, :report),
+        on: r.report_date == ^report_date,
+        left_join: m in assoc(f, :managers),
+        left_join: frd in subquery(feeds_received_to_date),
+        on: frd.id == s.id,
+        left_join: fud in subquery(feeds_used_to_date),
+        on: fud.id == s.id,
+        where: s.item_type == ^"feed",
+        group_by: [s.id, r.report_date],
+        select: %{
+          report_date: r.report_date,
+          feed_type: s.name,
+          used_quantity: avg(sr.quantity),
+          reports: fragment("ARRAY_AGG(?)", type(r.id, :string)),
+          current_quantity:
+            s.starting_quantity + avg(frd.quantity_received) - avg(fud.quantity_used)
+        }
+
+    egg_collection_query =
+      from ecr in EggCollectionReport,
+        join: r in assoc(ecr, :report),
+        on: r.report_date == ^report_date,
+        join: b in assoc(r, :batch),
+        on: b.farm_id == ^farm_id,
+        join: f in assoc(b, :farm),
+        left_join: m in assoc(f, :managers),
+        group_by: b.farm_id,
+        select: %{
+          reports: fragment("ARRAY_AGG(?)", type(r.id, :string)),
+          good_count: sum(ecr.good_count),
+          deformed_count:
+            sum(fragment("(? ->> ?)::integer", ecr.bad_count_classification, "deformed")),
+          broken_count:
+            sum(fragment("(? ->> ?)::integer", ecr.bad_count_classification, "broken"))
+        }
+
+    bird_reports = Repo.all(bird_reports_query)
+    feeds_reports = Repo.all(feeds_usage_query)
+    egg_report = Repo.one(egg_collection_query)
+    batch_reports = batch_reports_from_reports([egg_report] ++ feeds_reports ++ bird_reports)
+
+    if length(batch_reports) > 0 do
+      latest_report = hd(batch_reports)
+
+      {:ok,
+       %{
+         report_date: latest_report.report_date,
+         report_time:
+           latest_report.created_at
+           |> DateTime.shift_zone!("Africa/Nairobi")
+           |> DateTime.to_time(),
+         farm_id: farm_id,
+         feeds_usage:
+           Enum.map(feeds_reports, fn report -> matching_batch_reports(report, batch_reports) end),
+         egg_collection: matching_batch_reports(egg_report, batch_reports),
+         bird_counts: format_bird_reports(bird_reports, batch_reports)
+       }}
+    else
+      {:error, :not_found}
+    end
+  end
 
   def get_farm_report(farm_id, report_date, actor: %User{} = user) do
     bird_count_query =
