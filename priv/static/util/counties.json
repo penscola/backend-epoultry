@@ -678,5 +678,275 @@
                 ]
             }
         ]
+    },
+    {
+        "name": "Siaya",
+        "subcounties": [
+            {
+                "name": "Ugenya",
+                "wards": [
+                    {
+                        "name": "West Ugenya"
+                    },
+                    {
+                        "name": "Ukwala"
+                    },
+                    {
+                        "name": "North Ugenya"
+                    },
+                    {
+                        "name": "East Ugenya"
+                    }
+                ]
+            },
+            {
+                "name": "Ugunja",
+                "wards": [
+                    {
+                        "name": "Sidindi"
+                    },
+                    {
+                        "name": "Sigomere"
+                    },
+                    {
+                        "name": "Ugunja"
+                    }
+                ]
+            },
+            {
+                "name": "Alego Usonga",
+                "wards": [
+                    {
+                        "name": "Usonga"
+                    },
+                    {
+                        "name": "West Alego"
+                    },
+                    {
+                        "name": "Central Alego"
+                    },
+                    {
+                        "name": "Siaya Township"
+                    },
+                    {
+                        "name": "North Alego"
+                    },
+                    {
+                        "name": "South East Alego"
+                    }
+                ]
+            },
+            {
+                "name": "Gem",
+                "wards": [
+                    {
+                        "name": "North Gem"
+                    },
+                    {
+                        "name": "West Gem"
+                    },
+                    {
+                        "name": "Central Gem"
+                    },
+                    {
+                        "name": "Yala Township"
+                    },
+                    {
+                        "name": "East Gem"
+                    },
+                    {
+                        "name": "South Gem"
+                    }
+                ]
+            },
+            {
+                "name": "Bondo",
+                "wards": [
+                    {
+                        "name": "West Yimbo"
+                    },
+                    {
+                        "name": "Central Sakwa"
+                    },
+                    {
+                        "name": "South Sakwa"
+                    },
+                    {
+                        "name": "Yimbo East"
+                    },
+                    {
+                        "name": "West Sakwa"
+                    },
+                    {
+                        "name": "North Sakwa"
+                    }
+                ]
+            },
+            {
+                "name": "Rarieda",
+                "wards": [
+                    {
+                        "name": "East Asembo"
+                    },
+                    {
+                        "name": "West Asembo"
+                    },
+                    {
+                        "name": "North Uyoma"
+                    },
+                    {
+                        "name": "South Uyoma"
+                    },
+                    {
+                        "name": "West Uyoma"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Busia",
+        "subcounties": [
+            {
+                "name": "Teso North",
+                "wards": [
+                    {
+                        "name": "Malaba Central"
+                    },
+                    {
+                        "name": "Malaba North"
+                    },
+                    {
+                        "name": "Ang'Urai South"
+                    },
+                    {
+                        "name": "Ang'Urai North"
+                    },
+                    {
+                        "name": "Ang'Urai East"
+                    },
+                    {
+                        "name": "Malaba South"
+                    }
+                ]
+            },
+            {
+                "name": "Teso South",
+                "wards": [
+                    {
+                        "name": "Ang'orom"
+                    },
+                    {
+                        "name": "Chakol South"
+                    },
+                    {
+                        "name": "Chakol North"
+                    },
+                    {
+                        "name": "Amukura West"
+                    },
+                    {
+                        "name": "Amukura East"
+                    },
+                    {
+                        "name": "Amukura Central"
+                    }
+                ]
+            },
+            {
+                "name": "Nambale",
+                "wards": [
+                    {
+                        "name": "Nambale Township"
+                    },
+                    {
+                        "name": "Bukhayo North/Waltsi"
+                    },
+                    {
+                        "name": "Bukhayo East"
+                    },
+                    {
+                        "name": "Bukhayo Central"
+                    }
+                ]
+            },
+            {
+                "name": "Matayos",
+                "wards": [
+                    {
+                        "name": "Bukhayo West"
+                    },
+                    {
+                        "name": "Mayenje"
+                    },
+                    {
+                        "name": "Matayos South"
+                    },
+                    {
+                        "name": "Busibwabo"
+                    },
+                    {
+                        "name": "Burumba"
+                    }
+                ]
+            },
+            {
+                "name": "Butula",
+                "wards": [
+                    {
+                        "name": "Marachi West"
+                    },
+                    {
+                        "name": "Kingandole"
+                    },
+                    {
+                        "name": "Marachi Central"
+                    },
+                    {
+                        "name": "Marachi East"
+                    },
+                    {
+                        "name": "Marachi North"
+                    },
+                    {
+                        "name": "Elugulu"
+                    }
+                ]
+            },
+            {
+                "name": "Funyula",
+                "wards": [
+                    {
+                        "name": "Namboboto Nambuku"
+                    },
+                    {
+                        "name": "Nangina"
+                    },
+                    {
+                        "name": "Ageng'a Nanguba"
+                    },
+                    {
+                        "name": "Bwiri"
+                    }
+                ]
+            },
+            {
+                "name": "Budalangi",
+                "wards": [
+                    {
+                        "name": "Bunyala Central"
+                    },
+                    {
+                        "name": "Bunyala North"
+                    },
+                    {
+                        "name": "Bunyala West"
+                    },
+                    {
+                        "name": "Bunyala South"
+                    }
+                ]
+            }
+        ]
     }
 ]
