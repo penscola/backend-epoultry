@@ -390,7 +390,7 @@ defmodule SmartFarm.Batches do
           )
         end)
       else
-        Multi.error(multi, item.name, "#{item.name} feed does not exist in your farm")
+        Multi.error(multi, item.name, "#{item.name} not in store")
       end
     end)
   end
