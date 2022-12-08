@@ -20,8 +20,8 @@ defmodule SmartFarm.Quotations.QuotationItem do
   end
 
   defp put_total_cost(%{valid?: true} = changeset) do
-    unit_cost = get_change(changeset, :unit_cost)
-    quantity = get_change(changeset, :quantity)
+    unit_cost = get_field(changeset, :unit_cost)
+    quantity = get_field(changeset, :quantity)
     put_change(changeset, :total_cost, quantity * unit_cost)
   end
 

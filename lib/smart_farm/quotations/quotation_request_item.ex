@@ -6,6 +6,7 @@ defmodule SmartFarm.Quotations.QuotationRequestItem do
     field :name, :string
     field :quantity, :integer
     belongs_to :quotation_request, QuotationRequest
+    has_one :quotation, Quotation, foreign_key: :requested_item_id
 
     timestamps()
   end

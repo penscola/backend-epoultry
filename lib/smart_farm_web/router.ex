@@ -36,6 +36,15 @@ defmodule SmartFarmWeb.Router do
     live "/quotations/clusters", ClusterLive.Index, :index
     live "/quotations/clusters/new", ClusterLive.Index, :new
     live "/quotations/clusters/:id/edit", ClusterLive.Index, :edit
+    live "/quotations/requests", QuotationRequestLive.Index, :index
+
+    live "/quotations/requests/:requested_item_id/quotation",
+         QuotationRequestLive.Index,
+         :show_quotation
+
+    live "/quotations/requests/:requested_item_id/quotation/new",
+         QuotationRequestLive.Index,
+         :new_quotation
   end
 
   scope "/", SmartFarmWeb do

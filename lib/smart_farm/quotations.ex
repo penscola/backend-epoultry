@@ -26,9 +26,31 @@ defmodule SmartFarm.Quotations do
     Repo.all(query)
   end
 
+  def list_quotation_requests do
+    query =
+      from r in QuotationRequest,
+        join: u in assoc(r, :user),
+        order_by: [desc: r.created_at],
+        preload: [user: u]
+
+    query
+    |> Repo.all()
+    |> Repo.preload(items: [quotation: []])
+  end
+
   def get_quotation(id) do
     Quotation
     |> Repo.fetch(id)
+  end
+
+  def get_quotation_request!(id) do
+    query =
+      from r in QuotationRequest,
+        join: u in assoc(r, :user),
+        join: i in assoc(r, :items),
+        preload: [user: u, items: i]
+
+    Repo.one!(query)
   end
 
   def create_quotation(%QuotationRequest{} = request) do

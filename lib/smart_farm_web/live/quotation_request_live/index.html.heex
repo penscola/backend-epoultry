@@ -1,0 +1,127 @@
+<h1 class="title">Quotation Requests</h1>
+
+<table class="table is-fullwidth">
+  <thead>
+    <tr>
+      <th>Requester</th>
+      <th>Requested On</th>
+      <th>Item</th>
+      <th>Quantity</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="requests">
+    <%= for %{user: user, items: [item | rest]} = request <- @requests do %>
+      <tr id="">
+        <td rowspan={Enum.count(rest) + 1}><%= user.first_name %> <%= user.last_name %></td>
+        <td rowspan={Enum.count(rest) + 1}><%= DateTime.to_date(request.created_at) %></td>
+        <td><%= item.name %></td>
+        <td><%= item.quantity %></td>
+        <td>
+          <%= if item.quotation do %>
+            <%= live_patch("View Quotation",
+              to: Routes.quotation_request_index_path(@socket, :show_quotation, item.id),
+              class: "button is-success"
+            ) %>
+          <% else %>
+            <%= live_patch("Quote",
+              to: Routes.quotation_request_index_path(@socket, :new_quotation, item.id),
+              class: "button is-link"
+            ) %>
+          <% end %>
+        </td>
+      </tr>
+      <%= for item <- rest do %>
+        <tr>
+          <td><%= item.name %></td>
+          <td><%= item.quantity %></td>
+          <td>
+            <%= if item.quotation do %>
+              <%= live_patch("View Quotation",
+                to: Routes.quotation_request_index_path(@socket, :show_quotation, item.id),
+                class: "button is-success"
+              ) %>
+            <% else %>
+              <%= live_patch("Quote",
+                to: Routes.quotation_request_index_path(@socket, :new_quotation, item.id),
+                class: "button is-link"
+              ) %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+
+<%= if @live_action == :show_quotation do %>
+  <.modal
+    return_to={Routes.quotation_request_index_path(@socket, :index)}
+    modal_title={@page_title}
+  >
+    <div class="content">
+      <h2>Overview</h2>
+      <table class="table">
+        <tbody>
+          <tr>
+            <th>User Name</th>
+            <td><%= @quotation.user.first_name %> <%= @quotation.user.last_name %></td>
+          </tr>
+          <tr>
+            <th>User Contact</th>
+            <td><%= @quotation.user.phone_number %></td>
+          </tr>
+          <tr>
+            <th>Quoted On</th>
+            <td><%= DateTime.to_date(@quotation.created_at) %></td>
+          </tr>
+          <tr>
+            <th>Total Cost</th>
+            <td><%= @quotation.total_cost %></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Particulars</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Unit Cost</th>
+            <th>Total Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= for item <- @quotation.items do %>
+            <tr id="">
+              <td><%= item.name %></td>
+              <td><%= item.quantity %></td>
+              <td><%= item.unit_cost %></td>
+              <td><%= item.total_cost %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </.modal>
+<% end %>
+
+<%= if @live_action in [:new_quotation] do %>
+  <.modal
+    return_to={Routes.quotation_request_index_path(@socket, :index)}
+    modal_title={@page_title}
+  >
+    <.live_component
+      module={SmartFarmWeb.QuotationRequestLive.QuoteComponent}
+      id={@quotation.id || :new}
+      title={@page_title}
+      action={@live_action}
+      current_user={@current_user}
+      quotation={@quotation}
+      requested_item={@requested_item}
+      requesting_user={@requesting_user}
+      return_to={Routes.quotation_request_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>

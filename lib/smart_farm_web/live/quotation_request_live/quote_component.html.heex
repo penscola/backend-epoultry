@@ -1,0 +1,53 @@
+<div class="content">
+  <div>
+    <h5>Overview</h5>
+    <p>
+      <span>Requested Item:</span><span><%= @requested_item.name %></span>
+    </p>
+    <p>
+      <span>Requested Quantity:</span><span><%= @requested_item.quantity %></span>
+    </p>
+  </div>
+
+  <hr class="navbar-divider" />
+  <.form
+    let={f}
+    for={@changeset}
+    id="quote-form"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save"
+  >
+    <div class="field">
+      <%= label(f, :title) %>
+      <%= text_input(f, :title, class: "input", required: true) %>
+      <%= error_tag(f, :title) %>
+    </div>
+
+    <h6>Cost Items</h6>
+
+    <%= inputs_for f, :items, fn fi -> %>
+      <div class="columns">
+        <div class="field column">
+          <%= label(fi, :name) %>
+          <%= text_input(fi, :name, class: "input", required: true) %>
+          <%= error_tag(fi, :name) %>
+        </div>
+        <div class="field column">
+          <%= label(fi, :quantity) %>
+          <%= number_input(fi, :quantity, class: "input", required: true) %>
+          <%= error_tag(fi, :quantity) %>
+        </div>
+        <div class="field column">
+          <%= label(fi, :unit_cost) %>
+          <%= number_input(fi, :unit_cost, class: "input", required: true) %>
+          <%= error_tag(fi, :unit_cost) %>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="is-flex is-flex-direction-row-reverse">
+      <%= submit("Save", phx_disable_with: "Saving...", class: "button is-primary is-right") %>
+    </div>
+  </.form>
+</div>

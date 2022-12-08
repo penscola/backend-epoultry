@@ -58,6 +58,10 @@
                   to: Routes.cluster_index_path(@conn, :index),
                   class: "navbar-item"
                 ) %>
+                <%= link("Requests",
+                  to: Routes.quotation_request_index_path(@conn, :index),
+                  class: "navbar-item"
+                ) %>
               </div>
             </div>
 
