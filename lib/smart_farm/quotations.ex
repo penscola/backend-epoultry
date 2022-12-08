@@ -95,4 +95,27 @@ defmodule SmartFarm.Quotations do
       %{name: to_string(key), quantity: 1, unit_cost: value}
     end)
   end
+
+  @spec list_clusters() :: [Cluster.t(), ...]
+  def list_clusters do
+    Repo.all(Cluster)
+  end
+
+  def get_cluster!(id) do
+    Repo.get!(Cluster, id)
+  end
+
+  @spec create_cluster(map()) :: {:ok, Cluster.t()} | {:error, Ecto.Changeset.t()}
+  def create_cluster(params) do
+    %Cluster{}
+    |> Cluster.changeset(params)
+    |> Repo.insert()
+  end
+
+  @spec update_cluster(Cluster.t(), map()) :: {:ok, Cluster.t()} | {:error, Ecto.Changeset.t()}
+  def update_cluster(cluster, params) do
+    cluster
+    |> Cluster.changeset(params)
+    |> Repo.update()
+  end
 end

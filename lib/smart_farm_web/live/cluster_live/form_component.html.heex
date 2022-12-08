@@ -1,0 +1,57 @@
+<div>
+  <.form
+    let={f}
+    for={@changeset}
+    id="cluster-form"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save"
+  >
+    <div class="field">
+      <%= label(f, :bird_type) %>
+      <div>
+        <span class="select">
+          <%= select(f, :bird_type, [:broilers, :layers, :kienyeji], required: true) %>
+        </span>
+      </div>
+      <%= error_tag(f, :bird_type) %>
+    </div>
+
+    <div class="columns">
+      <div class="field column">
+        <%= label(f, :min_count) %>
+        <%= number_input(f, :min_count, class: "input", required: true) %>
+        <%= error_tag(f, :min_count) %>
+      </div>
+      <div class="field column">
+        <%= label(f, :max_count) %>
+        <%= number_input(f, :max_count, class: "input", required: true) %>
+        <%= error_tag(f, :max_count) %>
+      </div>
+    </div>
+
+    <h3 class="subtitle">Pricing</h3>
+
+    <%= inputs_for f, :pricing, fn fp -> %>
+      <div class="field">
+        <%= label(fp, :equipments) %>
+        <%= number_input(fp, :equipments, class: "input", required: true) %>
+        <%= error_tag(fp, :equipments) %>
+      </div>
+      <div class="field">
+        <%= label(fp, :housing) %>
+        <%= number_input(fp, :housing, class: "input", required: true) %>
+        <%= error_tag(fp, :housing) %>
+      </div>
+      <div class="field">
+        <%= label(fp, :production) %>
+        <%= number_input(fp, :production, class: "input", required: true) %>
+        <%= error_tag(fp, :production) %>
+      </div>
+    <% end %>
+
+    <div class="is-flex is-flex-direction-row-reverse">
+      <%= submit("Save", phx_disable_with: "Saving...", class: "button is-primary is-right") %>
+    </div>
+  </.form>
+</div>

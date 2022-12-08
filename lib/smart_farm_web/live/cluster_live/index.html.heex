@@ -1,0 +1,59 @@
+<h1 class="title">Quotation Clusters Pricing</h1>
+<div class="is-flex is-flex-direction-row-reverse">
+<%= live_patch("Add New", to: Routes.cluster_index_path(@socket, :new), class: "button is-link") %>
+</div>
+<table class="table is-fullwidth">
+  <thead>
+    <tr>
+      <th>Bird Type</th>
+      <th>Range</th>
+      <th>Equipments</th>
+      <th>Housing</th>
+      <th>Production</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="clusters">
+    <%= for {bird_type, [cluster | rest]} <- @clusters do %>
+      <tr id="">
+        <td rowspan={Enum.count(rest) + 1}><%= bird_type %></td>
+        <td><%= cluster.min_count %>..<%= cluster.max_count %></td>
+        <td><%= cluster.pricing.equipments %></td>
+        <td><%= cluster.pricing.housing %></td>
+        <td><%= cluster.pricing.production %></td>
+        <td>
+          <%= live_patch("Edit",
+            to: Routes.cluster_index_path(@socket, :edit, cluster.id)
+          ) %>
+        </td>
+      </tr>
+      <%= for cluster <- rest do %>
+        <tr>
+          <td><%= cluster.min_count %>..<%= cluster.max_count %></td>
+          <td><%= cluster.pricing.equipments %></td>
+          <td><%= cluster.pricing.housing %></td>
+          <td><%= cluster.pricing.production %></td>
+          <td>
+            <%= live_patch("Edit",
+              to: Routes.cluster_index_path(@socket, :edit, cluster.id)
+            ) %>
+          </td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+
+<%= if @live_action in [:edit, :new] do %>
+  <.modal return_to={Routes.cluster_index_path(@socket, :index)} modal_title={@page_title}>
+    <.live_component
+      module={SmartFarmWeb.ClusterLive.FormComponent}
+      id={@cluster.id || :new}
+      title={@page_title}
+      action={@live_action}
+      current_user={@current_user}
+      cluster={@cluster}
+      return_to={Routes.cluster_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>

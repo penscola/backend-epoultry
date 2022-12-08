@@ -3,7 +3,6 @@ defmodule SmartFarmWeb.ReportLive.Index do
 
   alias SmartFarm.Farms
   alias SmartFarm.Accounts
-  alias SmartFarm.Accounts.User
 
   @impl true
   def mount(_params, %{"user_id" => user_id}, socket) do

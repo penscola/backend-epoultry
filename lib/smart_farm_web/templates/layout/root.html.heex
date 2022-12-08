@@ -48,6 +48,18 @@
               to: Routes.report_index_path(@conn, :index),
               class: "navbar-item"
             ) %>
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                Quotations
+              </a>
+
+              <div class="navbar-dropdown">
+                <%= link("Pricing",
+                  to: Routes.cluster_index_path(@conn, :index),
+                  class: "navbar-item"
+                ) %>
+              </div>
+            </div>
 
             <div class="navbar-item">
               <div class="">
