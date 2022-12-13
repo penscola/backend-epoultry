@@ -948,5 +948,608 @@
                 ]
             }
         ]
+    },
+    {
+        "name": "Homabay",
+        "subcounties": [
+            {
+                "name": "Kasipul",
+                "wards": [
+                    {
+                        "name": "West Kasipul"
+                    },
+                    {
+                        "name": "South Kasipul"
+                    },
+                    {
+                        "name": "Central Kasipul"
+                    },
+                    {
+                        "name": "East Kamagak"
+                    },
+                    {
+                        "name": "West Kamagak"
+                    }
+                ]
+            },
+            {
+                "name": "Kabondo Kasipul",
+                "wards": [
+                    {
+                        "name": "Kabondo East"
+                    },
+                    {
+                        "name": "Kabondo West"
+                    },
+                    {
+                        "name": "Kokwanyo/Kakelo"
+                    },
+                    {
+                        "name": "Kojwach"
+                    }
+                ]
+            },
+            {
+                "name": "Karachuonyo",
+                "wards": [
+                    {
+                        "name": "West Karachuonyo"
+                    },
+                    {
+                        "name": "North Karachuonyo"
+                    },
+                    {
+                        "name": "Central"
+                    },
+                    {
+                        "name": "Kanyaluo"
+                    },
+                    {
+                        "name": "Kibiri"
+                    },
+                    {
+                        "name": "Wangchieng"
+                    },
+                    {
+                        "name": "Kendu Bay Town"
+                    }
+                ]
+            },
+            {
+                "name": "Rangwe",
+                "wards": [
+                    {
+                        "name": "West Gem"
+                    },
+                    {
+                        "name": "East Gem"
+                    },
+                    {
+                        "name": "Kagan"
+                    },
+                    {
+                        "name": "Kochia"
+                    }
+                ]
+            },
+            {
+                "name": "Homa Bay Town",
+                "wards": [
+                    {
+                        "name": "Homa Bay Central"
+                    },
+                    {
+                        "name": "Homa Bay Arujo"
+                    },
+                    {
+                        "name": "Homa Bay West"
+                    },
+                    {
+                        "name": "Homa Bay East"
+                    }
+                ]
+            },
+            {
+                "name": "Ndhiwa",
+                "wards": [
+                    {
+                        "name": "Kwabwai"
+                    },
+                    {
+                        "name": "Kanyadoto"
+                    },
+                    {
+                        "name": "Kanyikela"
+                    },
+                    {
+                        "name": "Kabuoch North"
+                    },
+                    {
+                        "name": "Kabuoch South/Pala"
+                    },
+                    {
+                        "name": "Kanyamwa Kologi"
+                    },
+                    {
+                        "name": "Kanyamwa Kosewe"
+                    }
+                ]
+            },
+            {
+                "name": "Suba North",
+                "wards": [
+                    {
+                        "name": "Mfangano Island"
+                    },
+                    {
+                        "name": "Rusinga Island"
+                    },
+                    {
+                        "name": "Kasgunga"
+                    },
+                    {
+                        "name": "Gembe"
+                    },
+                    {
+                        "name": "Lambwe"
+                    }
+                ]
+            },
+            {
+                "name": "Suba South",
+                "wards": [
+                    {
+                        "name": "Gwassi South"
+                    },
+                    {
+                        "name": "Gwassi North"
+                    },
+                    {
+                        "name": "Kaksingri West"
+                    },
+                    {
+                        "name": "Ruma-Kaksingri"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Migori",
+        "subcounties": [
+            {
+                "name": "Rongo",
+                "wards": [
+                    {
+                        "name": "North Kamagambo"
+                    },
+                    {
+                        "name": "Central Kamagambo"
+                    },
+                    {
+                        "name": "East Kamagambo"
+                    },
+                    {
+                        "name": "South Kamagambo"
+                    }
+                ]
+            },
+            {
+                "name": "Awendo",
+                "wards": [
+                    {
+                        "name": "North Sakwa"
+                    },
+                    {
+                        "name": "South Sakwa"
+                    },
+                    {
+                        "name": "West Sakwa"
+                    },
+                    {
+                        "name": "Central Sakwa"
+                    }
+                ]
+            },
+            {
+                "name": "Suna East",
+                "wards": [
+                    {
+                        "name": "God Jope"
+                    },
+                    {
+                        "name": "Suna Central"
+                    },
+                    {
+                        "name": "Kakrao"
+                    },
+                    {
+                        "name": "Kwa"
+                    }
+                ]
+            },
+            {
+                "name": "Suna West",
+                "wards": [
+                    {
+                        "name": "Wiga"
+                    },
+                    {
+                        "name": "Wasweta Ii"
+                    },
+                    {
+                        "name": "Ragana-Oruba"
+                    },
+                    {
+                        "name": "Wasimbete"
+                    }
+                ]
+            },
+            {
+                "name": "Uriri",
+                "wards": [
+                    {
+                        "name": "West Kanyamkago"
+                    },
+                    {
+                        "name": "North Kanyamkago"
+                    },
+                    {
+                        "name": "Central Kanyamkago"
+                    },
+                    {
+                        "name": "South Kanyamkago"
+                    },
+                    {
+                        "name": "East Kanyamkago"
+                    }
+                ]
+            },
+            {
+                "name": "Nyatike",
+                "wards": [
+                    {
+                        "name": "Kachien'g"
+                    },
+                    {
+                        "name": "Kanyasa"
+                    },
+                    {
+                        "name": "North Kadem"
+                    },
+                    {
+                        "name": "Macalder/Kanyarwanda"
+                    },
+                    {
+                        "name": "Kaler"
+                    },
+                    {
+                        "name": "Got Kachola"
+                    },
+                    {
+                        "name": "Muhuru"
+                    }
+                ]
+            },
+            {
+                "name": "Kuria West",
+                "wards": [
+                    {
+                        "name": "Bukira East"
+                    },
+                    {
+                        "name": "Bukira Centrl/Ikerege"
+                    },
+                    {
+                        "name": "Isibania"
+                    },
+                    {
+                        "name": "Makerero"
+                    },
+                    {
+                        "name": "Masaba"
+                    },
+                    {
+                        "name": "Tagare"
+                    },
+                    {
+                        "name": "Nyamosense/Komosoko"
+                    }
+                ]
+            },
+            {
+                "name": "Kuria East",
+                "wards": [
+                    {
+                        "name": "Gokeharaka/Getambwega"
+                    },
+                    {
+                        "name": "Ntimaru West"
+                    },
+                    {
+                        "name": "Ntimaru East"
+                    },
+                    {
+                        "name": "Nyabasi East"
+                    },
+                    {
+                        "name": "Nyabasi West"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Transnzoia",
+        "subcounties": [
+            {
+                "name": "Kwanza",
+                "wards": [
+                    {
+                        "name": "Kapomboi"
+                    },
+                    {
+                        "name": "Kwanza"
+                    },
+                    {
+                        "name": "Keiyo"
+                    },
+                    {
+                        "name": "Bidii"
+                    }
+                ]
+            },
+            {
+                "name": "Endebess",
+                "wards": [
+                    {
+                        "name": "Chepchoina"
+                    },
+                    {
+                        "name": "Endebess"
+                    },
+                    {
+                        "name": "Matumbei"
+                    }
+                ]
+            },
+            {
+                "name": "Saboti",
+                "wards": [
+                    {
+                        "name": "Kinyoro"
+                    },
+                    {
+                        "name": "Matisi"
+                    },
+                    {
+                        "name": "Tuwani"
+                    },
+                    {
+                        "name": "Saboti"
+                    },
+                    {
+                        "name": "Machewa"
+                    }
+                ]
+            },
+            {
+                "name": "Kiminini",
+                "wards": [
+                    {
+                        "name": "Kiminini"
+                    },
+                    {
+                        "name": "Waitaluk"
+                    },
+                    {
+                        "name": "Sirende"
+                    },
+                    {
+                        "name": "Hospital"
+                    },
+                    {
+                        "name": "Sikhendu"
+                    },
+                    {
+                        "name": "Nabiswa"
+                    }
+                ]
+            },
+            {
+                "name": "Cherangany",
+                "wards": [
+                    {
+                        "name": "Sinyerere"
+                    },
+                    {
+                        "name": "Makutano"
+                    },
+                    {
+                        "name": "Kaplamai"
+                    },
+                    {
+                        "name": "Motosiet"
+                    },
+                    {
+                        "name": "Cherangany/Suwerwa"
+                    },
+                    {
+                        "name": "Chepsiro/Kiptoror"
+                    },
+                    {
+                        "name": "Sitatunga"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Kisii",
+        "subcounties": [
+            {
+                "name": "South Mugirango",
+                "wards": [
+                    {
+                        "name": "Tabaka"
+                    },
+                    {
+                        "name": "Boikang'a"
+                    },
+                    {
+                        "name": "Bogetenga"
+                    },
+                    {
+                        "name": "Borabu / Chitago"
+                    },
+                    {
+                        "name": "Moticho"
+                    },
+                    {
+                        "name": "Getenga"
+                    }
+                ]
+            },
+            {
+                "name": "Bomachoge Borabu",
+                "wards": [
+                    {
+                        "name": "Bombaba Borabu"
+                    },
+                    {
+                        "name": "Boochi Borabu"
+                    },
+                    {
+                        "name": "Bokimonge"
+                    },
+                    {
+                        "name": "Magenche"
+                    }
+                ]
+            },
+            {
+                "name": "Bobasi",
+                "wards": [
+                    {
+                        "name": "Masige West"
+                    },
+                    {
+                        "name": "Masige East"
+                    },
+                    {
+                        "name": "Basi Central"
+                    },
+                    {
+                        "name": "Nyacheki"
+                    },
+                    {
+                        "name": "Basi Bogetaorio"
+                    },
+                    {
+                        "name": "Bobasi Chache"
+                    },
+                    {
+                        "name": "Sameta/Mokwerero"
+                    },
+                    {
+                        "name": "Bobasi Boitangare"
+                    }
+                ]
+            },
+            {
+                "name": "Bomachoge Chache",
+                "wards": [
+                    {
+                        "name": "Majoge Basi"
+                    },
+                    {
+                        "name": "Boochi/Tendere"
+                    },
+                    {
+                        "name": "Bosoti/Sengera"
+                    }
+                ]
+            },
+            {
+                "name": "Nyaribari Masaba",
+                "wards": [
+                    {
+                        "name": "Ichuni"
+                    },
+                    {
+                        "name": "Nyamasibi"
+                    },
+                    {
+                        "name": "Masimba"
+                    },
+                    {
+                        "name": "Gesusu"
+                    },
+                    {
+                        "name": "Kiamokama"
+                    }
+                ]
+            },
+            {
+                "name": "Nyaribari Chache",
+                "wards": [
+                    {
+                        "name": "Bobaracho"
+                    },
+                    {
+                        "name": "Kisii Central"
+                    },
+                    {
+                        "name": "Keumbu"
+                    },
+                    {
+                        "name": "Kiogoro"
+                    },
+                    {
+                        "name": "Birongo"
+                    },
+                    {
+                        "name": "Ibeno"
+                    }
+                ]
+            },
+            {
+                "name": "Kitutu Chache North",
+                "wards": [
+                    {
+                        "name": "Monyerero"
+                    },
+                    {
+                        "name": "Sensi"
+                    },
+                    {
+                        "name": "Marani"
+                    },
+                    {
+                        "name": "Kegogi"
+                    }
+                ]
+            },
+            {
+                "name": "Kitutu Chache South",
+                "wards": [
+                    {
+                        "name": "Bogusero"
+                    },
+                    {
+                        "name": "Bogeka"
+                    },
+                    {
+                        "name": "Nyakoe"
+                    },
+                    {
+                        "name": "Kitutu Central"
+                    },
+                    {
+                        "name": "Nyatieko"
+                    }
+                ]
+            }
+        ]
     }
 ]
