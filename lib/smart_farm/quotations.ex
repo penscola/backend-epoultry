@@ -48,7 +48,8 @@ defmodule SmartFarm.Quotations do
       from r in QuotationRequest,
         join: u in assoc(r, :user),
         join: i in assoc(r, :items),
-        preload: [user: u, items: i]
+        preload: [user: u, items: i],
+        where: r.id == ^id
 
     Repo.one!(query)
   end
