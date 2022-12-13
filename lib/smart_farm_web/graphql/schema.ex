@@ -13,6 +13,7 @@ defmodule SmartFarmWeb.Schema do
   # For file uploads
   import_types(Absinthe.Plug.Types)
 
+  import_types(Schema.AddressTypes)
   import_types(Schema.BatchTypes)
   import_types(Schema.FarmTypes)
   import_types(Schema.ContractorTypes)
@@ -22,6 +23,7 @@ defmodule SmartFarmWeb.Schema do
   import_types(Schema.UserTypes)
 
   query do
+    import_fields(:address_queries)
     import_fields(:batch_queries)
     import_fields(:contractor_queries)
     import_fields(:farm_queries)

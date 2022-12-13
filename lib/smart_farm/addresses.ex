@@ -25,4 +25,8 @@ defmodule SmartFarm.Addresses do
       %{county: county, subcounty: sub, ward: ward}
     end)
   end
+
+  def all_counties do
+    @counties
+  end
 end
