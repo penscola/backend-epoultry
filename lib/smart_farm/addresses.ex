@@ -29,4 +29,29 @@ defmodule SmartFarm.Addresses do
   def all_counties do
     @counties
   end
+
+  def get_county(code) do
+    case Enum.find(@counties, &(&1.code == code)) do
+      nil ->
+        {:error, :not_found}
+
+      county ->
+        {:ok, county}
+    end
+  end
+
+  def get_subcounty(code) do
+    @counties
+    |> Enum.reduce([], fn county, acc ->
+      acc ++ county.subcounties
+    end)
+    |> Enum.find(&(&1.code == code))
+    |> case do
+      nil ->
+        {:error, :not_found}
+
+      subcounty ->
+        {:ok, subcounty}
+    end
+  end
 end

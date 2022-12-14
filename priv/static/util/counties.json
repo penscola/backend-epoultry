@@ -1,9 +1,12 @@
 [
     {
         "name": "Kisumu",
+        "code": 42,
         "subcounties": [
             {
                 "name": "Kisumu East",
+                "county_code": 42,
+                "code": 238,
                 "wards": [
                     {
                         "name": "Kajulu"
@@ -24,6 +27,8 @@
             },
             {
                 "name": "Kisumu West",
+                "county_code": 42,
+                "code": 239,
                 "wards": [
                     {
                         "name": "South West Kisumu"
@@ -44,6 +49,8 @@
             },
             {
                 "name": "Kisumu Central",
+                "county_code": 42,
+                "code": 240,
                 "wards": [
                     {
                         "name": "Railways"
@@ -67,6 +74,8 @@
             },
             {
                 "name": "Seme",
+                "county_code": 42,
+                "code": 241,
                 "wards": [
                     {
                         "name": "West Seme"
@@ -84,6 +93,8 @@
             },
             {
                 "name": "Nyando",
+                "county_code": 42,
+                "code": 242,
                 "wards": [
                     {
                         "name": "East Kano/Wawidhi"
@@ -104,6 +115,8 @@
             },
             {
                 "name": "Muhoroni",
+                "county_code": 42,
+                "code": 243,
                 "wards": [
                     {
                         "name": "Miwani"
@@ -124,6 +137,8 @@
             },
             {
                 "name": "Nyakach",
+                "county_code": 42,
+                "code": 244,
                 "wards": [
                     {
                         "name": "South West Nyakach"
@@ -146,9 +161,12 @@
     },
     {
         "name": "Bungoma",
+        "code": 39,
         "subcounties": [
             {
                 "name": "Mt. Elgon",
+                "county_code": 39,
+                "code": 216,
                 "wards": [
                     {
                         "name": "Cheptais"
@@ -172,6 +190,8 @@
             },
             {
                 "name": "Sirisia",
+                "county_code": 39,
+                "code": 217,
                 "wards": [
                     {
                         "name": "Namwela"
@@ -186,6 +206,8 @@
             },
             {
                 "name": "Kabuchai",
+                "county_code": 39,
+                "code": 218,
                 "wards": [
                     {
                         "name": "Kabuchai/Chwele"
@@ -203,6 +225,8 @@
             },
             {
                 "name": "Bumula",
+                "county_code": 39,
+                "code": 219,
                 "wards": [
                     {
                         "name": "South Bukusu"
@@ -229,6 +253,8 @@
             },
             {
                 "name": "Kanduyi",
+                "county_code": 39,
+                "code": 220,
                 "wards": [
                     {
                         "name": "Bukembe West"
@@ -258,6 +284,8 @@
             },
             {
                 "name": "Webuye East",
+                "county_code": 39,
+                "code": 221,
                 "wards": [
                     {
                         "name": "Mihuu"
@@ -272,6 +300,8 @@
             },
             {
                 "name": "Webuye West",
+                "county_code": 39,
+                "code": 222,
                 "wards": [
                     {
                         "name": "Misikhu"
@@ -289,6 +319,8 @@
             },
             {
                 "name": "Kimilili",
+                "county_code": 39,
+                "code": 223,
                 "wards": [
                     {
                         "name": "Kibingei"
@@ -306,6 +338,8 @@
             },
             {
                 "name": "Tongaren",
+                "county_code": 39,
+                "code": 224,
                 "wards": [
                     {
                         "name": "Mbakalo"
@@ -331,9 +365,12 @@
     },
     {
         "name": "Vihiga",
+        "code": 38,
         "subcounties": [
             {
                 "name": "Vihiga",
+                "county_code": 38,
+                "code": 211,
                 "wards": [
                     {
                         "name": "Lugaga-Wamuluma"
@@ -351,6 +388,8 @@
             },
             {
                 "name": "Sabatia",
+                "county_code": 38,
+                "code": 212,
                 "wards": [
                     {
                         "name": "Lyaduywa/Izava"
@@ -374,6 +413,8 @@
             },
             {
                 "name": "Hamisi",
+                "county_code": 38,
+                "code": 213,
                 "wards": [
                     {
                         "name": "Shiru"
@@ -400,6 +441,8 @@
             },
             {
                 "name": "Luanda",
+                "county_code": 38,
+                "code": 214,
                 "wards": [
                     {
                         "name": "Luanda Township"
@@ -419,7 +462,9 @@
                 ]
             },
             {
-                "name": "Emahaya",
+                "name": "Emuhaya",
+                "county_code": 38,
+                "code": 215,
                 "wards": [
                     {
                         "name": "North East Bunyore"
@@ -436,9 +481,12 @@
     },
     {
         "name": "Kakamega",
+        "code": 37,
         "subcounties": [
             {
                 "name": "Lugari",
+                "county_code": 37,
+                "code": 199,
                 "wards": [
                     {
                         "name": "Mautuma"
@@ -462,6 +510,8 @@
             },
             {
                 "name": "Likuyani",
+                "county_code": 37,
+                "code": 200,
                 "wards": [
                     {
                         "name": "Likuyani"
@@ -482,6 +532,8 @@
             },
             {
                 "name": "Malava",
+                "county_code": 37,
+                "code": 201,
                 "wards": [
                     {
                         "name": "West Kabras"
@@ -508,6 +560,8 @@
             },
             {
                 "name": "Lurambi",
+                "county_code": 37,
+                "code": 202,
                 "wards": [
                     {
                         "name": "Butsotso East"
@@ -531,6 +585,8 @@
             },
             {
                 "name": "Navakholo",
+                "county_code": 37,
+                "code": 203,
                 "wards": [
                     {
                         "name": "Ingostse-Mathia"
@@ -551,6 +607,8 @@
             },
             {
                 "name": "Mumias West",
+                "county_code": 37,
+                "code": 204,
                 "wards": [
                     {
                         "name": "Mumias Central"
@@ -568,6 +626,8 @@
             },
             {
                 "name": "Mumias East",
+                "county_code": 37,
+                "code": 205,
                 "wards": [
                     {
                         "name": "Lusheya/Lubinu"
@@ -582,6 +642,8 @@
             },
             {
                 "name": "Matungu",
+                "county_code": 37,
+                "code": 206,
                 "wards": [
                     {
                         "name": "Koyonzo"
@@ -602,6 +664,8 @@
             },
             {
                 "name": "Butere",
+                "county_code": 37,
+                "code": 207,
                 "wards": [
                     {
                         "name": "Marama West"
@@ -622,6 +686,8 @@
             },
             {
                 "name": "Khwisero",
+                "county_code": 37,
+                "code": 208,
                 "wards": [
                     {
                         "name": "Kisa North"
@@ -639,6 +705,8 @@
             },
             {
                 "name": "Shinyalu",
+                "county_code": 37,
+                "code": 209,
                 "wards": [
                     {
                         "name": "Isukha North"
@@ -662,6 +730,8 @@
             },
             {
                 "name": "Ikolomani",
+                "county_code": 37,
+                "code": 210,
                 "wards": [
                     {
                         "name": "Idakho South"
@@ -681,9 +751,12 @@
     },
     {
         "name": "Siaya",
+        "code": 41,
         "subcounties": [
             {
                 "name": "Ugenya",
+                "county_code": 41,
+                "code": 232,
                 "wards": [
                     {
                         "name": "West Ugenya"
@@ -701,6 +774,8 @@
             },
             {
                 "name": "Ugunja",
+                "county_code": 41,
+                "code": 233,
                 "wards": [
                     {
                         "name": "Sidindi"
@@ -715,6 +790,8 @@
             },
             {
                 "name": "Alego Usonga",
+                "county_code": 41,
+                "code": 234,
                 "wards": [
                     {
                         "name": "Usonga"
@@ -738,6 +815,8 @@
             },
             {
                 "name": "Gem",
+                "county_code": 41,
+                "code": 235,
                 "wards": [
                     {
                         "name": "North Gem"
@@ -761,6 +840,8 @@
             },
             {
                 "name": "Bondo",
+                "county_code": 41,
+                "code": 236,
                 "wards": [
                     {
                         "name": "West Yimbo"
@@ -784,6 +865,8 @@
             },
             {
                 "name": "Rarieda",
+                "county_code": 41,
+                "code": 237,
                 "wards": [
                     {
                         "name": "East Asembo"
@@ -806,9 +889,12 @@
     },
     {
         "name": "Busia",
+        "code": 40,
         "subcounties": [
             {
                 "name": "Teso North",
+                "county_code": 40,
+                "code": 225,
                 "wards": [
                     {
                         "name": "Malaba Central"
@@ -832,6 +918,8 @@
             },
             {
                 "name": "Teso South",
+                "county_code": 40,
+                "code": 226,
                 "wards": [
                     {
                         "name": "Ang'orom"
@@ -855,6 +943,8 @@
             },
             {
                 "name": "Nambale",
+                "county_code": 40,
+                "code": 227,
                 "wards": [
                     {
                         "name": "Nambale Township"
@@ -872,6 +962,8 @@
             },
             {
                 "name": "Matayos",
+                "county_code": 40,
+                "code": 228,
                 "wards": [
                     {
                         "name": "Bukhayo West"
@@ -892,6 +984,8 @@
             },
             {
                 "name": "Butula",
+                "county_code": 40,
+                "code": 229,
                 "wards": [
                     {
                         "name": "Marachi West"
@@ -915,6 +1009,8 @@
             },
             {
                 "name": "Funyula",
+                "county_code": 40,
+                "code": 230,
                 "wards": [
                     {
                         "name": "Namboboto Nambuku"
@@ -932,6 +1028,8 @@
             },
             {
                 "name": "Budalangi",
+                "county_code": 40,
+                "code": 231,
                 "wards": [
                     {
                         "name": "Bunyala Central"
@@ -951,9 +1049,12 @@
     },
     {
         "name": "Homabay",
+        "code": 43,
         "subcounties": [
             {
                 "name": "Kasipul",
+                "county_code": 43,
+                "code": 245,
                 "wards": [
                     {
                         "name": "West Kasipul"
@@ -974,6 +1075,8 @@
             },
             {
                 "name": "Kabondo Kasipul",
+                "county_code": 43,
+                "code": 246,
                 "wards": [
                     {
                         "name": "Kabondo East"
@@ -991,6 +1094,8 @@
             },
             {
                 "name": "Karachuonyo",
+                "county_code": 43,
+                "code": 247,
                 "wards": [
                     {
                         "name": "West Karachuonyo"
@@ -1017,6 +1122,8 @@
             },
             {
                 "name": "Rangwe",
+                "county_code": 43,
+                "code": 248,
                 "wards": [
                     {
                         "name": "West Gem"
@@ -1034,6 +1141,8 @@
             },
             {
                 "name": "Homa Bay Town",
+                "county_code": 43,
+                "code": 249,
                 "wards": [
                     {
                         "name": "Homa Bay Central"
@@ -1051,6 +1160,8 @@
             },
             {
                 "name": "Ndhiwa",
+                "county_code": 43,
+                "code": 250,
                 "wards": [
                     {
                         "name": "Kwabwai"
@@ -1077,6 +1188,8 @@
             },
             {
                 "name": "Suba North",
+                "county_code": 43,
+                "code": 251,
                 "wards": [
                     {
                         "name": "Mfangano Island"
@@ -1097,6 +1210,8 @@
             },
             {
                 "name": "Suba South",
+                "county_code": 43,
+                "code": 252,
                 "wards": [
                     {
                         "name": "Gwassi South"
@@ -1116,9 +1231,12 @@
     },
     {
         "name": "Migori",
+        "code": 44,
         "subcounties": [
             {
                 "name": "Rongo",
+                "county_code": 44,
+                "code": 253,
                 "wards": [
                     {
                         "name": "North Kamagambo"
@@ -1136,6 +1254,8 @@
             },
             {
                 "name": "Awendo",
+                "county_code": 44,
+                "code": 254,
                 "wards": [
                     {
                         "name": "North Sakwa"
@@ -1153,6 +1273,8 @@
             },
             {
                 "name": "Suna East",
+                "county_code": 44,
+                "code": 255,
                 "wards": [
                     {
                         "name": "God Jope"
@@ -1170,6 +1292,8 @@
             },
             {
                 "name": "Suna West",
+                "county_code": 44,
+                "code": 256,
                 "wards": [
                     {
                         "name": "Wiga"
@@ -1187,6 +1311,8 @@
             },
             {
                 "name": "Uriri",
+                "county_code": 44,
+                "code": 257,
                 "wards": [
                     {
                         "name": "West Kanyamkago"
@@ -1207,6 +1333,8 @@
             },
             {
                 "name": "Nyatike",
+                "county_code": 44,
+                "code": 258,
                 "wards": [
                     {
                         "name": "Kachien'g"
@@ -1233,6 +1361,8 @@
             },
             {
                 "name": "Kuria West",
+                "county_code": 44,
+                "code": 259,
                 "wards": [
                     {
                         "name": "Bukira East"
@@ -1259,6 +1389,8 @@
             },
             {
                 "name": "Kuria East",
+                "county_code": 44,
+                "code": 260,
                 "wards": [
                     {
                         "name": "Gokeharaka/Getambwega"
@@ -1281,9 +1413,12 @@
     },
     {
         "name": "Transnzoia",
+        "code": 26,
         "subcounties": [
             {
                 "name": "Kwanza",
+                "county_code": 26,
+                "code": 136,
                 "wards": [
                     {
                         "name": "Kapomboi"
@@ -1301,6 +1436,8 @@
             },
             {
                 "name": "Endebess",
+                "county_code": 26,
+                "code": 137,
                 "wards": [
                     {
                         "name": "Chepchoina"
@@ -1315,6 +1452,8 @@
             },
             {
                 "name": "Saboti",
+                "county_code": 26,
+                "code": 138,
                 "wards": [
                     {
                         "name": "Kinyoro"
@@ -1335,6 +1474,8 @@
             },
             {
                 "name": "Kiminini",
+                "county_code": 26,
+                "code": 139,
                 "wards": [
                     {
                         "name": "Kiminini"
@@ -1358,6 +1499,8 @@
             },
             {
                 "name": "Cherangany",
+                "county_code": 26,
+                "code": 140,
                 "wards": [
                     {
                         "name": "Sinyerere"
@@ -1386,9 +1529,39 @@
     },
     {
         "name": "Kisii",
+        "code": 45,
         "subcounties": [
             {
+                "county_code": 45,
+                "code": 261,
+                "name": "Bonchari",
+                "wards": [
+                    {
+                        "subcounty_code": 261,
+                        "code": 1301,
+                        "name": "Bomariba"
+                    },
+                    {
+                        "subcounty_code": 261,
+                        "code": 1302,
+                        "name": "Bogiakumu"
+                    },
+                    {
+                        "subcounty_code": 261,
+                        "code": 1303,
+                        "name": "Bomorenda"
+                    },
+                    {
+                        "subcounty_code": 261,
+                        "code": 1304,
+                        "name": "Riana"
+                    }
+                ]
+            },
+            {
                 "name": "South Mugirango",
+                "county_code": 45,
+                "code": 262,
                 "wards": [
                     {
                         "name": "Tabaka"
@@ -1412,6 +1585,8 @@
             },
             {
                 "name": "Bomachoge Borabu",
+                "county_code": 45,
+                "code": 263,
                 "wards": [
                     {
                         "name": "Bombaba Borabu"
@@ -1429,6 +1604,8 @@
             },
             {
                 "name": "Bobasi",
+                "county_code": 45,
+                "code": 264,
                 "wards": [
                     {
                         "name": "Masige West"
@@ -1458,6 +1635,8 @@
             },
             {
                 "name": "Bomachoge Chache",
+                "county_code": 45,
+                "code": 265,
                 "wards": [
                     {
                         "name": "Majoge Basi"
@@ -1472,6 +1651,8 @@
             },
             {
                 "name": "Nyaribari Masaba",
+                "county_code": 45,
+                "code": 266,
                 "wards": [
                     {
                         "name": "Ichuni"
@@ -1492,6 +1673,8 @@
             },
             {
                 "name": "Nyaribari Chache",
+                "county_code": 45,
+                "code": 267,
                 "wards": [
                     {
                         "name": "Bobaracho"
@@ -1515,6 +1698,8 @@
             },
             {
                 "name": "Kitutu Chache North",
+                "county_code": 45,
+                "code": 268,
                 "wards": [
                     {
                         "name": "Monyerero"
@@ -1532,6 +1717,8 @@
             },
             {
                 "name": "Kitutu Chache South",
+                "county_code": 45,
+                "code": 269,
                 "wards": [
                     {
                         "name": "Bogusero"
