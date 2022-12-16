@@ -31,12 +31,12 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
   end
 
   enum :feed_types_enum do
-    value(:layers_mash)
-    value(:chicken_duck_mash)
-    value(:growers_mash)
-    value(:starter_crumbs)
-    value(:finisher_pellets)
-    value(:kienyeji_growers_mash)
+    value(:layers_mash, as: "Layers Mash")
+    value(:chicken_duck_mash, as: "Chick & Duck Mash")
+    value(:growers_mash, as: "Growers Mash")
+    value(:starter_crumbs, as: "Starter Crumbs")
+    value(:finisher_pellets, as: "Finisher Pellets")
+    value(:kienyeji_growers_mash, as: "Kienyeji Growers Mash")
   end
 
   object :batch do
