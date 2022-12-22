@@ -31,12 +31,12 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
   end
 
   enum :feed_types_enum do
-    value(:layers_mash, as: "Layers Mash")
-    value(:chicken_duck_mash, as: "Chick & Duck Mash")
-    value(:growers_mash, as: "Growers Mash")
-    value(:starter_crumbs, as: "Starter Crumbs")
-    value(:finisher_pellets, as: "Finisher Pellets")
-    value(:kienyeji_growers_mash, as: "Kienyeji Growers Mash")
+    value(:layers_mash)
+    value(:chicken_duck_mash)
+    value(:growers_mash)
+    value(:starter_crumbs)
+    value(:finisher_pellets)
+    value(:kienyeji_growers_mash)
   end
 
   object :batch do
@@ -54,7 +54,7 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
 
     field :bird_type, :bird_type_enum
     field :name, :string
-    field :created_at, :datetime
+    field :created_at, :eatdatetime
     field :todays_submission, :boolean
 
     field :reports, list_of(:batch_report) do

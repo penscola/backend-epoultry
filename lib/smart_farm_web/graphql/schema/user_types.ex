@@ -53,7 +53,7 @@ defmodule SmartFarmWeb.Schema.UserTypes do
       resolve(dataloader(Repo))
     end
 
-    field :date_approved, :datetime
+    field :date_approved, :eatdatetime
     field :address, :address
   end
 

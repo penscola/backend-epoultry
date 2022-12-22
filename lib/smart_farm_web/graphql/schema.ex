@@ -8,6 +8,7 @@ defmodule SmartFarmWeb.Schema do
   # Custom Types
   import_types(Schema.UUIDType)
   import_types(Schema.JSONType)
+  import_types(Schema.EATDatetimeType)
   import_types(Absinthe.Type.Custom)
 
   # For file uploads

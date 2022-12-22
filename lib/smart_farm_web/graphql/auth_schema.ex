@@ -7,6 +7,7 @@ defmodule SmartFarmWeb.AuthSchema do
   # Custom Types
   import_types(Schema.UUIDType)
   import_types(Schema.JSONType)
+  import_types(Schema.EATDatetimeType)
   import_types(Absinthe.Type.Custom)
 
   import_types(Schema.AuthTypes)

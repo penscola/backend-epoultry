@@ -57,7 +57,7 @@ defmodule SmartFarmWeb.Schema.FarmTypes do
 
   object :invite do
     field :invite_code, :string
-    field :expiry, :datetime
+    field :expiry, :eatdatetime
   end
 
   object :farm_report do
