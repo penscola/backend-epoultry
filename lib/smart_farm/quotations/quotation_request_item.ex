@@ -16,5 +16,14 @@ defmodule SmartFarm.Quotations.QuotationRequestItem do
     |> cast(attrs, [:name, :quantity])
     |> validate_required([:name, :quantity])
     |> update_change(:name, &String.downcase/1)
+    |> maybe_skip_insertion()
+  end
+
+  defp maybe_skip_insertion(changeset) do
+    if changeset.valid? and get_change(changeset, :quantity) == 0 do
+      %{changeset | action: :ignore}
+    else
+      changeset
+    end
   end
 end
