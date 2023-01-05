@@ -19,6 +19,7 @@ defmodule SmartFarm.Farms.Farm do
     has_one :contractor, through: [:farm_contractor, :contractor]
     has_many :batches, Batch
     has_many :store_items, StoreItem
+    has_many :extension_service_requests, ExtensionServiceRequest
     many_to_many :managers, User, join_through: FarmManager
 
     timestamps()

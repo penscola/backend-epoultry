@@ -18,6 +18,10 @@ defmodule SmartFarmWeb.Schema.UserTypes do
       resolve(dataloader(Repo))
     end
 
+    field :vet_officer, :vet_officer do
+      resolve(dataloader(Repo))
+    end
+
     field :owned_farms, list_of(:farm) do
       resolve(dataloader(Repo))
     end
@@ -57,6 +61,16 @@ defmodule SmartFarmWeb.Schema.UserTypes do
     field :address, :address
   end
 
+  object :vet_officer do
+    field :user, :user do
+      resolve(dataloader(Repo))
+    end
+
+    field :date_approved, :eatdatetime
+    field :address, :address
+    field :vet_number, :string
+  end
+
   input_object :register_user_input do
     field :first_name, non_null(:string)
     field :last_name, non_null(:string)
@@ -83,7 +97,24 @@ defmodule SmartFarmWeb.Schema.UserTypes do
     field :first_name, non_null(:string)
     field :last_name, non_null(:string)
     field :phone_number, non_null(:string)
-    field :recovery_phone_number, non_null(:string)
+    field :recovery_phone_number, :string
+    field :address, non_null(:address_input)
+  end
+
+  input_object :register_vet_officer_input do
+    field :first_name, non_null(:string)
+    field :last_name, non_null(:string)
+    field :phone_number, non_null(:string)
+    field :password, non_null(:string)
+    field :national_id, non_null(:string)
+    field :vet_number, non_null(:string)
+  end
+
+  input_object :update_vet_officer_input do
+    field :first_name, non_null(:string)
+    field :last_name, non_null(:string)
+    field :phone_number, non_null(:string)
+    field :recovery_phone_number, :string
     field :address, non_null(:address_input)
   end
 
@@ -117,6 +148,12 @@ defmodule SmartFarmWeb.Schema.UserTypes do
 
       resolve(&Resolvers.User.update_extension_officer/2)
     end
+
+    field :update_vet_officer, non_null(:user) do
+      arg(:data, non_null(:update_vet_officer_input))
+
+      resolve(&Resolvers.User.update_vet_officer/2)
+    end
   end
 
   object :user_auth_mutations do
@@ -130,6 +167,12 @@ defmodule SmartFarmWeb.Schema.UserTypes do
       arg(:data, non_null(:register_extension_officer_input))
 
       resolve(&Resolvers.User.register_extension_officer/2)
+    end
+
+    field :register_vet_officer, non_null(:user) do
+      arg(:data, non_null(:register_vet_officer_input))
+
+      resolve(&Resolvers.User.register_vet_officer/2)
     end
   end
 end

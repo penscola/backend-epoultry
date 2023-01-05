@@ -1,6 +1,5 @@
 defmodule SmartFarm.Accounts.Farmer do
   use SmartFarm.Schema
-  alias SmartFarm.Accounts.User
 
   @primary_key false
   schema "farmers" do

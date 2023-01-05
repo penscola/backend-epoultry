@@ -9,7 +9,10 @@ defmodule SmartFarm.Accounts.User do
     field :recovery_phone_number, :string
     field :password, :string, virtual: true
     field :password_hash, :string
-    field :role, Ecto.Enum, values: [:admin, :user]
+
+    field :role, Ecto.Enum,
+      values: [:admin, :user, :farmer, :farm_manager, :vet_officer, :extension_officer]
+
     field :birth_date, :date
     field :gender, :string
     field :national_id, :string
@@ -17,6 +20,7 @@ defmodule SmartFarm.Accounts.User do
     has_one :farmer, Farmer
     has_one :group, Group, foreign_key: :owner_id
     has_one :extension_officer, ExtensionOfficer
+    has_one :vet_officer, VetOfficer
     has_many :owned_farms, Farm, foreign_key: :owner_id
     has_many :quotations, Quotation, preload_order: [desc: :created_at]
     has_many :quotation_requests, QuotationRequest
@@ -67,6 +71,23 @@ defmodule SmartFarm.Accounts.User do
     |> changeset(attrs)
     |> cast(attrs, [:national_id])
     |> validate_required([:national_id])
+  end
+
+  def vet_officer_registration_changeset(user, attrs) do
+    user
+    |> changeset(attrs)
+    |> cast(attrs, [:password, :national_id])
+    |> validate_required([:password, :national_id])
+    |> validate_length(:password, min: 4)
+    |> put_pass_hash()
+    |> cast_assoc(:vet_officer, required: true)
+  end
+
+  def vet_officer_changeset(user, attrs) do
+    user
+    |> changeset(attrs)
+    |> cast(attrs, [:national_id, :vet_number])
+    |> validate_required([:national_id, :vet_number])
   end
 
   def format_phone_number("254" <> rest) when byte_size(rest) == 9 do

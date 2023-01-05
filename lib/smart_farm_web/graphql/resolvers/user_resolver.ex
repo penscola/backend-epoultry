@@ -17,6 +17,12 @@ defmodule SmartFarmWeb.Resolvers.User do
     Accounts.register_extension_officer(args.data)
   end
 
+  @spec register_vet_officer(map(), %{context: map()}) ::
+          {:ok, %User{}} | {:error, Ecto.Changeset.t()}
+  def register_vet_officer(args, _context) do
+    Accounts.register_vet_officer(args.data)
+  end
+
   @spec update_user(map(), %{context: %{current_user: %User{}}}) ::
           {:ok, %User{}} | {:error, Ecto.Changeset.t()}
   def update_user(args, %{context: %{current_user: user}}) do
@@ -27,6 +33,12 @@ defmodule SmartFarmWeb.Resolvers.User do
           {:ok, %User{}} | {:error, Ecto.Changeset.t()}
   def update_extension_officer(args, %{context: %{current_user: user}}) do
     Accounts.update_extension_officer(user, args.data)
+  end
+
+  @spec update_vet_officer(map(), %{context: %{current_user: %User{}}}) ::
+          {:ok, %User{}} | {:error, Ecto.Changeset.t()}
+  def update_vet_officer(args, %{context: %{current_user: user}}) do
+    Accounts.update_vet_officer(user, args.data)
   end
 
   @spec remove_farm_manager(map(), %{context: map()}) ::

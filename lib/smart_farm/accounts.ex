@@ -90,6 +90,27 @@ defmodule SmartFarm.Accounts do
     end
   end
 
+  def get_user_role(user) do
+    user = Repo.preload(user, [:farmer, :vet_officer, :extension_officer])
+
+    case user do
+      %{role: :admin} ->
+        :admin
+
+      %{vet_officer: %{}} ->
+        :vet_officer
+
+      %{extension_officer: %{}} ->
+        :extension_officer
+
+      %{farmer: %{}} ->
+        :farmer
+
+      _other ->
+        :farm_manager
+    end
+  end
+
   @doc """
   Creates a user.
 
@@ -140,8 +161,27 @@ defmodule SmartFarm.Accounts do
       Repo.fetch_by(ExtensionOfficer, user_id: user.id)
     end)
     |> Multi.update(:user, User.extension_officer_changeset(user, attrs))
-    |> Multi.update(:update_officer, fn %{extension_officers: officer} ->
+    |> Multi.update(:update_officer, fn %{extension_officer: officer} ->
       ExtensionOfficer.changeset(officer, attrs)
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} ->
+        {:ok, user}
+
+      {:error, _failed_operation, changeset, _changes} ->
+        {:error, changeset}
+    end
+  end
+
+  def update_vet_officer(%User{} = user, attrs) do
+    Multi.new()
+    |> Multi.run(:vet_officer, fn _repo, _changes ->
+      Repo.fetch_by(VetOfficer, user_id: user.id)
+    end)
+    |> Multi.update(:user, User.vet_officer_changeset(user, attrs))
+    |> Multi.update(:update_officer, fn %{vet_officer: officer} ->
+      VetOfficer.changeset(officer, attrs)
     end)
     |> Repo.transaction()
     |> case do
@@ -221,6 +261,34 @@ defmodule SmartFarm.Accounts do
   def register_extension_officer(attrs) do
     Multi.new()
     |> Multi.insert(:user, User.extension_officer_registration_changeset(%User{}, attrs))
+    |> Multi.run(:user_otp, fn _repo, %{user: user} ->
+      create_user_otp(user)
+    end)
+    |> Multi.run(:send_otp, fn _repo, %{user_otp: user_otp} ->
+      case send_otp(user_otp) do
+        {:ok, response} ->
+          {:ok, response}
+
+        {:error, response} ->
+          {:ok, response}
+      end
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} ->
+        {:ok, user}
+
+      {:error, _failed_operation, changeset, _changes} ->
+        {:error, changeset}
+    end
+  end
+
+  def register_vet_officer(attrs) do
+    Multi.new()
+    |> Multi.insert(:user, fn _changes ->
+      attrs = Map.merge(attrs, %{vet_officer: attrs})
+      User.vet_officer_registration_changeset(%User{}, attrs)
+    end)
     |> Multi.run(:user_otp, fn _repo, %{user: user} ->
       create_user_otp(user)
     end)
