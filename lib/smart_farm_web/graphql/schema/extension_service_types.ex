@@ -12,7 +12,7 @@ defmodule SmartFarmWeb.Schema.ExtensionServiceTypes do
   object :extension_service_request do
     field :date_accepted, :eatdatetime
     field :date_cancelled, :eatdatetime
-    field :inserted_at, :eatdatetime
+    field :created_at, :eatdatetime
     field :farm_id, :uuid
 
     field :farm_visit, :farm_visit do
