@@ -7,6 +7,8 @@ defmodule SmartFarm.ExtensionServices.ExtensionServiceRequest do
     belongs_to :acceptor, User
     belongs_to :requester, User
     belongs_to :farm, Farm
+    has_one :medical_visit, MedicalVisitRequest, foreign_key: :extension_service_id
+    has_one :farm_visit, FarmVisitRequest, foreign_key: :extension_service_id
 
     timestamps()
   end

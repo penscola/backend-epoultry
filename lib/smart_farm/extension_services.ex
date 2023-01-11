@@ -98,7 +98,7 @@ defmodule SmartFarm.ExtensionServices do
       from e in ExtensionServiceRequest,
         left_join: m in assoc(e, :medical_visit),
         left_join: f in assoc(e, :farm_visit),
-        order_by: [desc: e.inserted_at]
+        order_by: [desc: e.created_at]
 
     base_query
     |> filter_extension_services_query_by_params(params)
