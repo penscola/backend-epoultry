@@ -1,6 +1,19 @@
 defmodule SmartFarm.ExtensionServices do
   use SmartFarm.Context
 
+  def get_request_status(%ExtensionServiceRequest{} = request) do
+    case request do
+      %{date_accepted: nil, date_cancelled: nil} ->
+        :pending
+
+      %{date_accepted: %DateTime{}, date_cancelled: nil} ->
+        :accepted
+
+      %{date_cancelled: %DateTime{}, date_accepted: nil} ->
+        :cancelled
+    end
+  end
+
   def request_farm_visit(_params, actor: nil), do: {:error, :unauthenticated}
 
   def request_farm_visit(params, actor: %User{} = user) do

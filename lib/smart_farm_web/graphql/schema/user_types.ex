@@ -1,6 +1,14 @@
 defmodule SmartFarmWeb.Schema.UserTypes do
   use SmartFarmWeb, :schema
 
+  enum :user_role_enum do
+    value(:admin)
+    value(:vet_officer)
+    value(:extension_officer)
+    value(:farmer)
+    value(:farm_manager)
+  end
+
   object :user do
     field :id, :uuid
     field :first_name, :string
@@ -9,6 +17,10 @@ defmodule SmartFarmWeb.Schema.UserTypes do
     field :birth_date, :date
     field :gender, :string
     field :national_id, :string
+
+    field :role, :user_role_enum do
+      resolve &Resolvers.User.get_user_role/3
+    end
 
     field :farmer, :farmer do
       resolve(dataloader(Repo))

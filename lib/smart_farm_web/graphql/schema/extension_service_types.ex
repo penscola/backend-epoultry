@@ -15,6 +15,10 @@ defmodule SmartFarmWeb.Schema.ExtensionServiceTypes do
     field :created_at, :eatdatetime
     field :farm_id, :uuid
 
+    field :status, :extension_service_status_enum do
+      resolve(&Resolvers.ExtensionService.request_status/3)
+    end
+
     field :farm_visit, :farm_visit do
       resolve(dataloader(Repo))
     end
