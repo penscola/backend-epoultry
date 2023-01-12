@@ -11,6 +11,9 @@ defmodule SmartFarm.ExtensionServices do
 
       %{date_cancelled: %DateTime{}, date_accepted: nil} ->
         :cancelled
+
+      %{date_accepted: %DateTime{}, date_cancelled: %DateTime{}} ->
+        :cancelled
     end
   end
 
@@ -149,6 +152,55 @@ defmodule SmartFarm.ExtensionServices do
 
       role when role in [:admin, :vet_officer, :extension_officer] ->
         base
+    end
+  end
+
+  def accept_extension_request(_request_id, actor: nil), do: {:error, :unauthenticated}
+
+  def accept_extension_request(request_id, actor: %User{} = user) do
+    user_role = Accounts.get_user_role(user)
+
+    if user_role in [:vet_officer, :extension_officer] do
+      extension_service = Repo.get!(ExtensionServiceRequest, request_id)
+
+      case extension_service do
+        %{date_accepted: nil, date_cancelled: nil} ->
+          extension_service
+          |> ExtensionServiceRequest.changeset(%{
+            date_accepted: DateTime.utc_now() |> DateTime.truncate(:second)
+          })
+          |> Ecto.Changeset.put_assoc(:acceptor, user)
+          |> Repo.update()
+
+        %{date_cancelled: %DateTime{}} ->
+          {:error, :request_cancelled}
+
+        %{date_accepted: %DateTime{}} ->
+          {:error, :request_already_accepted}
+      end
+    else
+      {:error, :unauthorized}
+    end
+  end
+
+  def cancel_extension_request(_request_id, actor: nil), do: {:error, :unauthenticated}
+
+  def cancel_extension_request(request_id, actor: %User{id: user_id}) do
+    extension_service = Repo.get!(ExtensionServiceRequest, request_id)
+
+    case extension_service do
+      %{date_cancelled: nil, requester_id: ^user_id} ->
+        extension_service
+        |> ExtensionServiceRequest.changeset(%{
+          date_cancelled: DateTime.utc_now() |> DateTime.truncate(:second)
+        })
+        |> Repo.update()
+
+      %{date_cancelled: %DateTime{}} ->
+        {:error, :request_already_cancelled}
+
+      _other ->
+        {:error, :unauthorized}
     end
   end
 end

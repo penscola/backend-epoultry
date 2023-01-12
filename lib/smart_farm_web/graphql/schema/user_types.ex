@@ -19,7 +19,7 @@ defmodule SmartFarmWeb.Schema.UserTypes do
     field :national_id, :string
 
     field :role, :user_role_enum do
-      resolve &Resolvers.User.get_user_role/3
+      resolve(&Resolvers.User.get_user_role/3)
     end
 
     field :farmer, :farmer do

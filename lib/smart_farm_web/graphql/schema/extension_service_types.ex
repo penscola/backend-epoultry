@@ -84,5 +84,17 @@ defmodule SmartFarmWeb.Schema.ExtensionServiceTypes do
 
       resolve(&Resolvers.ExtensionService.request_medical_visit/2)
     end
+
+    field :accept_extension_request, non_null(:extension_service_request) do
+      arg(:extension_service_id, non_null(:uuid))
+
+      resolve(&Resolvers.ExtensionService.accept_extension_request/2)
+    end
+
+    field :cancel_extension_request, non_null(:extension_service_request) do
+      arg(:extension_service_id, non_null(:uuid))
+
+      resolve(&Resolvers.ExtensionService.cancel_extension_request/2)
+    end
   end
 end

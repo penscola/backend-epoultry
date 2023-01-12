@@ -16,4 +16,12 @@ defmodule SmartFarmWeb.Resolvers.ExtensionService do
   def request_status(request, _args, %{context: %{current_user: _user}}) do
     {:ok, ExtensionServices.get_request_status(request)}
   end
+
+  def accept_extension_request(args, %{context: %{current_user: user}}) do
+    ExtensionServices.accept_extension_request(args.extension_service_id, actor: user)
+  end
+
+  def cancel_extension_request(args, %{context: %{current_user: user}}) do
+    ExtensionServices.cancel_extension_request(args.extension_service_id, actor: user)
+  end
 end
