@@ -7,7 +7,7 @@ defmodule SmartFarmWeb.Resolvers.User do
   end
 
   def get_user_role(user, _args, %{context: %{current_user: _user}}) do
-    {:ok, Accounts.get_user_role(user) |> IO.inspect()}
+    {:ok, Accounts.get_user_role(user)}
   end
 
   @spec register_user(map(), %{context: map()}) :: {:ok, %User{}} | {:error, Ecto.Changeset.t()}
