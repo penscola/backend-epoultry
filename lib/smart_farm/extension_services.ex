@@ -203,4 +203,38 @@ defmodule SmartFarm.ExtensionServices do
         {:error, :unauthorized}
     end
   end
+
+  def create_farm_visit_report(_attrs, actor: nil), do: {:error, :unauthenticated}
+
+  def create_farm_visit_report(attrs, actor: %User{id: user_id}) do
+    Multi.new()
+    |> Multi.run(:extension_service, fn _repo, _changes ->
+      if id = attrs[:extension_service_id] || attrs["extension_service_id"] do
+        Repo.fetch(ExtensionServiceRequest, id)
+      else
+        {:error, "extension_service_id is missing"}
+      end
+    end)
+    |> Multi.run(:auth, fn _repo, %{extension_service: extension_service} ->
+      if extension_service.acceptor_id == user_id do
+        {:ok, nil}
+      else
+        {:error, :unauthorized}
+      end
+    end)
+    |> Multi.insert(:report, fn %{extension_service: extension_service} ->
+      FarmVisitReport.changeset(
+        %FarmVisitReport{extension_service_id: extension_service.id},
+        attrs
+      )
+    end)
+    |> Repo.transact()
+    |> case do
+      {:ok, %{report: report}} ->
+        {:ok, report}
+
+      {:error, %{value: error}} ->
+        {:error, error}
+    end
+  end
 end

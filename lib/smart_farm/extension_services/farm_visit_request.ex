@@ -8,6 +8,10 @@ defmodule SmartFarm.ExtensionServices.FarmVisitRequest do
 
     belongs_to :extension_service, ExtensionServiceRequest
 
+    has_one :report, FarmVisitReport,
+      foreign_key: :extension_service_id,
+      references: :extension_service_id
+
     timestamps()
   end
 

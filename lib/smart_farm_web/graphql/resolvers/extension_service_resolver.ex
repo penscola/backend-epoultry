@@ -24,4 +24,8 @@ defmodule SmartFarmWeb.Resolvers.ExtensionService do
   def cancel_extension_request(args, %{context: %{current_user: user}}) do
     ExtensionServices.cancel_extension_request(args.extension_service_id, actor: user)
   end
+
+  def create_farm_visit_report(args, %{context: %{current_user: user}}) do
+    ExtensionServices.create_farm_visit_report(args, actor: user)
+  end
 end
