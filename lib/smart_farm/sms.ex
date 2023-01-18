@@ -11,7 +11,6 @@ defmodule SmartFarm.SMS do
       from: config[:shortcode]
     }
 
-
     case AtClient.post("/messaging", attrs) do
       {:ok, %{status: status, body: body}} when status >= 200 and status <= 300 ->
         {:ok, body}
