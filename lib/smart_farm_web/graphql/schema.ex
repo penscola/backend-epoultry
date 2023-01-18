@@ -23,6 +23,7 @@ defmodule SmartFarmWeb.Schema do
   import_types(Schema.QuotationTypes)
   import_types(Schema.StoreTypes)
   import_types(Schema.UserTypes)
+  import_types(Schema.VaccinationTypes)
 
   query do
     import_fields(:address_queries)
@@ -33,6 +34,7 @@ defmodule SmartFarmWeb.Schema do
     import_fields(:quotation_queries)
     import_fields(:store_queries)
     import_fields(:user_queries)
+    import_fields(:vaccination_queries)
   end
 
   mutation do
@@ -42,6 +44,7 @@ defmodule SmartFarmWeb.Schema do
     import_fields(:farm_mutations)
     import_fields(:quotation_mutations)
     import_fields(:user_mutations)
+    import_fields(:vaccination_mutations)
   end
 
   def context(ctx) do

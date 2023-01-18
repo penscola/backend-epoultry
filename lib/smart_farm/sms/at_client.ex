@@ -22,7 +22,7 @@ defmodule SmartFarm.SMS.AtClient do
   end
 
   defp config do
-    Application.get_env(:smart_farm, :africastalking) |> IO.inspect
+    Application.get_env(:smart_farm, :africastalking)
   end
 
   defp api_key do

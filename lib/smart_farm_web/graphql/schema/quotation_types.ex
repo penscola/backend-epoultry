@@ -2,6 +2,7 @@ defmodule SmartFarmWeb.Schema.QuotationTypes do
   use SmartFarmWeb, :schema
 
   object :quotation do
+    field :id, :uuid
     field :title, :string
     field :total_cost, :integer
     field :created_at, :eatdatetime
@@ -12,6 +13,7 @@ defmodule SmartFarmWeb.Schema.QuotationTypes do
   end
 
   object :quotation_item do
+    field :id, :uuid
     field :name, :string
     field :quantity, :integer
     field :unit_cost, :integer

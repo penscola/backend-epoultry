@@ -11,7 +11,6 @@ defmodule SmartFarm.SMS do
       from: config[:shortcode]
     }
 
-    attrs = maybe_remove_shortcode(attrs)
 
     case AtClient.post("/messaging", attrs) do
       {:ok, %{status: status, body: body}} when status >= 200 and status <= 300 ->
@@ -22,14 +21,6 @@ defmodule SmartFarm.SMS do
 
       other ->
         other
-    end
-  end
-
-  defp maybe_remove_shortcode(attrs) do
-    if Application.get_env(:smart_farm, :env) == :staging do
-      Map.drop(attrs, [:from])
-    else
-      attrs
     end
   end
 

@@ -41,7 +41,10 @@ defmodule SmartFarm.Shared do
         Stores,
         Stores.Restock,
         Stores.StoreItem,
-        Util.CodeGenerator
+        Util.CodeGenerator,
+        Vaccinations,
+        Vaccinations.BatchVaccination,
+        Vaccinations.VaccinationSchedule
       }
     end
   end
