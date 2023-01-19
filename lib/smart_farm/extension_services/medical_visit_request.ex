@@ -3,7 +3,7 @@ defmodule SmartFarm.ExtensionServices.MedicalVisitRequest do
 
   @primary_key false
   schema "medical_visit_extension_services" do
-    field :bird_type, :string
+    field :bird_type, Ecto.Enum, values: [:broilers, :layers, :kienyeji]
     field :bird_age, :float
     field :age_type, Ecto.Enum, values: [:weeks, :days, :months]
     field :bird_count, :integer
