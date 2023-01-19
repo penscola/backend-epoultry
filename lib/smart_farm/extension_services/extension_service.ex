@@ -15,7 +15,7 @@ defmodule SmartFarm.ExtensionServices.ExtensionServiceRequest do
 
   def changeset(request, attrs) do
     request
-    |> cast(attrs, [:date_accepted, :date_cancelled, :farm_id])
+    |> cast(attrs, [:date_accepted, :date_cancelled, :farm_id, :acceptor_id, :requester_id])
     |> validate_required([:farm_id])
   end
 end

@@ -42,6 +42,7 @@ defmodule SmartFarm.Vaccinations do
       _other, query ->
         query
     end)
+    |> Repo.all()
   end
 
   def get_batch_vaccination(vaccination_id, actor: %User{}) do

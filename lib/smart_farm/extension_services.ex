@@ -167,9 +167,9 @@ defmodule SmartFarm.ExtensionServices do
         %{date_accepted: nil, date_cancelled: nil} ->
           extension_service
           |> ExtensionServiceRequest.changeset(%{
-            date_accepted: DateTime.utc_now() |> DateTime.truncate(:second)
+            date_accepted: DateTime.utc_now() |> DateTime.truncate(:second),
+            acceptor_id: user.id
           })
-          |> Ecto.Changeset.put_assoc(:acceptor, user)
           |> Repo.update()
 
         %{date_cancelled: %DateTime{}} ->

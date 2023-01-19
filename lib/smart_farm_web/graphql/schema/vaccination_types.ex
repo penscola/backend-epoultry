@@ -4,6 +4,7 @@ defmodule SmartFarmWeb.Schema.VaccinationTypes do
   enum :vaccination_status_enum do
     value(:pending)
     value(:completed)
+    value(:all)
   end
 
   object :batch_vaccination do
@@ -45,7 +46,7 @@ defmodule SmartFarmWeb.Schema.VaccinationTypes do
     end
 
     field :list_batch_vaccinations, non_null(list_of(non_null(:batch_vaccination))) do
-      arg(:status, :vaccination_status_enum)
+      arg(:status, :vaccination_status_enum, default_value: :all)
       arg(:batch_id, :uuid)
 
       resolve(&Resolvers.Vaccination.list_batch_vaccinations/2)
