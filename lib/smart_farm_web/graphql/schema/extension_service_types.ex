@@ -121,6 +121,7 @@ defmodule SmartFarmWeb.Schema.ExtensionServiceTypes do
   end
 
   input_object :create_farm_visit_report_input do
+    field :extension_service_id, non_null(:uuid)
     field :general_observation, :string
     field :recommendations, :string
     field :farm_information, :farm_information_report_input

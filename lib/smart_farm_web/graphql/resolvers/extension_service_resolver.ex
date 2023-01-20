@@ -26,6 +26,6 @@ defmodule SmartFarmWeb.Resolvers.ExtensionService do
   end
 
   def create_farm_visit_report(args, %{context: %{current_user: user}}) do
-    ExtensionServices.create_farm_visit_report(args, actor: user)
+    ExtensionServices.create_farm_visit_report(args.data, actor: user)
   end
 end
