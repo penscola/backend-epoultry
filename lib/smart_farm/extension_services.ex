@@ -17,6 +17,12 @@ defmodule SmartFarm.ExtensionServices do
     end
   end
 
+  def get_extension_service_request(_id, actor: nil), do: {:error, :unauthenticated}
+
+  def get_extension_service_request(request_id, actor: %User{}) do
+    Repo.fetch(ExtensionServiceRequest, request_id)
+  end
+
   def request_farm_visit(_params, actor: nil), do: {:error, :unauthenticated}
 
   def request_farm_visit(params, actor: %User{} = user) do

@@ -24,6 +24,10 @@ defmodule SmartFarmWeb.Schema.ExtensionServiceTypes do
       resolve(dataloader(Repo))
     end
 
+    field :farm_visit_report, :farm_visit_report do
+      resolve(dataloader(Repo))
+    end
+
     field :medical_visit, :medical_visit do
       resolve(dataloader(Repo))
     end
@@ -156,6 +160,12 @@ defmodule SmartFarmWeb.Schema.ExtensionServiceTypes do
       arg(:filter, non_null(:extension_service_filter_input))
 
       resolve(&Resolvers.ExtensionService.list_extension_service_requests/2)
+    end
+
+    field :extension_service_request, non_null(:extension_service_request) do
+      arg(:extension_service_id, non_null(:uuid))
+
+      resolve(&Resolvers.ExtensionService.get_extension_service_request/2)
     end
   end
 

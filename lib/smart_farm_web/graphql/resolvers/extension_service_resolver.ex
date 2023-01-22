@@ -5,6 +5,10 @@ defmodule SmartFarmWeb.Resolvers.ExtensionService do
     {:ok, ExtensionServices.list_extension_service_requests(filter, actor: user)}
   end
 
+  def get_extension_service_request(args, %{context: %{current_user: user}}) do
+    ExtensionServices.get_extension_service_request(args.extension_service_id, actor: user)
+  end
+
   def request_farm_visit(%{data: data}, %{context: %{current_user: user}}) do
     ExtensionServices.request_farm_visit(data, actor: user)
   end
