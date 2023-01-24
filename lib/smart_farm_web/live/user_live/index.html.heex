@@ -1,17 +1,4 @@
-<h1 class="title">Users</h1>
-
-<%= if @live_action in [:new, :edit] do %>
-  <.modal return_to={Routes.user_index_path(@socket, :index)}>
-    <.live_component
-      module={SmartFarmWeb.UserLive.FormComponent}
-      id={@user.id || :new}
-      title={@page_title}
-      action={@live_action}
-      user={@user}
-      return_to={Routes.user_index_path(@socket, :index)}
-    />
-  </.modal>
-<% end %>
+<h1 class="title"><%= @page_title %></h1>
 
 <table class="table is-fullwidth">
   <thead>
@@ -19,7 +6,19 @@
       <th>First name</th>
       <th>Last name</th>
       <th>Phone number</th>
-      <th>Owned Farms</th>
+      <%= if @live_action == :farmer_index do %>
+        <th>Owned Farms</th>
+      <% end %>
+      <%= if @live_action == :farm_manager_index do %>
+        <th>Managing Farms</th>
+      <% end %>
+      <%= if @live_action == :extension_officer_index do %>
+        <th>Status</th>
+      <% end %>
+      <%= if @live_action == :vet_officer_index do %>
+        <th>Vet Number</th>
+        <th>Status</th>
+      <% end %>
     </tr>
   </thead>
   <tbody id="users">
@@ -28,7 +27,41 @@
         <td><%= user.first_name %></td>
         <td><%= user.last_name %></td>
         <td><%= mask_phone_number(user.phone_number) %></td>
-        <td><%= user.owned_farms %></td>
+        <%= if @live_action == :farmer_index do %>
+          <td><%= user.owned_farms %></td>
+        <% end %>
+        <%= if @live_action == :farm_manager_index do %>
+          <td><%= user.managing_farms %></td>
+        <% end %>
+        <%= if @live_action == :extension_officer_index do %>
+          <td><%= user_status(user.extension_officer) %></td>
+          <%= unless user.extension_officer.date_approved do %>
+            <td>
+              <button
+                class="button is-success is-small"
+                phx-click="approve-extension-officer"
+                phx-value-user_id={user.id}
+              >
+                Approve
+              </button>
+            </td>
+          <% end %>
+        <% end %>
+        <%= if @live_action == :vet_officer_index do %>
+          <td><%= user.vet_officer.vet_number %></td>
+          <td><%= user_status(user.vet_officer) %></td>
+          <%= unless user.vet_officer.date_approved do %>
+            <td>
+              <button
+                class="button is-success is-small"
+                phx-click="approve-vet-officer"
+                phx-value-user_id={user.id}
+              >
+                Approve
+              </button>
+            </td>
+          <% end %>
+        <% end %>
       </tr>
     <% end %>
   </tbody>

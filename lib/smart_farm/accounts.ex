@@ -19,20 +19,73 @@ defmodule SmartFarm.Accounts do
     Repo.all(User)
   end
 
-  def list_users_for_dashboard do
+  def list_farmers(_args, actor: %User{role: :admin}) do
     query =
       from u in User,
-        left_join: f in assoc(u, :owned_farms),
+        join: f in assoc(u, :owned_farms),
         group_by: u.id,
+        order_by: u.first_name,
         select: %{u | owned_farms: coalesce(count(f.id), 0)}
 
     Repo.all(query)
   end
 
-  def verify_admin_credentials(phone, password) do
-    phone
-    |> get_admin_by_phone_number()
-    |> Argon2.check_pass(password)
+  def list_extension_officers(args, actor: %User{role: :admin}) do
+    base_query =
+      from u in User,
+        join: e in assoc(u, :extension_officer),
+        as: :extension_officer,
+        order_by: u.first_name,
+        preload: [extension_officer: e]
+
+    args
+    |> Enum.reject(fn {_key, val} -> is_nil(val) or val == "" end)
+    |> Enum.reduce(base_query, fn
+      {:status, "approved"}, base ->
+        from [extension_officer: e] in base, where: not is_nil(e.date_approved)
+
+      {:status, "pending"}, base ->
+        from [extension_officer: e] in base, where: is_nil(e.date_approved)
+
+      _other, base ->
+        base
+    end)
+    |> Repo.all()
+  end
+
+  def list_vet_officers(args, actor: %User{role: :admin}) do
+    base_query =
+      from u in User,
+        join: v in assoc(u, :vet_officer),
+        as: :vet_officer,
+        order_by: u.first_name,
+        preload: [vet_officer: v]
+
+    args
+    |> Enum.reject(fn {_key, val} -> is_nil(val) or val == "" end)
+    |> Enum.reduce(base_query, fn
+      {:status, "approved"}, base ->
+        from [vet_officer: v] in base, where: not is_nil(v.date_approved)
+
+      {:status, "pending"}, base ->
+        from [vet_officer: v] in base, where: is_nil(v.date_approved)
+
+      _other, base ->
+        base
+    end)
+    |> Repo.all()
+  end
+
+  def list_farm_managers(_args, actor: %User{role: :admin}) do
+    query =
+      from u in User,
+        join: f in assoc(u, :managing_farms),
+        as: :managing_farms,
+        group_by: u.id,
+        order_by: u.first_name,
+        select: %{u | managing_farms: coalesce(count(f.id), 0)}
+
+    Repo.all(query)
   end
 
   def list_farm_managers(args, actor: %User{} = user) do
@@ -108,6 +161,42 @@ defmodule SmartFarm.Accounts do
 
       _other ->
         :farm_manager
+    end
+  end
+
+  def verify_admin_credentials(phone, password) do
+    phone
+    |> get_admin_by_phone_number()
+    |> Argon2.check_pass(password)
+  end
+
+  def approve_vet_officer(user_id, actor: %User{role: :admin}) do
+    case Repo.fetch_by(VetOfficer, user_id: user_id) do
+      {:ok, %{date_approved: nil} = vet} ->
+        vet
+        |> VetOfficer.changeset(%{date_approved: DateTime.utc_now()})
+        |> Repo.update()
+
+      {:ok, _vet} ->
+        {:error, :already_approved}
+
+      other ->
+        other
+    end
+  end
+
+  def approve_extension_officer(user_id, actor: %User{role: :admin}) do
+    case Repo.fetch_by(ExtensionOfficer, user_id: user_id) do
+      {:ok, %{date_approved: nil} = extension_officer} ->
+        extension_officer
+        |> ExtensionOfficer.changeset(%{date_approved: DateTime.utc_now()})
+        |> Repo.update()
+
+      {:ok, _officer} ->
+        {:error, :already_approved}
+
+      other ->
+        other
     end
   end
 

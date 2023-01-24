@@ -11,7 +11,7 @@ defmodule SmartFarm.Accounts.ExtensionOfficer do
       field :ward, :string
     end
 
-    belongs_to :user, User
+    belongs_to :user, User, primary_key: true
 
     timestamps()
   end

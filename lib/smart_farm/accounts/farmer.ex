@@ -3,7 +3,7 @@ defmodule SmartFarm.Accounts.Farmer do
 
   @primary_key false
   schema "farmers" do
-    belongs_to :user, User
+    belongs_to :user, User, primary_key: true
     has_many :farms, Farm, foreign_key: :owner_id, references: :user_id
 
     timestamps()

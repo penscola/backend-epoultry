@@ -43,11 +43,35 @@
               to: Routes.dashboard_index_path(@conn, :index),
               class: "navbar-item"
             ) %>
-            <%= link("Users", to: Routes.user_index_path(@conn, :index), class: "navbar-item") %>
+
             <%= link("Farm Reports",
               to: Routes.report_index_path(@conn, :index),
               class: "navbar-item"
             ) %>
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                Users
+              </a>
+              <div class="navbar-dropdown">
+                <%= link("Farmers",
+                  to: Routes.user_index_path(@conn, :farmer_index),
+                  class: "navbar-item"
+                ) %>
+                <%= link("Farm Managers",
+                  to: Routes.user_index_path(@conn, :farm_manager_index),
+                  class: "navbar-item"
+                ) %>
+                <%= link("Extension Officers",
+                  to: Routes.user_index_path(@conn, :extension_officer_index),
+                  class: "navbar-item"
+                ) %>
+                <%= link("Vet Officers",
+                  to: Routes.user_index_path(@conn, :vet_officer_index),
+                  class: "navbar-item"
+                ) %>
+              </div>
+            </div>
+
             <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">
                 Quotations

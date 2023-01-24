@@ -29,7 +29,10 @@ defmodule SmartFarmWeb.Router do
     pipe_through :authenticate
 
     live "/", DashboardLive.Index, :index
-    live "/users", UserLive.Index, :index
+    live "/users/farmers", UserLive.Index, :farmer_index
+    live "/users/farm_managers", UserLive.Index, :farm_manager_index
+    live "/users/extension_officers", UserLive.Index, :extension_officer_index
+    live "/users/vet_officers", UserLive.Index, :vet_officer_index
     live "/users/:id", UserLive.Show, :show
     live "/farms/reports", ReportLive.Index, :index
     live "/farms/:farm_id/report/:date", ReportLive.Index, :show
