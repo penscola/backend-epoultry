@@ -116,16 +116,23 @@ defmodule SmartFarm.ExtensionServices do
   def list_extension_service_requests(_params, actor: nil), do: {:error, :unauthenticated}
 
   def list_extension_service_requests(params, actor: %User{} = user) do
-    base_query =
-      from e in ExtensionServiceRequest,
-        left_join: m in assoc(e, :medical_visit),
-        left_join: f in assoc(e, :farm_visit),
-        order_by: [desc: e.created_at]
+    user = Repo.preload(user, [:vet_officer, :extension_officer])
+    officer = user.extension_officer || user.vet_officer
+    # NOTE(frank): please fix this ASAP
+    if officer.date_approved do
+      base_query =
+        from e in ExtensionServiceRequest,
+          left_join: m in assoc(e, :medical_visit),
+          left_join: f in assoc(e, :farm_visit),
+          order_by: [desc: e.created_at]
 
-    base_query
-    |> filter_extension_services_query_by_params(params)
-    |> filter_extension_services_query_by_role(user)
-    |> Repo.all()
+      base_query
+      |> filter_extension_services_query_by_params(params)
+      |> filter_extension_services_query_by_role(user)
+      |> Repo.all()
+    else
+      []
+    end
   end
 
   defp filter_extension_services_query_by_params(base, params) do
