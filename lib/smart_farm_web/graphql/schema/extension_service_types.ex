@@ -44,6 +44,7 @@ defmodule SmartFarmWeb.Schema.ExtensionServiceTypes do
   object :farm_visit do
     field :visit_date, :date
     field :visit_purpose, :string
+    field :description, :string
 
     field :report, :farm_visit_report do
       resolve(dataloader(Repo))
@@ -55,6 +56,7 @@ defmodule SmartFarmWeb.Schema.ExtensionServiceTypes do
     field :bird_age, :float
     field :age_type, :age_type_enum
     field :bird_count, :integer
+    field :description, :string
   end
 
   object :farm_visit_report do

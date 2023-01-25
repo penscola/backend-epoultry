@@ -46,6 +46,7 @@ defmodule SmartFarm.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:corsica, "~> 1.2"},
       {:tz, "~> 0.22.0"},
+      {:timex, "~> 3.7"},
       {:esbuild, "~> 0.4", runtime: Mix.env() == :dev},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 0.17.12"},

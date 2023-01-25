@@ -5,6 +5,7 @@ defmodule SmartFarm.ExtensionServices.FarmVisitRequest do
   schema "farm_visit_extension_services" do
     field :visit_date, :date
     field :visit_purpose, :string
+    field :description, :string
 
     belongs_to :extension_service, ExtensionServiceRequest
 

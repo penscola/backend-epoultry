@@ -33,8 +33,11 @@ defmodule SmartFarm.ExtensionServices do
       |> Ecto.Changeset.put_assoc(:requester, user)
     end)
     |> Multi.insert(:farm_visit, fn %{extension_service: service} ->
+      service = Repo.preload(service, [:farm, :requester])
+
       %FarmVisitRequest{extension_service_id: service.id}
       |> FarmVisitRequest.changeset(params)
+      |> put_description(service)
     end)
     |> Repo.transact()
     |> case do
@@ -43,6 +46,27 @@ defmodule SmartFarm.ExtensionServices do
 
       {:error, %{value: value}} ->
         {:error, value}
+    end
+  end
+
+  defp put_description(changeset, %{farm: %{address: address} = farm, requester: requester}) do
+    if changeset.valid? do
+      date = changeset |> Ecto.Changeset.get_change(:visit_date) |> Timex.format!("{WDfull}, {D} {Mfull} {YYYY}")
+
+      description =
+        "#{requester.first_name} #{requester.last_name} would like you to visit #{farm.name} #{stringify_address(address)} on #{date}"
+
+      Ecto.Changeset.put_change(changeset, :description, description)
+    else
+      changeset
+    end
+  end
+
+  defp stringify_address(address) do
+    if address[:ward] do
+      "in #{address.county}, #{address.subcounty}, #{address.ward}"
+    else
+      ""
     end
   end
 
