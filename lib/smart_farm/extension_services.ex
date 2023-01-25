@@ -194,7 +194,7 @@ defmodule SmartFarm.ExtensionServices do
         officer = user.extension_officer || user.vet_officer
 
         if officer.date_approved do
-          base
+          from e in base, where: is_nil(e.date_accepted) or e.acceptor_id == ^user.id
         else
           from e in base, where: is_nil(e.id)
         end
