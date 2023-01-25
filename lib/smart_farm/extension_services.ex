@@ -51,7 +51,10 @@ defmodule SmartFarm.ExtensionServices do
 
   defp put_description(changeset, %{farm: %{address: address} = farm, requester: requester}) do
     if changeset.valid? do
-      date = changeset |> Ecto.Changeset.get_change(:visit_date) |> Timex.format!("{WDfull}, {D} {Mfull} {YYYY}")
+      date =
+        changeset
+        |> Ecto.Changeset.get_change(:visit_date)
+        |> Timex.format!("{WDfull}, {D} {Mfull} {YYYY}")
 
       description =
         "#{requester.first_name} #{requester.last_name} would like you to visit #{farm.name} #{stringify_address(address)} on #{date}"
@@ -141,22 +144,17 @@ defmodule SmartFarm.ExtensionServices do
 
   def list_extension_service_requests(params, actor: %User{} = user) do
     user = Repo.preload(user, [:vet_officer, :extension_officer])
-    officer = user.extension_officer || user.vet_officer
-    # NOTE(frank): please fix this ASAP
-    if officer.date_approved do
-      base_query =
-        from e in ExtensionServiceRequest,
-          left_join: m in assoc(e, :medical_visit),
-          left_join: f in assoc(e, :farm_visit),
-          order_by: [desc: e.created_at]
 
-      base_query
-      |> filter_extension_services_query_by_params(params)
-      |> filter_extension_services_query_by_role(user)
-      |> Repo.all()
-    else
-      []
-    end
+    base_query =
+      from e in ExtensionServiceRequest,
+        left_join: m in assoc(e, :medical_visit),
+        left_join: f in assoc(e, :farm_visit),
+        order_by: [desc: e.created_at]
+
+    base_query
+    |> filter_extension_services_query_by_params(params)
+    |> filter_extension_services_query_by_role(user)
+    |> Repo.all()
   end
 
   defp filter_extension_services_query_by_params(base, params) do
@@ -187,8 +185,17 @@ defmodule SmartFarm.ExtensionServices do
       :farmer ->
         from e in base, join: f in assoc(e, :farm), on: f.owner_id == ^user.id
 
-      role when role in [:admin, :vet_officer, :extension_officer] ->
+      :admin ->
         base
+
+      role when role in [:vet_officer, :extension_officer] ->
+        officer = user.extension_officer || user.vet_officer
+
+        if officer.date_approved do
+          base
+        else
+          from e in base, where: is_nil(e.id)
+        end
     end
   end
 
