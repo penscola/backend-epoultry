@@ -66,7 +66,7 @@ defmodule SmartFarm.ExtensionServices do
   end
 
   defp stringify_address(address) do
-    if address[:ward] do
+    if address do
       "in #{address.county}, #{address.subcounty}, #{address.ward}"
     else
       ""
@@ -158,7 +158,9 @@ defmodule SmartFarm.ExtensionServices do
   end
 
   defp filter_extension_services_query_by_params(base, params) do
-    Enum.reduce(params, base, fn
+    params
+    |> Enum.reject(fn {_key, val} -> is_nil(val) end)
+    |> Enum.reduce(base, fn
       {:farm_id, value}, base ->
         from e in base, where: e.farm_id == ^value
 
