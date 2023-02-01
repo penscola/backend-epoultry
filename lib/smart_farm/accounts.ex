@@ -176,6 +176,7 @@ defmodule SmartFarm.Accounts do
         vet
         |> VetOfficer.changeset(%{date_approved: DateTime.utc_now()})
         |> Repo.update()
+        |> send_approval_sms()
 
       {:ok, _vet} ->
         {:error, :already_approved}
@@ -191,6 +192,7 @@ defmodule SmartFarm.Accounts do
         extension_officer
         |> ExtensionOfficer.changeset(%{date_approved: DateTime.utc_now()})
         |> Repo.update()
+        |> send_approval_sms()
 
       {:ok, _officer} ->
         {:error, :already_approved}
@@ -510,4 +512,16 @@ defmodule SmartFarm.Accounts do
   end
 
   defp send_otp(_other), do: {:error, :missing_code}
+
+  defp send_approval_sms({:ok, vet_or_ext} = result) do
+    spawn(fn ->
+      user = Repo.preload(vet_or_ext, [:user]).user
+      message = "Hello #{user.first_name},\nYour E-Poultry account has been approved"
+      SMS.send(user.phone_number, message)
+    end)
+
+    result
+  end
+
+  defp send_approval_sms(other), do: other
 end
