@@ -90,6 +90,10 @@ defmodule SmartFarm.Accounts.User do
     |> validate_required([:national_id, :vet_number])
   end
 
+  def format_phone_number("+254" <> rest) when byte_size(rest) == 9 do
+    {:ok, "254" <> rest}
+  end
+
   def format_phone_number("254" <> rest) when byte_size(rest) == 9 do
     {:ok, "254" <> rest}
   end
