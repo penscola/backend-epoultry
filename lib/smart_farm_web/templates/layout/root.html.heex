@@ -89,6 +89,23 @@
               </div>
             </div>
 
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                Vaccinations
+              </a>
+
+              <div class="navbar-dropdown">
+                <%= link("Vaccines",
+                  to: Routes.vaccination_index_path(@conn, :index),
+                  class: "navbar-item"
+                ) %>
+                <%= link("Schedule",
+                  to: Routes.vaccination_index_path(@conn, :schedule),
+                  class: "navbar-item"
+                ) %>
+              </div>
+            </div>
+
             <div class="navbar-item">
               <div class="">
                 <%= link("Log out",

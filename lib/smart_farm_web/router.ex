@@ -48,6 +48,13 @@ defmodule SmartFarmWeb.Router do
     live "/quotations/requests/:requested_item_id/quotation/new",
          QuotationRequestLive.Index,
          :new_quotation
+
+    live "/vaccinations/", VaccinationLive.Index, :index
+    live "/vaccinations/schedule", VaccinationLive.Index, :schedule
+    live "/vaccinations/new", VaccinationLive.Index, :new
+    live "/vaccinations/:id", VaccinationLive.Show, :show
+    live "/vaccinations/:id/edit", VaccinationLive.Show, :edit
+    live "/vaccinations/:id/create_schedule", VaccinationLive.Show, :new_schedule
   end
 
   scope "/", SmartFarmWeb do

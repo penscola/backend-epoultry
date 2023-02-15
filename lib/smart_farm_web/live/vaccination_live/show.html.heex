@@ -1,0 +1,93 @@
+<div class="container content">
+  <h1 class="has-text-centered"><%= @page_title %></h1>
+  <div class="is-flex is-justify-content-space-between">
+    <div>
+      <p>
+        <strong>Vaccine Name:</strong>
+        <span><%= @vaccination.vaccine_name %></span>
+      </p>
+      <p>
+        <strong>Administration Mode:</strong>
+        <span><%= @vaccination.administration_mode %></span>
+      </p>
+    </div>
+    <div>
+        <%= live_patch("Edit Details",
+        to: Routes.vaccination_show_path(@socket, :edit, @vaccination.id),
+        class: "button is-link"
+      ) %>
+    </div>
+  </div>
+  <div>
+    <h3 class="has-text-centered">Vaccination Schedule</h3>
+    <div class="is-flex is-flex-direction-row-reverse">
+      <%= live_patch("Add New Schedule",
+        to: Routes.vaccination_show_path(@socket, :new_schedule, @vaccination.id),
+        class: "button is-link"
+      ) %>
+    </div>
+    <%= for schedule <- @vaccination.schedules do %>
+      <h5>
+        <%= schedule.bird_type %>
+        <%= if schedule.repeat_after do %>
+          (<span>Repeats after <%= schedule.repeat_after %> days</span>)
+        <% else %>
+          (<span>Does not repeat</span>)
+        <% end %>
+      </h5>
+      <table class="table">
+        <tbody id="">
+          <%= for age_range <- schedule.bird_ages do %>
+            <tr id="">
+              <%= if age_range.min == age_range.max do %>
+                <td>DAY <%= age_range.min %></td>
+              <% else %>
+                <td>DAY <%= age_range.min %> - <%= age_range.max %></td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <br />
+    <% end %>
+  </div>
+  <h3 class="has-text-centered">Description</h3>
+  <p>
+    <%= to_html(@vaccination.description) %>
+  </p>
+</div>
+
+<%= if @live_action in [:new_schedule] do %>
+  <.modal
+    return_to={Routes.vaccination_show_path(@socket, :show, @vaccination.id)}
+    modal_title={@page_title}
+  >
+    <.live_component
+      module={SmartFarmWeb.VaccinationLive.ScheduleFormComponent}
+      id={@vaccination_schedule.id || :new}
+      title={@page_title}
+      action={@live_action}
+      current_user={@current_user}
+      vaccination={@vaccination}
+      vaccination_schedule={@vaccination_schedule}
+      return_to={Routes.vaccination_show_path(@socket, :show, @vaccination.id)}
+    />
+  </.modal>
+<% end %>
+
+<%= if @live_action in [:edit] do %>
+  <.modal
+    return_to={Routes.vaccination_show_path(@socket, :show, @vaccination.id)}
+    modal_title={@page_title}
+  >
+    <.live_component
+      module={SmartFarmWeb.VaccinationLive.FormComponent}
+      id={@vaccination.id || :new}
+      title={@page_title}
+      action={@live_action}
+      current_user={@current_user}
+      vaccination={@vaccination}
+      return_to={Routes.vaccination_show_path(@socket, :show, @vaccination.id)}
+    />
+  </.modal>
+<% end %>

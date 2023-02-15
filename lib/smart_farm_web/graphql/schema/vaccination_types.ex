@@ -25,16 +25,26 @@ defmodule SmartFarmWeb.Schema.VaccinationTypes do
       resolve(dataloader(Repo))
     end
 
+    field :vaccination, :vaccination do
+      resolve(dataloader(Repo))
+    end
+
     field :vaccination_schedule, :vaccination_schedule do
+      deprecate("Will no longer be supported. Use vaccination field instead")
       resolve(dataloader(Repo))
     end
   end
 
   object :vaccination_schedule do
     field :id, :uuid
-    field :bird_types, list_of(non_null(:bird_type_enum))
-    field :bird_ages, list_of(non_null(:integer))
     field :vaccine_name, :string
+    field :description, :string
+  end
+
+  object :vaccination do
+    field :id, :uuid
+    field :vaccine_name, :string
+    field :administration_mode, :string
     field :description, :string
   end
 

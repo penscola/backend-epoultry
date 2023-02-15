@@ -7,7 +7,12 @@ defmodule SmartFarm.Vaccinations.BatchVaccination do
 
     belongs_to :batch, Batch
     belongs_to :completer, User
-    belongs_to :vaccination_schedule, VaccinationSchedule
+
+    belongs_to :vaccination_schedule, Vaccination,
+      foreign_key: :vaccination_id,
+      define_field: false
+
+    belongs_to :vaccination, Vaccination
 
     timestamps()
   end
@@ -19,8 +24,8 @@ defmodule SmartFarm.Vaccinations.BatchVaccination do
       :date_completed,
       :batch_id,
       :completer_id,
-      :vaccination_schedule_id
+      :vaccination_id
     ])
-    |> validate_required([:date_scheduled, :batch_id, :vaccination_schedule_id])
+    |> validate_required([:date_scheduled, :batch_id, :vaccination_id])
   end
 end

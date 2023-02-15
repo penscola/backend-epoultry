@@ -1,0 +1,33 @@
+<div>
+  <.form
+    let={f}
+    for={@changeset}
+    id="vaccination-form"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save"
+  >
+    <div class="columns">
+      <div class="field column">
+        <%= label(f, :vaccine_name) %>
+        <%= text_input(f, :vaccine_name, class: "input", required: true) %>
+        <%= error_tag(f, :vaccine_name) %>
+      </div>
+
+      <div class="field column">
+        <%= label(f, :administration_mode) %>
+        <%= text_input(f, :administration_mode, class: "input", required: true) %>
+        <%= error_tag(f, :administration_mode) %>
+      </div>
+    </div>
+    <div class="field">
+      <%= label(f, :description) %>
+      <%= textarea(f, :description, class: "textarea", rows: 15, required: true) %>
+      <%= error_tag(f, :description) %>
+    </div>
+
+    <div class="is-flex is-flex-direction-row-reverse">
+      <%= submit("Save", phx_disable_with: "Saving...", class: "button is-primary is-right") %>
+    </div>
+  </.form>
+</div>

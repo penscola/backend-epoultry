@@ -1,0 +1,99 @@
+<div class="container">
+  <div class="is-flex is-justify-content-center">
+    <h1 class="title"><%= @page_title %></h1>
+  </div>
+
+  <%= if @live_action == :index do %>
+    <div>
+      <div class="is-flex is-flex-direction-row-reverse">
+        <%= live_patch("Add New",
+          to: Routes.vaccination_index_path(@socket, :new),
+          class: "button is-link"
+        ) %>
+      </div>
+      <table class="table is-fullwidth">
+        <thead>
+          <tr>
+            <th>Vaccine</th>
+            <th>Administration Mode</th>
+            <th>Bird Type</th>
+            <th>Day</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="">
+          <%= for vaccination <- @vaccinations do %>
+            <tr>
+              <td rowspan={age_range_count(vaccination)}><%= vaccination.vaccine_name %></td>
+              <td rowspan={age_range_count(vaccination)}>
+                <%= vaccination.administration_mode %>
+              </td>
+              <%= if schedule = List.first(vaccination.schedules) do %>
+                <td rowspan={Enum.count(schedule.bird_ages)}><%= schedule.bird_type %></td>
+                <%= for age_range <- schedule.bird_ages do %>
+                  <td>DAY <%= readable_age(age_range) %></td>
+                <% end %>
+              <% else %>
+                <td>Not Available</td>
+                <td>Not Available</td>
+              <% end %>
+              <td>
+                <%= live_patch("View Vaccine",
+                  to: Routes.vaccination_show_path(@socket, :show, vaccination.id),
+                  class: ""
+                ) %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+  <%= if @live_action == :schedule do %>
+    <br>
+    <%= for {bird_type, schedules} <- @schedules do %>
+      <h2 class="subtitle has-text-weight-bold"><%= bird_type %></h2>
+
+      <table class="table is-fullwidth">
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Vaccine</th>
+            <th>Administration Mode</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="">
+          <%= for {age_range, schedule} <- schedules do %>
+            <tr id="">
+              <%= if age_range.min == age_range.max do %>
+                <td>DAY <%= age_range.min %></td>
+              <% else %>
+                <td>DAY <%= age_range.min %> - <%= age_range.max %></td>
+              <% end %>
+              <td><%= schedule.vaccination.vaccine_name %></td>
+              <td><%= schedule.vaccination.administration_mode %></td>
+              <td>
+                
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <br/>
+    <% end %>
+  <% end %>
+</div>
+<%= if @live_action in [:new] do %>
+  <.modal return_to={Routes.vaccination_index_path(@socket, :index)} modal_title={@page_title}>
+    <.live_component
+      module={SmartFarmWeb.VaccinationLive.FormComponent}
+      id={@vaccination.id || :new}
+      title={@page_title}
+      action={@live_action}
+      current_user={@current_user}
+      vaccination={@vaccination}
+      return_to={Routes.vaccination_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>

@@ -44,7 +44,9 @@ defmodule SmartFarm.Shared do
         Util.CodeGenerator,
         Vaccinations,
         Vaccinations.BatchVaccination,
-        Vaccinations.VaccinationSchedule
+        Vaccinations.Vaccination,
+        Vaccinations.VaccinationSchedule,
+        Workers
       }
     end
   end

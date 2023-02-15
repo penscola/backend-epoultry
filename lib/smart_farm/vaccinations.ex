@@ -58,4 +58,46 @@ defmodule SmartFarm.Vaccinations do
         :completed
     end
   end
+
+  def list_vaccination_schedules do
+    VaccinationSchedule
+    |> Repo.all()
+    |> Repo.preload([:vaccination])
+  end
+
+  def get_vaccination!(id) do
+    Vaccination
+    |> Repo.get!(id)
+    |> Repo.preload([:schedules])
+  end
+
+  def create_vaccination(attrs) do
+    %Vaccination{}
+    |> Vaccination.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_vaccination(vaccination, attrs) do
+    vaccination
+    |> Vaccination.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def list_vaccinations do
+    Vaccination
+    |> Repo.all()
+    |> Repo.preload([:schedules])
+  end
+
+  def create_vaccination_schedule(%Vaccination{} = vaccination, attrs) do
+    %VaccinationSchedule{vaccination_id: vaccination.id}
+    |> VaccinationSchedule.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_vaccination_schedule(%VaccinationSchedule{} = vaccination_schedule, attrs) do
+    vaccination_schedule
+    |> VaccinationSchedule.changeset(attrs)
+    |> Repo.update()
+  end
 end
