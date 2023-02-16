@@ -53,6 +53,13 @@ defmodule SmartFarmWeb.VaccinationLive.Index do
     |> Enum.map(& &1.bird_ages)
     |> List.flatten()
     |> Enum.count()
+    |> case do
+      0 ->
+        1
+
+      other ->
+        other
+    end
   end
 
   defp readable_age(age_range) do
