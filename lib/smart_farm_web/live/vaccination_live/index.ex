@@ -38,9 +38,11 @@ defmodule SmartFarmWeb.VaccinationLive.Index do
     |> Enum.group_by(& &1.bird_type)
     |> Enum.map(fn {key, schedules} ->
       schedules =
-      schedules |> Enum.map(fn schedule ->
+        schedules
+        |> Enum.map(fn schedule ->
           Enum.map(schedule.bird_ages, fn range -> {range, schedule} end)
-        end) |> List.flatten()
+        end)
+        |> List.flatten()
 
       {key, Enum.sort_by(schedules, fn {range, _schedule} -> range.min end, :asc)}
     end)

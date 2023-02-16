@@ -4,7 +4,7 @@ defmodule SmartFarm.Farms.Farm do
   schema "farms" do
     field :name, :string
 
-    embeds_one :address, Address do
+    embeds_one :address, Address, on_replace: :update do
       field :latitude, :float
       field :longitude, :float
       field :area_name, :string

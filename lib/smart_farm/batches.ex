@@ -35,6 +35,25 @@ defmodule SmartFarm.Batches do
   def get_batch!(id), do: Repo.get!(Batch.todays_submission_query(), id)
   def get_batch(id), do: Repo.fetch(Batch.todays_submission_query(), id)
 
+  def current_age(%Batch{} = batch) do
+    start_age_days = batch.bird_age * days_count(batch.age_type)
+    days_elapsed = Date.diff(Date.utc_today(), batch.created_at)
+    start_age_days + days_elapsed
+  end
+
+  defp days_count(age_type) do
+    case age_type do
+      :weeks ->
+        7
+
+      :months ->
+        30
+
+      _other ->
+        1
+    end
+  end
+
   @doc """
   Creates a batch.
 
@@ -48,9 +67,19 @@ defmodule SmartFarm.Batches do
 
   """
   def create_batch(attrs \\ %{}) do
-    %Batch{}
-    |> Batch.changeset(attrs)
-    |> Repo.insert()
+    Multi.new()
+    |> Multi.insert(:batch, Batch.changeset(%Batch{}, attrs))
+    |> Oban.insert(:job, fn %{batch: batch} ->
+      Workers.VaccinationSchedule.new(%{batch_id: batch.id})
+    end)
+    |> Repo.transact()
+    |> case do
+      {:ok, %{batch: batch}} ->
+        {:ok, batch}
+
+      {:error, %{value: value}} ->
+        {:error, value}
+    end
   end
 
   @doc """

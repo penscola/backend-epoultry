@@ -18,6 +18,12 @@ config :smart_farm, SmartFarm.Repo,
     updated_at: :updated_at
   ]
 
+config :smart_farm, Oban,
+  repo: SmartFarm.Repo,
+  prefix: "jobs",
+  plugins: [Oban.Plugins.Pruner],
+  queues: [default: 10, scheduled: 10]
+
 config :smart_farm, SmartFarm.Guardian,
   issuer: "smart_farm",
   secret_key: "+sBqESBgDk/ea4rZcTd2BzhSVCAJfBU/UwQZaS48pPyZUIjlP7Hu7JUbVuxiVuQ6"

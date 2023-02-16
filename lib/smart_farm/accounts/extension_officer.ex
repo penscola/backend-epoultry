@@ -5,7 +5,7 @@ defmodule SmartFarm.Accounts.ExtensionOfficer do
   schema "extension_officers" do
     field :date_approved, :utc_datetime
 
-    embeds_one :address, Address do
+    embeds_one :address, Address, on_replace: :update do
       field :county, :string
       field :subcounty, :string
       field :ward, :string

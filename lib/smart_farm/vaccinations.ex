@@ -39,6 +39,9 @@ defmodule SmartFarm.Vaccinations do
       {:status, :pending}, query ->
         from v in query, where: is_nil(v.date_completed)
 
+      {:batch_id, value}, query ->
+        from v in query, where: v.batch_id == ^value
+
       _other, query ->
         query
     end)
@@ -90,9 +93,22 @@ defmodule SmartFarm.Vaccinations do
   end
 
   def create_vaccination_schedule(%Vaccination{} = vaccination, attrs) do
-    %VaccinationSchedule{vaccination_id: vaccination.id}
-    |> VaccinationSchedule.changeset(attrs)
-    |> Repo.insert()
+    Multi.new()
+    |> Multi.insert(
+      :schedule,
+      VaccinationSchedule.changeset(%VaccinationSchedule{vaccination_id: vaccination.id}, attrs)
+    )
+    |> Oban.insert(:job, fn %{schedule: schedule} ->
+      Workers.VaccinationSchedule.new(%{schedule_id: schedule.id})
+    end)
+    |> Repo.transact()
+    |> case do
+      {:ok, %{schedule: schedule}} ->
+        {:ok, schedule}
+
+      {:error, %{value: value}} ->
+        {:error, value}
+    end
   end
 
   def update_vaccination_schedule(%VaccinationSchedule{} = vaccination_schedule, attrs) do

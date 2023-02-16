@@ -6,7 +6,7 @@ defmodule SmartFarm.Accounts.VetOfficer do
     field :date_approved, :utc_datetime
     field :vet_number, :string
 
-    embeds_one :address, Address do
+    embeds_one :address, Address, on_replace: :update do
       field :county, :string
       field :subcounty, :string
       field :ward, :string

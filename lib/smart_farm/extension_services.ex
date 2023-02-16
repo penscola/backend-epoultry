@@ -102,7 +102,7 @@ defmodule SmartFarm.ExtensionServices do
       } ->
         params =
           Map.merge(params, %{
-            bird_age: current_age(batch),
+            bird_age: Batches.current_age(batch),
             age_type: "days",
             bird_type: to_string(batch.bird_type),
             bird_count: bird_count
@@ -118,25 +118,6 @@ defmodule SmartFarm.ExtensionServices do
 
       {:error, %{value: value}} ->
         {:error, value}
-    end
-  end
-
-  defp current_age(batch) do
-    start_age_days = batch.bird_age * days_count(batch.age_type)
-    days_elapsed = Date.diff(Date.utc_today(), batch.created_at)
-    start_age_days + days_elapsed
-  end
-
-  defp days_count(age_type) do
-    case age_type do
-      :weeks ->
-        7
-
-      :months ->
-        30
-
-      _other ->
-        1
     end
   end
 

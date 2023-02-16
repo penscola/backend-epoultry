@@ -10,6 +10,8 @@ defmodule SmartFarm.Application do
     children = [
       # Start the Ecto repository
       SmartFarm.Repo,
+      # Start Oban workers
+      {Oban, Application.fetch_env!(:smart_farm, Oban)},
       # Start the Telemetry supervisor
       SmartFarmWeb.Telemetry,
       # Start the PubSub system

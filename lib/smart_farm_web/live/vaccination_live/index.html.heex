@@ -38,7 +38,7 @@
                 <td>Not Available</td>
               <% end %>
               <td>
-                <%= live_patch("View Vaccine",
+                <%= live_redirect("View Vaccine",
                   to: Routes.vaccination_show_path(@socket, :show, vaccination.id),
                   class: ""
                 ) %>
@@ -50,7 +50,7 @@
     </div>
   <% end %>
   <%= if @live_action == :schedule do %>
-    <br>
+    <br />
     <%= for {bird_type, schedules} <- @schedules do %>
       <h2 class="subtitle has-text-weight-bold"><%= bird_type %></h2>
 
@@ -73,14 +73,12 @@
               <% end %>
               <td><%= schedule.vaccination.vaccine_name %></td>
               <td><%= schedule.vaccination.administration_mode %></td>
-              <td>
-                
-              </td>
+              <td></td>
             </tr>
           <% end %>
         </tbody>
       </table>
-      <br/>
+      <br />
     <% end %>
   <% end %>
 </div>

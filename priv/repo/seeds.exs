@@ -17,10 +17,10 @@ farm_manager_phone = "254709876543"
 %User{
   first_name: "Bob",
   last_name: "Builder",
+  gender: "male",
   phone_number: farmer_phone,
+  birth_date: ~D[2000-01-01],
   farmer: %Farmer{
-    gender: "male",
-    birth_date: ~D[2000-01-01],
     farms: [
       %Farm{
         name: "Test Farm",

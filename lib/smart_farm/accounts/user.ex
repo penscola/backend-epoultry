@@ -86,8 +86,8 @@ defmodule SmartFarm.Accounts.User do
   def vet_officer_changeset(user, attrs) do
     user
     |> changeset(attrs)
-    |> cast(attrs, [:national_id, :vet_number])
-    |> validate_required([:national_id, :vet_number])
+    |> cast(attrs, [:national_id])
+    |> validate_required([:national_id])
   end
 
   def format_phone_number("+254" <> rest) when byte_size(rest) == 9 do

@@ -64,6 +64,9 @@ defmodule SmartFarm.MixProject do
       # SMS
       {:tesla, "~> 1.4"},
 
+      # Jobs
+      {:oban, "~> 2.13"},
+
       # Testing
       {:ex_machina, "~> 2.7.0", only: :test}
     ]
