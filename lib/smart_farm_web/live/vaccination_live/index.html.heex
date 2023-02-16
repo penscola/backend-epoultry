@@ -24,26 +24,32 @@
         <tbody id="">
           <%= for vaccination <- @vaccinations do %>
             <tr>
-              <td rowspan={age_range_count(vaccination)}><%= vaccination.vaccine_name %></td>
-              <td rowspan={age_range_count(vaccination)}>
+              <td rowspan={schedule_count(vaccination)}><%= vaccination.vaccine_name %></td>
+              <td rowspan={schedule_count(vaccination)}>
                 <%= vaccination.administration_mode %>
               </td>
               <%= if schedule = List.first(vaccination.schedules) do %>
-                <td rowspan={Enum.count(schedule.bird_ages)}><%= schedule.bird_type %></td>
-                <%= for age_range <- schedule.bird_ages do %>
-                  <td>DAY <%= readable_age(age_range) %></td>
-                <% end %>
+                <td><%= schedule.bird_type %></td>
+                <td>DAY <%= Enum.map_join(schedule.bird_ages, ", ", &readable_age/1) %></td>
               <% else %>
                 <td>Not Available</td>
                 <td>Not Available</td>
               <% end %>
-              <td>
+              <td rowspan={schedule_count(vaccination)}>
                 <%= live_redirect("View Vaccine",
                   to: Routes.vaccination_show_path(@socket, :show, vaccination.id),
                   class: ""
                 ) %>
               </td>
             </tr>
+            <%= if length(vaccination.schedules) > 1 do %>
+              <%= for schedule <- tl(vaccination.schedules) do %>
+                <tr>
+                  <td><%= schedule.bird_type %></td>
+                  <td>DAY <%= Enum.map_join(schedule.bird_ages, ", ", &readable_age/1) %></td>
+                </tr>
+              <% end %>
+            <% end %>
           <% end %>
         </tbody>
       </table>
@@ -52,7 +58,7 @@
   <%= if @live_action == :schedule do %>
     <br />
     <%= for {bird_type, schedules} <- @schedules do %>
-      <h2 class="subtitle has-text-weight-bold"><%= bird_type %></h2>
+      <h2 class="subtitle has-text-weight-bold">BIRD TYPE: <%= bird_type %></h2>
 
       <table class="table is-fullwidth">
         <thead>

@@ -48,10 +48,8 @@ defmodule SmartFarmWeb.VaccinationLive.Index do
     end)
   end
 
-  defp age_range_count(vaccination) do
+  defp schedule_count(vaccination) do
     vaccination.schedules
-    |> Enum.map(& &1.bird_ages)
-    |> List.flatten()
     |> Enum.count()
     |> case do
       0 ->

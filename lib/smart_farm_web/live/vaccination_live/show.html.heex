@@ -28,11 +28,9 @@
     </div>
     <%= for schedule <- @vaccination.schedules do %>
       <h5>
-        <%= schedule.bird_type %>
+        BIRD TYPE: <%= schedule.bird_type %>
         <%= if schedule.repeat_after do %>
           (<span>Repeats after <%= schedule.repeat_after %> days</span>)
-        <% else %>
-          (<span>Does not repeat</span>)
         <% end %>
       </h5>
       <table class="table">
