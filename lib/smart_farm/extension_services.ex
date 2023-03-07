@@ -124,7 +124,7 @@ defmodule SmartFarm.ExtensionServices do
   def list_extension_service_requests(_params, actor: nil), do: {:error, :unauthenticated}
 
   def list_extension_service_requests(params, actor: %User{} = user) do
-    user = Repo.preload(user, [:vet_officer, :extension_officer])
+    user = Repo.preload(user, [:farmer, :vet_officer, :extension_officer])
 
     base_query =
       from e in ExtensionServiceRequest,
@@ -134,7 +134,7 @@ defmodule SmartFarm.ExtensionServices do
 
     base_query
     |> filter_extension_services_query_by_params(params)
-    |> filter_extension_services_query_by_role(user)
+    |> filter_extension_services_query_by_role(user, params[:status])
     |> Repo.all()
   end
 
@@ -156,7 +156,7 @@ defmodule SmartFarm.ExtensionServices do
     end)
   end
 
-  defp filter_extension_services_query_by_role(base, user) do
+  defp filter_extension_services_query_by_role(base, user, status) do
     user_role = Accounts.get_user_role(user)
 
     case user_role do
@@ -175,10 +175,25 @@ defmodule SmartFarm.ExtensionServices do
         officer = user.extension_officer || user.vet_officer
 
         if officer.date_approved do
-          from e in base, where: is_nil(e.date_accepted) or e.acceptor_id == ^user.id
+          from e in base,
+            join: assoc(e, :farm),
+            as: :farm,
+            where: is_nil(e.date_accepted) or e.acceptor_id == ^user.id,
+            where: ^maybe_filter_by_location(user, status)
         else
           from e in base, where: is_nil(e.id)
         end
+    end
+  end
+
+  defp maybe_filter_by_location(user, status) do
+    officer = user.extension_officer || user.vet_officer
+    address = officer.address
+
+    if address and status == :pending do
+      dynamic([farm: f], ilike(json_extract_path(f.address, ["county"]), ^address.county))
+    else
+      true
     end
   end
 
