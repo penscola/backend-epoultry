@@ -190,7 +190,7 @@ defmodule SmartFarm.ExtensionServices do
     officer = user.extension_officer || user.vet_officer
     address = officer.address
 
-    if address and status == :pending do
+    if address && status == :pending do
       dynamic([farm: f], ilike(json_extract_path(f.address, ["county"]), ^address.county))
     else
       true
