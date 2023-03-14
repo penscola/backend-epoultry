@@ -22,7 +22,7 @@ config :smart_farm, Oban,
   repo: SmartFarm.Repo,
   prefix: "jobs",
   plugins: [Oban.Plugins.Pruner],
-  queues: [default: 10, scheduled: 10]
+  queues: [default: 10, scheduled: 10, uploads: 10]
 
 config :smart_farm, SmartFarm.Guardian,
   issuer: "smart_farm",

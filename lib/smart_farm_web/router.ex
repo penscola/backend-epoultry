@@ -1,5 +1,6 @@
 defmodule SmartFarmWeb.Router do
   use SmartFarmWeb, :router
+  import SmartFarmWeb.Auth
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -8,15 +9,15 @@ defmodule SmartFarmWeb.Router do
     plug :put_root_layout, {SmartFarmWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug SmartFarmWeb.Auth
-  end
-
-  pipeline :authenticate do
-    plug SmartFarmWeb.Authorize
+    plug :fetch_current_user
   end
 
   pipeline :api do
     plug :accepts, ["json"]
+  end
+
+  pipeline :api_authenticated do
+    plug SmartFarmWeb.APIAuth
   end
 
   pipeline :graphql do
@@ -24,9 +25,25 @@ defmodule SmartFarmWeb.Router do
     plug SmartFarmWeb.Context
   end
 
+  scope "/api/graphql" do
+    pipe_through :graphql
+
+    forward "/auth", SmartFarmWeb.AbsinthePlug, schema: SmartFarmWeb.AuthSchema
+    forward "/", Absinthe.Plug, schema: SmartFarmWeb.Schema
+  end
+
+  forward "/graphiql/auth", SmartFarmWeb.AbsinthePlug.GraphiQL, schema: SmartFarmWeb.AuthSchema
+  forward "/graphiql", Absinthe.Plug.GraphiQL, schema: SmartFarmWeb.Schema
+
+  scope "/api", SmartFarmWeb.API do
+    pipe_through [:api, :api_authenticated]
+
+    post "/users/avatar", FileController, :create_avatar
+    post "/extension_services/medical_visit", ExtensionServiceController, :create_medical_visit
+  end
+
   scope "/", SmartFarmWeb do
-    pipe_through :browser
-    pipe_through :authenticate
+    pipe_through [:browser, :require_authenticated_user]
 
     live "/", DashboardLive.Index, :index
     live "/users/farmers", UserLive.Index, :farmer_index
@@ -63,16 +80,6 @@ defmodule SmartFarmWeb.Router do
     post "/login", SessionController, :create
     delete "/logout", SessionController, :delete
   end
-
-  scope "/api/graphql" do
-    pipe_through :graphql
-
-    forward "/auth", SmartFarmWeb.AbsinthePlug, schema: SmartFarmWeb.AuthSchema
-    forward "/", Absinthe.Plug, schema: SmartFarmWeb.Schema
-  end
-
-  forward "/graphiql/auth", SmartFarmWeb.AbsinthePlug.GraphiQL, schema: SmartFarmWeb.AuthSchema
-  forward "/graphiql", Absinthe.Plug.GraphiQL, schema: SmartFarmWeb.Schema
 
   # Enables LiveDashboard only for development
   #

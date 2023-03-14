@@ -78,3 +78,8 @@ config :smart_farm,
     username: System.get_env("AT_USERNAME"),
     shortcode: System.get_env("SMS_SHORTCODE")
   ]
+
+config :waffle,
+  storage: Waffle.Storage.Local,
+  # in order to have a different storage directory from url
+  storage_dir_prefix: "priv/waffle/uploads"

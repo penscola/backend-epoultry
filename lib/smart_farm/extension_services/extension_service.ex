@@ -11,6 +11,10 @@ defmodule SmartFarm.ExtensionServices.ExtensionServiceRequest do
     has_one :farm_visit, FarmVisitRequest, foreign_key: :extension_service_id
     has_one :farm_visit_report, FarmVisitReport, foreign_key: :extension_service_id
 
+    many_to_many :attachments, Files.File,
+      join_through: ExtensionServices.Attachment,
+      join_keys: [extension_service_id: :id, file_id: :id]
+
     timestamps()
   end
 

@@ -1,5 +1,6 @@
 defmodule SmartFarm.ExtensionServices do
   use SmartFarm.Context
+  require Logger
 
   def get_request_status(%ExtensionServiceRequest{} = request) do
     case request do
@@ -110,6 +111,44 @@ defmodule SmartFarm.ExtensionServices do
 
         %MedicalVisitRequest{extension_service_id: service.id}
         |> MedicalVisitRequest.changeset(params)
+    end)
+    |> Multi.run(:files, fn _repo, %{extension_service: service} ->
+      if params.attachments do
+        storage_path = Path.join(["uploads", "extension_services", "#{service.id}"])
+        working_dir = Path.join([System.tmp_dir!(), storage_path])
+        Logger.info("Creating working directory #{working_dir}")
+        File.mkdir_p!(working_dir)
+
+        files =
+          Enum.map(params.attachments, fn upload ->
+            dest = Path.join([working_dir, upload.filename])
+            File.cp!(upload.path, dest)
+            {:ok, %File.Stat{size: size}} = File.stat(upload.path)
+            ext = Path.extname(upload.filename)
+
+            %{
+              source_path: dest,
+              original_name: upload.filename,
+              storage_path: storage_path,
+              unique_name: "#{Ecto.UUID.generate()}#{ext}",
+              size: size
+            }
+          end)
+
+        service
+        |> Repo.preload([:attachments])
+        |> Ecto.Changeset.change(%{attachments: files})
+        |> Ecto.Changeset.cast_assoc(:attachments)
+        |> Repo.update()
+      else
+        {:ok, Repo.preload(service, [:attachments])}
+      end
+    end)
+    |> Oban.insert_all(:jobs, fn %{files: service} ->
+      Enum.map(
+        service.attachments,
+        &Workers.Uploader.new(%{file_id: &1.id, source_path: &1.source_path})
+      )
     end)
     |> Repo.transact()
     |> case do

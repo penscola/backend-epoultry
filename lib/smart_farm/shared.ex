@@ -25,6 +25,7 @@ defmodule SmartFarm.Shared do
         Farms.FarmInvite,
         Farms.FarmManager,
         Farms.FarmMedication,
+        Files,
         Quotations,
         Quotations.Cluster,
         Quotations.Quotation,

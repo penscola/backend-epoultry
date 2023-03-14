@@ -108,6 +108,10 @@ if config_env() == :prod do
     ],
     env: smart_farm_env
 
+  config :waffle,
+    storage: Waffle.Storage.Google.CloudStorage,
+    bucket: System.fetch_env!("GCP_BUCKET")
+
   # ## Configuring the mailer
   #
   # In production you need to configure the mailer to use a different adapter.

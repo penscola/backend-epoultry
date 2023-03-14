@@ -17,6 +17,7 @@ defmodule SmartFarmWeb.Schema do
   import_types(Schema.AddressTypes)
   import_types(Schema.BatchTypes)
   import_types(Schema.ExtensionServiceTypes)
+  import_types(Schema.FileTypes)
   import_types(Schema.FarmTypes)
   import_types(Schema.ContractorTypes)
   import_types(Schema.GroupTypes)

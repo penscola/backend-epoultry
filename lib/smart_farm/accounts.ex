@@ -246,6 +246,45 @@ defmodule SmartFarm.Accounts do
     |> Repo.update()
   end
 
+  def update_user_avatar(%Plug.Upload{} = upload, actor: %User{} = user) do
+    storage_path = Path.join(["uploads", "avatars", "#{user.id}"])
+    working_dir = Path.join([System.tmp_dir!(), storage_path])
+    Logger.info("Creating working directory #{working_dir}")
+    File.mkdir_p!(working_dir)
+
+    dest = Path.join([working_dir, upload.filename])
+
+    File.cp!(upload.path, dest)
+
+    with {:ok, %File.Stat{size: size}} <- File.stat(upload.path) do
+      Multi.new()
+      |> Multi.insert(:file, fn _changes ->
+        ext = Path.extname(upload.filename)
+
+        Files.File.changeset(%Files.File{}, %{
+          original_name: upload.filename,
+          storage_path: storage_path,
+          unique_name: "#{Ecto.UUID.generate()}#{ext}",
+          size: size
+        })
+      end)
+      |> Multi.update(:user, fn %{file: file} ->
+        User.changeset(user, %{avatar_id: file.id})
+      end)
+      |> Oban.insert(:job, fn %{file: file} ->
+        Workers.Uploader.new(%{file_id: file.id, source_path: dest})
+      end)
+      |> Repo.transact()
+      |> case do
+        {:ok, %{user: user}} ->
+          {:ok, user}
+
+        {:error, %{value: value}} ->
+          {:error, value}
+      end
+    end
+  end
+
   def update_extension_officer(%User{} = user, attrs) do
     Multi.new()
     |> Multi.run(:extension_officer, fn _repo, _changes ->

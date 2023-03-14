@@ -13,6 +13,7 @@ defmodule SmartFarmWeb.AuthSchema do
   import_types(Schema.AuthTypes)
   import_types(Schema.BatchTypes)
   import_types(Schema.ContractorTypes)
+  import_types(Schema.FileTypes)
   import_types(Schema.FarmTypes)
   import_types(Schema.GroupTypes)
   import_types(Schema.QuotationTypes)

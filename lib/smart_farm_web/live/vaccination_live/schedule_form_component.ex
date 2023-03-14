@@ -105,7 +105,7 @@ defmodule SmartFarmWeb.VaccinationLive.ScheduleFormComponent do
   end
 
   defp save_vaccination_schedule(socket, :new_schedule, params) do
-    params = remove_empty_ranges(params) |> IO.inspect()
+    params = remove_empty_ranges(params)
 
     case Vaccinations.create_vaccination_schedule(
            socket.assigns.vaccination,

@@ -281,91 +281,6 @@ defmodule SmartFarm.Batches do
         &Map.merge(&1, %{report_id: report.id, created_at: timestamp, updated_at: timestamp})
       )
     end)
-    |> Multi.insert_all(
-      :feeds_in_store,
-      StoreItem,
-      fn %{batch: batch} ->
-        feed_store_items_params(args[:feeds_report][:in_store] || [], batch)
-      end,
-      on_conflict: :nothing
-    )
-    |> Multi.merge(fn %{batch: batch, report: report} ->
-      used_feeds = Enum.filter(args[:feeds_report][:used] || [], &(&1.quantity > 0))
-
-      used_feeds =
-        Enum.map(used_feeds, fn feed -> Map.merge(feed, %{name: to_string(feed.feed_type)}) end)
-
-      received_feeds = feed_store_items_params(args[:feeds_report][:received] || [], batch)
-
-      Multi.new()
-      |> received_store_items_multi(received_feeds, batch, report)
-      |> used_store_items_multi(used_feeds, batch, report)
-    end)
-    |> Multi.insert_all(
-      :medication_in_store,
-      StoreItem,
-      fn %{batch: batch} ->
-        medication_store_items_params(args[:medications_report][:in_store] || [], batch)
-      end,
-      on_conflict: :nothing
-    )
-    |> Multi.merge(fn %{batch: batch, report: report} ->
-      used_meds = Enum.filter(args[:medications_report][:used] || [], &(&1.quantity > 0))
-
-      used_meds = Enum.map(used_meds, fn med -> Map.merge(med, %{name: med.name}) end)
-
-      received_meds =
-        medication_store_items_params(args[:medications_report][:received] || [], batch)
-
-      Multi.new()
-      |> received_store_items_multi(received_meds, batch, report)
-      |> used_store_items_multi(used_meds, batch, report)
-    end)
-    |> Multi.insert_all(
-      :sawdust_in_store,
-      StoreItem,
-      fn %{batch: batch} ->
-        sawdust_store_items_params(args[:sawdust_report][:in_store], batch)
-      end,
-      on_conflict: :nothing
-    )
-    |> Multi.merge(fn %{batch: batch, report: report} ->
-      used_sawdust = sawdust_store_items_params(args[:sawdust_report][:used], batch)
-
-      used_sawdust =
-        Enum.map(used_sawdust, fn sawdust ->
-          Map.merge(sawdust, %{quantity: sawdust.starting_quantity})
-        end)
-
-      received_sawdust = sawdust_store_items_params(args[:sawdust_report][:received] || [], batch)
-
-      Multi.new()
-      |> received_store_items_multi(received_sawdust, batch, report)
-      |> used_store_items_multi(used_sawdust, batch, report)
-    end)
-    |> Multi.insert_all(
-      :briquettes_in_store,
-      StoreItem,
-      fn %{batch: batch} ->
-        briquettes_store_items_params(args[:briquettes_report][:in_store], batch)
-      end,
-      on_conflict: :nothing
-    )
-    |> Multi.merge(fn %{batch: batch, report: report} ->
-      used_briquettes = briquettes_store_items_params(args[:briquettes_report][:used], batch)
-
-      used_briquettes =
-        Enum.map(used_briquettes, fn briquettes ->
-          Map.merge(briquettes, %{quantity: briquettes.starting_quantity})
-        end)
-
-      received_briquettes =
-        briquettes_store_items_params(args[:briquettes_report][:received] || [], batch)
-
-      Multi.new()
-      |> received_store_items_multi(received_briquettes, batch, report)
-      |> used_store_items_multi(used_briquettes, batch, report)
-    end)
     |> Multi.run(:weight_report, fn repo, %{batch: batch, report: report} ->
       if batch.bird_type == :broilers and is_float(args[:weight_report][:average_weight]) and
            args[:weight_report][:average_weight] > 0.0 do
@@ -375,6 +290,111 @@ defmodule SmartFarm.Batches do
       else
         {:ok, nil}
       end
+    end)
+    |> Multi.insert_all(
+      :feeds_in_store,
+      StoreItem,
+      fn %{batch: batch} ->
+        feed_store_items_params(args[:feeds_report][:in_store] || [], batch)
+      end,
+      on_conflict: :nothing
+    )
+    |> Multi.run(:feeds_received, fn _repo, %{batch: batch, report: report} ->
+      received_feeds = feed_store_items_params(args[:feeds_report][:received] || [], batch)
+
+      Multi.new()
+      |> received_store_items_multi(received_feeds, batch, report)
+      |> Repo.transact()
+    end)
+    |> Multi.run(:feeds_used, fn _repo, %{batch: batch, report: report} ->
+      used_feeds = Enum.filter(args[:feeds_report][:used] || [], &(&1.quantity > 0))
+
+      used_feeds =
+        Enum.map(used_feeds, fn feed -> Map.merge(feed, %{name: to_string(feed.feed_type)}) end)
+
+      Multi.new()
+      |> used_store_items_multi(used_feeds, batch, report)
+      |> Repo.transact()
+    end)
+    |> Multi.insert_all(
+      :medication_in_store,
+      StoreItem,
+      fn %{batch: batch} ->
+        medication_store_items_params(args[:medications_report][:in_store] || [], batch)
+      end,
+      on_conflict: :nothing
+    )
+    |> Multi.run(:medication_received, fn _repo, %{batch: batch, report: report} ->
+      received_meds =
+        medication_store_items_params(args[:medications_report][:received] || [], batch)
+
+      Multi.new()
+      |> received_store_items_multi(received_meds, batch, report)
+      |> Repo.transact()
+    end)
+    |> Multi.run(:medication_used, fn _repo, %{batch: batch, report: report} ->
+      used_meds = Enum.filter(args[:medications_report][:used] || [], &(&1.quantity > 0))
+
+      used_meds = Enum.map(used_meds, fn med -> Map.merge(med, %{name: med.name}) end)
+
+      Multi.new()
+      |> used_store_items_multi(used_meds, batch, report)
+      |> Repo.transact()
+    end)
+    |> Multi.insert_all(
+      :sawdust_in_store,
+      StoreItem,
+      fn %{batch: batch} ->
+        sawdust_store_items_params(args[:sawdust_report][:in_store], batch)
+      end,
+      on_conflict: :nothing
+    )
+    |> Multi.run(:sawdust_received, fn _repo, %{batch: batch, report: report} ->
+      received_sawdust = sawdust_store_items_params(args[:sawdust_report][:received] || [], batch)
+
+      Multi.new()
+      |> received_store_items_multi(received_sawdust, batch, report)
+      |> Repo.transact()
+    end)
+    |> Multi.run(:sawdust_used, fn _repo, %{batch: batch, report: report} ->
+      used_sawdust = sawdust_store_items_params(args[:sawdust_report][:used], batch)
+
+      used_sawdust =
+        Enum.map(used_sawdust, fn sawdust ->
+          Map.merge(sawdust, %{quantity: sawdust.starting_quantity})
+        end)
+
+      Multi.new()
+      |> used_store_items_multi(used_sawdust, batch, report)
+      |> Repo.transact()
+    end)
+    |> Multi.insert_all(
+      :briquettes_in_store,
+      StoreItem,
+      fn %{batch: batch} ->
+        briquettes_store_items_params(args[:briquettes_report][:in_store], batch)
+      end,
+      on_conflict: :nothing
+    )
+    |> Multi.run(:briquettes_received, fn _repo, %{batch: batch, report: report} ->
+      received_briquettes =
+        briquettes_store_items_params(args[:briquettes_report][:received] || [], batch)
+
+      Multi.new()
+      |> received_store_items_multi(received_briquettes, batch, report)
+      |> Repo.transact()
+    end)
+    |> Multi.run(:briquettes_used, fn _repo, %{batch: batch, report: report} ->
+      used_briquettes = briquettes_store_items_params(args[:briquettes_report][:used], batch)
+
+      used_briquettes =
+        Enum.map(used_briquettes, fn briquettes ->
+          Map.merge(briquettes, %{quantity: briquettes.starting_quantity})
+        end)
+
+      Multi.new()
+      |> used_store_items_multi(used_briquettes, batch, report)
+      |> Repo.transact()
     end)
     |> Repo.transaction()
     |> case do
@@ -409,7 +429,8 @@ defmodule SmartFarm.Batches do
   defp used_store_items_multi(multi, items, batch, report) do
     items
     |> Enum.reduce(multi, fn item, multi ->
-      if store_item = Repo.get_by(StoreItem, farm_id: batch.farm_id, name: item.name) do
+      if store_item =
+           Repo.get_by(StoreItem, farm_id: batch.farm_id, name: item.name) do
         Multi.insert(multi, item.name, fn _changes ->
           StoreItemUsageReport.changeset(
             %StoreItemUsageReport{report_id: report.id},

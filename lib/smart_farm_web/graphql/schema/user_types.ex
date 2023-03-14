@@ -49,6 +49,10 @@ defmodule SmartFarmWeb.Schema.UserTypes do
     field :group, :group do
       resolve(dataloader(Repo))
     end
+
+    field :avatar, :file do
+      resolve(dataloader(Repo))
+    end
   end
 
   object :farmer do

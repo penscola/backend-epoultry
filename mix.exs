@@ -68,7 +68,9 @@ defmodule SmartFarm.MixProject do
       {:oban, "~> 2.13"},
 
       # Testing
-      {:ex_machina, "~> 2.7.0", only: :test}
+      {:ex_machina, "~> 2.7.0", only: :test},
+      {:waffle, "~> 1.1"},
+      {:waffle_gcs, "~> 0.2"}
     ]
   end
 

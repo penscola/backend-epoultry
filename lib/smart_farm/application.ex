@@ -11,6 +11,7 @@ defmodule SmartFarm.Application do
       # Start the Ecto repository
       SmartFarm.Repo,
       # Start Oban workers
+      goth_config(),
       {Oban, Application.fetch_env!(:smart_farm, Oban)},
       # Start the Telemetry supervisor
       SmartFarmWeb.Telemetry,
@@ -35,4 +36,23 @@ defmodule SmartFarm.Application do
     SmartFarmWeb.Endpoint.config_change(changed, removed)
     :ok
   end
+
+  # if Mix.env() == :prod do
+  defp goth_config() do
+    credentials =
+      "GOOGLE_APPLICATION_CREDENTIALS_JSON"
+      |> System.fetch_env!()
+      |> Jason.decode!()
+
+    scopes = ["https://www.googleapis.com/auth/devstorage.read_write"]
+    source = {:service_account, credentials, scopes: scopes}
+
+    {Goth, name: SmartFarm.Goth, source: source}
+  end
+
+  # else
+  #   defp goth_config() do
+  #     Supervisor.child_spec({Task, fn -> :ok end}, id: :goth_config)
+  #   end
+  # end
 end

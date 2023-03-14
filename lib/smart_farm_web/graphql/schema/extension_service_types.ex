@@ -39,6 +39,10 @@ defmodule SmartFarmWeb.Schema.ExtensionServiceTypes do
     field :acceptor, :user do
       resolve(dataloader(Repo))
     end
+
+    field :attachments, list_of(:file) do
+      resolve(dataloader(Repo))
+    end
   end
 
   object :farm_visit do
@@ -124,6 +128,7 @@ defmodule SmartFarmWeb.Schema.ExtensionServiceTypes do
   input_object :request_medical_visit_input do
     field :batch_id, non_null(:uuid)
     field :description, non_null(:string)
+    field :attachments, list_of(non_null(:upload))
   end
 
   input_object :create_farm_visit_report_input do

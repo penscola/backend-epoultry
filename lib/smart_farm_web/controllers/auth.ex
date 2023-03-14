@@ -3,16 +3,24 @@ defmodule SmartFarmWeb.Auth do
   This is the authentication plug
   """
   import Plug.Conn
+  import Phoenix.Controller, only: [redirect: 2, put_flash: 3]
   alias SmartFarm.Accounts
-  def init(opts), do: opts
+  alias SmartFarmWeb.Router.Helpers, as: Routes
 
-  def call(conn, _opts) do
+  def fetch_current_user(conn, _opts) do
+    user_id = get_session(conn, :user_id)
+    user = user_id && get_user(user_id)
+    assign(conn, :current_user, user)
+  end
+
+  def require_authenticated_user(conn, _opts) do
     if conn.assigns[:current_user] do
       conn
     else
-      user_id = get_session(conn, :user_id)
-      user = user_id && get_user(user_id)
-      assign(conn, :current_user, user)
+      conn
+      |> put_flash(:error, "You must log in to access this page.")
+      |> redirect(to: Routes.session_path(conn, :new))
+      |> halt()
     end
   end
 

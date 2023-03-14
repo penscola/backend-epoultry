@@ -17,6 +17,7 @@ defmodule SmartFarm.Accounts.User do
     field :gender, :string
     field :national_id, :string
 
+    belongs_to :avatar, Files.File
     has_one :farmer, Farmer
     has_one :group, Group, foreign_key: :owner_id
     has_one :extension_officer, ExtensionOfficer
@@ -32,7 +33,7 @@ defmodule SmartFarm.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:first_name, :last_name, :phone_number, :recovery_phone_number])
+    |> cast(attrs, [:first_name, :last_name, :phone_number, :recovery_phone_number, :avatar_id])
     |> validate_required([:first_name, :last_name, :phone_number])
     |> unique_constraint(:phone_number)
     |> convert_to_254()
