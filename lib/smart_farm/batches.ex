@@ -429,8 +429,7 @@ defmodule SmartFarm.Batches do
   defp used_store_items_multi(multi, items, batch, report) do
     items
     |> Enum.reduce(multi, fn item, multi ->
-      if store_item =
-           Repo.get_by(StoreItem, farm_id: batch.farm_id, name: item.name) do
+      if store_item = Repo.get_by(StoreItem, farm_id: batch.farm_id, name: item.name) do
         Multi.insert(multi, item.name, fn _changes ->
           StoreItemUsageReport.changeset(
             %StoreItemUsageReport{report_id: report.id},

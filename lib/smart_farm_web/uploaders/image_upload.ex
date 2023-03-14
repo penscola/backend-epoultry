@@ -35,9 +35,9 @@ defmodule SmartFarm.Upload do
   # end
 
   # Override the persisted filenames:
-  # def filename(version, _) do
-  #   version
-  # end
+  def filename(_version, {_file, %Files.File{} = file}) do
+    Path.basename(file.unique_name)
+  end
 
   # Override the storage directory:
   def storage_dir(_version, {_file, %Files.File{} = scope}) do
