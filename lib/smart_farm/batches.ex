@@ -281,7 +281,7 @@ defmodule SmartFarm.Batches do
         &Map.merge(&1, %{report_id: report.id, created_at: timestamp, updated_at: timestamp})
       )
     end)
-    |> Multi.run(:weight_report, fn repo, %{batch: batch, report: report} ->
+    |> Multi.run(:weight_report, fn repo, %{report: report} ->
       if is_float(args[:weight_report][:average_weight]) and
            args[:weight_report][:average_weight] > 0.0 do
         %WeightReport{report_id: report.id}
