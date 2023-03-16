@@ -266,6 +266,8 @@ defmodule SmartFarm.Farms do
   def list_farm_reports(args, actor: %User{} = user) do
     query =
       from r in Report,
+        join: assoc(r, :reporter),
+        as: :reporter,
         join: b in assoc(r, :batch),
         as: :batch,
         join: f in assoc(b, :farm),
@@ -299,14 +301,28 @@ defmodule SmartFarm.Farms do
         from q in base, where: q.report_date <= ^value
 
       {:name, value}, base ->
-        from [batch: b, manager: m] in base,
-          where:
-            ilike(b.name, ^"%#{value}%") or ilike(m.first_name, ^"#{value}%") or
-              ilike(m.last_name, ^"#{value}%")
+        value = String.trim(value)
+
+        base_query =
+          from [batch: b, manager: m] in base,
+            where: ilike(b.name, ^"%#{value}%"),
+            or_where: ilike(m.first_name, ^"#{value}%"),
+            or_where: ilike(m.last_name, ^"#{value}%")
+
+        maybe_filter_by_report_date(base_query, value)
 
       _other, base ->
         base
     end)
+  end
+
+  defp maybe_filter_by_report_date(query, value) do
+    if Regex.match?(~r/^[0-9]{2}$/, value) do
+      from q in query,
+        or_where: fragment("DATE_PART('day', ?)", q.report_date) == type(^value, :integer)
+    else
+      query
+    end
   end
 
   def get_farm_report(_farm_id, _date, actor: nil), do: {:error, :unauthenticated}

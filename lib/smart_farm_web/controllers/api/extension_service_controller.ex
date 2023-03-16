@@ -32,6 +32,10 @@ defmodule SmartFarmWeb.API.ExtensionServiceController do
 
   defp attachment_files(nil), do: nil
 
+  defp attachment_files(%_{} = upload) do
+    [upload]
+  end
+
   defp attachment_files(attachments) do
     attachments
     |> Enum.map(fn

@@ -282,7 +282,7 @@ defmodule SmartFarm.Batches do
       )
     end)
     |> Multi.run(:weight_report, fn repo, %{batch: batch, report: report} ->
-      if batch.bird_type == :broilers and is_float(args[:weight_report][:average_weight]) and
+      if is_float(args[:weight_report][:average_weight]) and
            args[:weight_report][:average_weight] > 0.0 do
         %WeightReport{report_id: report.id}
         |> WeightReport.changeset(args.weight_report)

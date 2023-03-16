@@ -113,7 +113,7 @@ defmodule SmartFarm.ExtensionServices do
         |> MedicalVisitRequest.changeset(params)
     end)
     |> Multi.run(:files, fn _repo, %{extension_service: service} ->
-      if params.attachments do
+      if params[:attachments] do
         storage_path = Path.join(["uploads", "extension_services", "#{service.id}"])
         working_dir = Path.join([System.tmp_dir!(), storage_path])
         Logger.info("Creating working directory #{working_dir}")
