@@ -28,6 +28,7 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
 
   enum :medication_measurement_unit_enum do
     value(:litres)
+    value :doses
   end
 
   enum :feed_types_enum do

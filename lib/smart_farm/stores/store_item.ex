@@ -4,7 +4,7 @@ defmodule SmartFarm.Stores.StoreItem do
   schema "farms_store_items" do
     field :name, :string
     field :starting_quantity, :float, default: 0.0
-    field :measurement_unit, Ecto.Enum, values: [:kilograms, :grams, :litres]
+    field :measurement_unit, Ecto.Enum, values: [:kilograms, :grams, :litres, :doses]
     field :quantity_used, :float, default: 0.0
     field :quantity_received, :float, default: 0.0
     field :item_type, Ecto.Enum, values: [:medication, :feed, :sawdust, :briquettes]
