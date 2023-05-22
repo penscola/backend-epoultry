@@ -37,22 +37,21 @@ defmodule SmartFarm.Application do
     :ok
   end
 
-  # if Mix.env() == :prod do
-  defp goth_config() do
-    credentials =
-      "GOOGLE_APPLICATION_CREDENTIALS_JSON"
-      |> System.fetch_env!()
-      |> Jason.decode!()
+  if Mix.env() == :prod do
+    defp goth_config() do
+      credentials =
+        "GOOGLE_APPLICATION_CREDENTIALS_JSON"
+        |> System.fetch_env!()
+        |> Jason.decode!()
 
-    scopes = ["https://www.googleapis.com/auth/devstorage.read_write"]
-    source = {:service_account, credentials, scopes: scopes}
+      scopes = ["https://www.googleapis.com/auth/devstorage.read_write"]
+      source = {:service_account, credentials, scopes: scopes}
 
-    {Goth, name: SmartFarm.Goth, source: source}
+      {Goth, name: SmartFarm.Goth, source: source}
+    end
+  else
+    defp goth_config() do
+      Supervisor.child_spec({Task, fn -> :ok end}, id: :goth_config)
+    end
   end
-
-  # else
-  #   defp goth_config() do
-  #     Supervisor.child_spec({Task, fn -> :ok end}, id: :goth_config)
-  #   end
-  # end
 end

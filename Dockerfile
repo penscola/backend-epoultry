@@ -5,10 +5,9 @@ ARG ELIXIR_BUILDER_IMAGE="hexpm/elixir:1.13.4-erlang-25.0.2-alpine-3.16.0"
 FROM ${ELIXIR_BUILDER_IMAGE}
 
 # install build dependencies
-RUN apk add git
+RUN apk add git build-base
 
 # prepare build dir
-COPY . /app
 WORKDIR /app
 # set build ENV
 ENV MIX_ENV="dev"
@@ -22,10 +21,10 @@ RUN mix deps.get
 # to be re-compiled.
 COPY config config
 COPY lib lib
+COPY assets assets
+COPY priv priv
 RUN mix deps.compile
 # compile the release
 RUN mix compile
-
-RUN mix ecto.setup
 
 CMD mix phx.server
