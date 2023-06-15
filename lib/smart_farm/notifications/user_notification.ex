@@ -1,0 +1,19 @@
+defmodule SmartFarm.Notifications.UserNotification do
+  @moduledoc false
+
+  use SmartFarm.Schema
+  alias SmartFarm.Notifications.Notification
+
+  schema "users_notifications" do
+    belongs_to :user, User
+    belongs_to :notification, Notification
+
+    timestamps()
+  end
+
+  def changeset(user_notification, attrs) do
+    user_notification
+    |> cast(attrs, [:user_id, :notification_id])
+    |> validate_required([:user_id, :notification_id])
+  end
+end
