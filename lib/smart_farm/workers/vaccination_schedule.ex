@@ -1,5 +1,6 @@
 defmodule SmartFarm.Workers.VaccinationSchedule do
   use Ecto.Schema
+  alias SmartFarm.Notifications.UserNotification
   use Oban.Worker, queue: :scheduled, max_attempts: 5
   use SmartFarm.Context
 
@@ -20,7 +21,7 @@ defmodule SmartFarm.Workers.VaccinationSchedule do
 
       jobs =
         Enum.map(batches, fn attrs ->
-          SmartFarm.Workers.VaccinationSchedule.new(attrs)
+          __MODULE__.new(attrs)
         end)
 
       Oban.insert_all(jobs)
@@ -30,16 +31,75 @@ defmodule SmartFarm.Workers.VaccinationSchedule do
 
   def perform(%{args: %{"batch_id" => batch_id}}) do
     with {:ok, batch} <- Batches.get_batch(batch_id) do
-      schedules = batch |> list_vaccination_schedules()
+      attrs =
+        batch
+        |> list_vaccination_schedules()
+        |> batch_vaccinations(batch)
 
-      batch_vaccination_attrs = batch_vaccinations(schedules, batch)
-      Repo.insert_all(BatchVaccination, batch_vaccination_attrs)
-
-      reminder_attrs = reminder_date(schedules, batch) |> IO.inspect
-      Repo.insert_all(Notification, reminder_attrs)
-
+        {_number, inserted_records} = Repo.insert_all(BatchVaccination, attrs, returning: true)
+      process_inserted_records(inserted_records, batch)
+      # insert_user_notifications(name)
       :ok
     end
+  end
+
+  defp user_notifications do
+    from(bv in BatchVaccination,
+      left_join: batch in Batch, on: batch.id == bv.batch_id,
+      left_join: farm in Farm, on: farm.id == batch.farm_id,
+      left_join: farmer in Farmer, on: farmer.user_id == farm.owner_id,
+      left_join: user in User, on: user.id == farmer.user_id,
+      select: user.id
+    )
+    |> Repo.all()
+  end
+
+  defp get_notification_id(name) do
+    from(n in Notification,
+      where: n.name == ^name,
+      select: n.id
+    )
+    |> Repo.all()
+  end
+
+  def insert_user_notifications(name) do
+    user_ids = user_notifications()
+    notification_ids = get_notification_id(name)
+
+    Enum.each(user_ids, fn user_id ->
+      Enum.each(notification_ids, fn notification_id ->
+        %UserNotification{
+          user_id: user_id,
+          notification_id: notification_id,
+          read_at: nil
+        }
+        |> Repo.insert()
+        |> case do
+          {:ok, _user_notification} ->
+            IO.puts("UserNotification inserted successfully")
+          {:error, changeset} ->
+            IO.puts("Failed to insert UserNotification: #{inspect(changeset.errors)}")
+        end
+      end)
+    end)
+  end
+
+
+  defp process_inserted_records(inserted_records, batch) do
+    Enum.each(inserted_records, fn %BatchVaccination{date_scheduled: date_scheduled} ->
+      new_date = Date.add(date_scheduled, -2)
+
+      Repo.insert(%Notification{
+        title: "Vaccination Schedule",
+        description: "Vaccination schedule for #{batch.bird_type}",
+        category: "Vaccination",
+        priority: :high,
+        action_required: true,
+        action_completed: false,
+        date_scheduled: new_date,
+        name: batch.name,
+      })
+    end)
   end
 
   defp list_batches(schedule) do
@@ -55,51 +115,6 @@ defmodule SmartFarm.Workers.VaccinationSchedule do
     query = from v in VaccinationSchedule, where: v.bird_type == ^batch.bird_type
 
     Repo.all(query)
-  end
-
-  # defp reminder_dates(schedule) do
-  #   reminder_scheduled_dates = Map.put(schedule, :rem_date, Date.add(schedule.schedule, -2)) |> IO.inspect
-
-  #   attrs = %{
-  #     date_to_remind: reminder_scheduled_dates.rem_date,
-  #     # actor_id: schedule.actor_id
-  #   }
-  #   attrs
-  # end
-
-
-  defp reminder_date(schedules, batch) do
-    current_age = Batches.current_age(batch)
-    today = Date.utc_today()
-    now = DateTime.utc_now() |> DateTime.truncate(:second)
-
-    schedules
-    |> Enum.map(fn schedule ->
-      Enum.map(schedule.bird_ages, fn range ->
-        age = age_from_range(range, current_age)
-        schedule_date = Date.add(today, age - current_age)
-        rem_date = Date.add(schedule_date, -2)
-
-        attrs = %{
-          date_scheduled: rem_date,
-          title: "Vaccination Reminder",
-          description: "Vaccination Reminder",
-          category: "Vaccination",
-          priority: :high,
-          action_required: true,
-          action_completed: false,
-          name: batch.name,
-          created_at: now,
-          updated_at: now
-        }
-
-        repeated_schedules(attrs, schedule.repeat_after)
-      end)
-    end)
-    |> List.flatten()
-    |> Enum.reject(fn schedule ->
-      Date.compare(schedule.date_scheduled, today) == :lt
-    end)
   end
 
   defp batch_vaccinations(schedules, batch) do
