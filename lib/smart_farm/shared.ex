@@ -43,6 +43,8 @@ defmodule SmartFarm.Shared do
         Stores.Restock,
         Stores.StoreItem,
         Util.CodeGenerator,
+        Notifications.UserNotification,
+        Notifications.Notification,
         Vaccinations,
         Vaccinations.BatchVaccination,
         Vaccinations.Vaccination,
