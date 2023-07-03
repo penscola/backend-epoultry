@@ -1,6 +1,5 @@
 defmodule SmartFarm.Notifications.Notification do
   use SmartFarm.Schema
-
   use SmartFarm.Context
 
   schema "notifications" do

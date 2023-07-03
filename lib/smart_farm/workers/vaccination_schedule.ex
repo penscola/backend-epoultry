@@ -4,6 +4,7 @@ defmodule SmartFarm.Workers.VaccinationSchedule do
   use Oban.Worker, queue: :scheduled, max_attempts: 5
   use SmartFarm.Context
 
+
   @repeat_times 5
 
   def perform(%{args: %{"batch_id" => batch_id, "schedule_id" => schedule_id}}) do
@@ -37,69 +38,65 @@ defmodule SmartFarm.Workers.VaccinationSchedule do
         |> batch_vaccinations(batch)
 
         {_number, inserted_records} = Repo.insert_all(BatchVaccination, attrs, returning: true)
-      process_inserted_records(inserted_records, batch)
-      # insert_user_notifications(name)
+        process_inserted_records(inserted_records, batch, batch_id)
       :ok
     end
   end
 
-  defp user_notifications do
-    from(bv in BatchVaccination,
-      left_join: batch in Batch, on: batch.id == bv.batch_id,
-      left_join: farm in Farm, on: farm.id == batch.farm_id,
-      left_join: farmer in Farmer, on: farmer.user_id == farm.owner_id,
-      left_join: user in User, on: user.id == farmer.user_id,
-      select: user.id
-    )
-    |> Repo.all()
-  end
-
-  defp get_notification_id(name) do
-    from(n in Notification,
-      where: n.name == ^name,
-      select: n.id
-    )
-    |> Repo.all()
-  end
-
-  def insert_user_notifications(name) do
-    user_ids = user_notifications()
-    notification_ids = get_notification_id(name)
-
-    Enum.each(user_ids, fn user_id ->
-      Enum.each(notification_ids, fn notification_id ->
-        %UserNotification{
-          user_id: user_id,
-          notification_id: notification_id,
-          read_at: nil
-        }
-        |> Repo.insert()
-        |> case do
-          {:ok, _user_notification} ->
-            IO.puts("UserNotification inserted successfully")
-          {:error, changeset} ->
-            IO.puts("Failed to insert UserNotification: #{inspect(changeset.errors)}")
-        end
-      end)
-    end)
-  end
-
-
-  defp process_inserted_records(inserted_records, batch) do
-    Enum.each(inserted_records, fn %BatchVaccination{date_scheduled: date_scheduled} ->
+  defp process_inserted_records(inserted_records, batch, batch_id) do
+    inserted_notification_ids = Enum.map(inserted_records, fn %BatchVaccination{date_scheduled: date_scheduled} ->
       new_date = Date.add(date_scheduled, -2)
 
-      Repo.insert(%Notification{
-        title: "Vaccination Schedule",
-        description: "Vaccination schedule for #{batch.bird_type}",
-        category: "Vaccination",
-        priority: :high,
-        action_required: true,
-        action_completed: false,
-        date_scheduled: new_date,
-        name: batch.name,
-      })
+      notification =
+        %Notification{
+          title: "Vaccination Schedule",
+          description: "Vaccination schedule for #{batch.bird_type}",
+          category: "Vaccination",
+          priority: :high,
+          action_required: true,
+          action_completed: false,
+          date_scheduled: new_date,
+          name: batch.name,
+        }
+
+      {:ok, inserted_notification} = Repo.insert(notification)
+      inserted_notification.id
     end)
+
+    batches =
+      from(b in Batch,
+        left_join: farm in Farm, on: farm.id == b.farm_id,
+        where: b.id == ^batch_id,
+        preload: [farm: [:owner, :managers]]
+      )
+      |> Repo.all()
+      |> List.flatten()
+
+    Enum.each(batches, fn batch ->
+      owner_id = batch.farm.owner.id
+      manager_ids = Enum.map(batch.farm.managers, & &1.id)
+
+      for owner_id <- [owner_id],
+          manager_id <- manager_ids,
+          notification_id <- inserted_notification_ids do
+        usernotification =
+          %UserNotification{
+            user_id: owner_id,
+            farm_manager_id: manager_id,
+            notification_id: notification_id,
+          }
+
+        Repo.insert(usernotification)
+      end
+    end)
+  end
+
+  def list_notification do
+    query =
+      from n in Notification,
+        where: n.action_required == true,
+        select: %{id: n.id}
+    Repo.all(query) |> IO.inspect
   end
 
   defp list_batches(schedule) do
