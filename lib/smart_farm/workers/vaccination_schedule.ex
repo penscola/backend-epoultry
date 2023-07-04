@@ -66,11 +66,10 @@ defmodule SmartFarm.Workers.VaccinationSchedule do
     batches =
       from(b in Batch,
         left_join: farm in Farm, on: farm.id == b.farm_id,
-        where: b.id == ^batch_id,
-        preload: [farm: [:owner, :managers]]
+        where: b.id == ^batch_id
       )
       |> Repo.all()
-      |> List.flatten()
+      |> Repo.preload([farm: [:owner, :managers]])
 
     Enum.each(batches, fn batch ->
       owner_id = batch.farm.owner.id
@@ -80,23 +79,15 @@ defmodule SmartFarm.Workers.VaccinationSchedule do
           manager_id <- manager_ids,
           notification_id <- inserted_notification_ids do
         usernotification =
-          %UserNotification{
+          %{
             user_id: owner_id,
             farm_manager_id: manager_id,
             notification_id: notification_id,
           }
 
-        Repo.insert(usernotification)
+        Repo.insert_all(UserNotification, [usernotification])
       end
     end)
-  end
-
-  def list_notification do
-    query =
-      from n in Notification,
-        where: n.action_required == true,
-        select: %{id: n.id}
-    Repo.all(query) |> IO.inspect
   end
 
   defp list_batches(schedule) do

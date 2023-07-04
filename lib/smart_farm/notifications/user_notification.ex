@@ -7,7 +7,6 @@ defmodule SmartFarm.Notifications.UserNotification do
   schema "users_notifications" do
     belongs_to :user, User
     belongs_to :notification, Notification
-    belongs_to :farm_manager, User, foreign_key: :farm_manager_id
     field :read_at, :utc_datetime
 
     timestamps()
