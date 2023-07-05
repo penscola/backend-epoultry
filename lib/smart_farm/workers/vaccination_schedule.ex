@@ -44,11 +44,11 @@ defmodule SmartFarm.Workers.VaccinationSchedule do
   end
 
   defp process_inserted_records(inserted_records, batch, batch_id) do
-    inserted_notification_ids = Enum.map(inserted_records, fn %BatchVaccination{date_scheduled: date_scheduled} ->
-      new_date = Date.add(date_scheduled, -2)
+    inserted_notifications =
+      Enum.map(inserted_records, fn %BatchVaccination{date_scheduled: date_scheduled} ->
+        new_date = Date.add(date_scheduled, -2)
 
-      notification =
-        %Notification{
+        %{
           title: "Vaccination Schedule",
           description: "Vaccination schedule for #{batch.bird_type}",
           category: "Vaccination",
@@ -57,11 +57,12 @@ defmodule SmartFarm.Workers.VaccinationSchedule do
           action_completed: false,
           date_scheduled: new_date,
           name: batch.name,
+          created_at: DateTime.utc_now() |> DateTime.truncate(:second),
+          updated_at: DateTime.utc_now() |> DateTime.truncate(:second)
         }
+      end)
 
-      {:ok, inserted_notification} = Repo.insert(notification)
-      inserted_notification.id
-    end)
+    {_number, notification_ids} = Repo.insert_all(Notification, inserted_notifications, returning: true)
 
     batches =
       from(b in Batch,
@@ -75,18 +76,20 @@ defmodule SmartFarm.Workers.VaccinationSchedule do
       owner_id = batch.farm.owner.id
       manager_ids = Enum.map(batch.farm.managers, & &1.id)
 
-      for owner_id <- [owner_id],
-          manager_id <- manager_ids,
-          notification_id <- inserted_notification_ids do
-        usernotification =
+      user_notifications =
+        for owner_id <- [owner_id],
+            manager_id <- manager_ids,
+            notification_id <- notification_ids do
           %{
             user_id: owner_id,
             farm_manager_id: manager_id,
-            notification_id: notification_id,
+            notification_id: notification_id.id,
+            created_at: DateTime.utc_now() |> DateTime.truncate(:second),
+            updated_at: DateTime.utc_now() |> DateTime.truncate(:second)
           }
+        end
 
-        Repo.insert_all(UserNotification, [usernotification])
-      end
+      Repo.insert_all(UserNotification, user_notifications)
     end)
   end
 
