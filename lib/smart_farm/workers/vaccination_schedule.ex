@@ -4,7 +4,6 @@ defmodule SmartFarm.Workers.VaccinationSchedule do
   use Oban.Worker, queue: :scheduled, max_attempts: 5
   use SmartFarm.Context
 
-
   @repeat_times 5
 
   def perform(%{args: %{"batch_id" => batch_id, "schedule_id" => schedule_id}}) do
@@ -37,8 +36,8 @@ defmodule SmartFarm.Workers.VaccinationSchedule do
         |> list_vaccination_schedules()
         |> batch_vaccinations(batch)
 
-        {_number, inserted_records} = Repo.insert_all(BatchVaccination, attrs, returning: true)
-        process_inserted_records(inserted_records, batch, batch_id)
+      {_number, inserted_records} = Repo.insert_all(BatchVaccination, attrs, returning: true)
+      process_inserted_records(inserted_records, batch, batch_id)
       :ok
     end
   end
@@ -62,35 +61,33 @@ defmodule SmartFarm.Workers.VaccinationSchedule do
         }
       end)
 
-    {_number, notification_ids} = Repo.insert_all(Notification, inserted_notifications, returning: true)
+    {_number, notification_ids} =
+      Repo.insert_all(Notification, inserted_notifications, returning: true)
 
     batches =
-      from(b in Batch,
-        left_join: farm in Farm, on: farm.id == b.farm_id,
-        where: b.id == ^batch_id
-      )
+      from(b in Batch, left_join: farm in Farm, on: farm.id == b.farm_id, where: b.id == ^batch_id)
       |> Repo.all()
-      |> Repo.preload([farm: [:owner, :managers]])
+      |> Repo.preload(farm: [:owner, :managers])
 
-    Enum.each(batches, fn batch ->
-      owner_id = batch.farm.owner.id
-      manager_ids = Enum.map(batch.farm.managers, & &1.id)
+    user_notifications =
+      Enum.map(batches, fn batch ->
+        owner_id = batch.farm.owner.id
+        manager_ids = Enum.map(batch.farm.managers, & &1.id)
 
-      user_notifications =
         for owner_id <- [owner_id],
             manager_id <- manager_ids,
             notification_id <- notification_ids do
-          %{
-            user_id: owner_id,
-            farm_manager_id: manager_id,
-            notification_id: notification_id.id,
-            created_at: DateTime.utc_now() |> DateTime.truncate(:second),
-            updated_at: DateTime.utc_now() |> DateTime.truncate(:second)
-          }
+              %{
+                user_id: owner_id,
+                farm_manager_id: manager_id,
+                notification_id: notification_id.id,
+                created_at: DateTime.utc_now() |> DateTime.truncate(:second),
+                updated_at: DateTime.utc_now() |> DateTime.truncate(:second)
+              }
         end
+      end) |> List.flatten()
 
-      Repo.insert_all(UserNotification, user_notifications)
-    end)
+    Repo.insert_all(UserNotification, user_notifications)
   end
 
   defp list_batches(schedule) do
