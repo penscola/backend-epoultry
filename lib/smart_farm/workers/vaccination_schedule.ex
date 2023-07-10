@@ -37,12 +37,12 @@ defmodule SmartFarm.Workers.VaccinationSchedule do
         |> batch_vaccinations(batch)
 
       {_number, inserted_records} = Repo.insert_all(BatchVaccination, attrs, returning: true)
-      process_inserted_records(inserted_records, batch, batch_id)
+      process_inserted_records(inserted_records, batch)
       :ok
     end
   end
 
-  defp process_inserted_records(inserted_records, batch, batch_id) do
+  defp process_inserted_records(inserted_records, batch) do
     inserted_notifications =
       Enum.map(inserted_records, fn %BatchVaccination{date_scheduled: date_scheduled} ->
         new_date = Date.add(date_scheduled, -2)
@@ -61,31 +61,22 @@ defmodule SmartFarm.Workers.VaccinationSchedule do
         }
       end)
 
-    {_number, notification_ids} =
-      Repo.insert_all(Notification, inserted_notifications, returning: true)
+    {_numbers, notifications} = Repo.insert_all(Notification, inserted_notifications, returning: true)
 
-    batches =
-      from(b in Batch, left_join: farm in Farm, on: farm.id == b.farm_id, where: b.id == ^batch_id)
-      |> Repo.all()
-      |> Repo.preload(farm: [:owner, :managers])
+    user_notification(notifications, batch)
+  end
 
-    user_notifications =
-      Enum.map(batches, fn batch ->
-        owner_id = batch.farm.owner.id
-        manager_ids = Enum.map(batch.farm.managers, & &1.id)
+  defp user_notification(notifications, batch) do
+    batches = Repo.preload(batch, farm: :owner)
 
-        for owner_id <- [owner_id],
-            manager_id <- manager_ids,
-            notification_id <- notification_ids do
-              %{
-                user_id: owner_id,
-                farm_manager_id: manager_id,
-                notification_id: notification_id.id,
-                created_at: DateTime.utc_now() |> DateTime.truncate(:second),
-                updated_at: DateTime.utc_now() |> DateTime.truncate(:second)
-              }
-        end
-      end) |> List.flatten()
+    user_notifications = Enum.map(notifications, fn notification ->
+      %{
+        user_id: batches.farm.owner.id,
+        notification_id: notification.id,
+        created_at: DateTime.utc_now() |> DateTime.truncate(:second),
+        updated_at: DateTime.utc_now() |> DateTime.truncate(:second)
+      }
+    end)
 
     Repo.insert_all(UserNotification, user_notifications)
   end
