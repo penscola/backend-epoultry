@@ -65,6 +65,14 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :farm, :farm do
       resolve(dataloader(Repo))
     end
+
+    field :current_age, :integer do
+      resolve(&Resolvers.Batch.fetch_current_age/3)
+    end
+
+    field :current_quantity, :integer do
+      resolve(&Resolvers.Batch.fetch_current_quantity/3)
+    end
   end
 
   object :batch_report do

@@ -1,5 +1,6 @@
 defmodule SmartFarmWeb.Resolvers.Batch do
   use SmartFarm.Shared
+  import Absinthe.Resolution.Helpers, only: [batch: 3]
 
   @spec create_batch(map(), %{context: %{current_user: %User{}}}) ::
           {:ok, %Batch{}} | {:error, Ecto.Changeset.t()}
@@ -21,5 +22,20 @@ defmodule SmartFarmWeb.Resolvers.Batch do
     data
     |> Map.merge(%{reporter_id: user.id})
     |> Batches.create_report()
+  end
+
+  @spec fetch_current_age(%Batch{}, map(), %{context: %{current_user: %User{}}}) ::
+          {:ok, integer} | {:error, any}
+  def fetch_current_age(batch, _args, %{context: %{current_user: _user}}) do
+    age = Batches.current_age(batch)
+    {:ok, age}
+  end
+
+  @spec fetch_current_quantity(%Batch{}, map(), %{context: %{current_user: %User{}}}) ::
+          {:ok, integer} | {:error, any}
+  def fetch_current_quantity(batch, _args, %{context: %{current_user: _user}}) do
+    batch({Batches, :fetch_current_quantity, []}, batch.id, fn results ->
+      {:ok, Map.get(results, batch.id, [])}
+    end)
   end
 end

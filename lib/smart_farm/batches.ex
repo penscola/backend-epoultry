@@ -54,6 +54,23 @@ defmodule SmartFarm.Batches do
     end
   end
 
+  def fetch_current_quantity(_opts, batch_ids) do
+    query =
+      from b in Batch,
+        join: r in assoc(b, :reports),
+        join: bcr in assoc(r, :bird_counts),
+        where: b.id in ^batch_ids,
+        group_by: b.id,
+        select: %{
+          id: b.id,
+          current_quantity: coalesce(b.bird_count, 0) - coalesce(sum(bcr.quantity), 0)
+        }
+
+    query
+    |> Repo.all()
+    |> Map.new(fn batch -> {batch.id, batch.current_quantity} end)
+  end
+
   @doc """
   Creates a batch.
 
