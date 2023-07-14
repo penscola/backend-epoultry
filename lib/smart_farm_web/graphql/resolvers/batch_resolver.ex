@@ -10,6 +10,15 @@ defmodule SmartFarmWeb.Resolvers.Batch do
     |> Batches.create_batch()
   end
 
+  @spec update_batch(map(), %{context: %{current_user: %User{}}}) ::
+          {:ok, %Batch{}} | {:error, Ecto.Changeset.t()}
+  def update_batch(args, %{context: %{current_user: _user}}) do
+    # Note(frank): we need to make sure that the user is authorized to update batch info
+    with {:ok, batch} <- Batches.get_batch(args.batch_id) do
+      Batches.update_batch(batch, args.data)
+    end
+  end
+
   @spec get_batch(map(), %{context: %{current_user: %User{}}}) ::
           {:ok, %Batch{}} | {:error, :not_found}
   def get_batch(%{batch_id: batch_id}, %{context: %{current_user: _user}}) do

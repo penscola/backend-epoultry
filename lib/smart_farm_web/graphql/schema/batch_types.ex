@@ -155,6 +155,15 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :farm_id, non_null(:uuid)
   end
 
+  input_object :update_batch_input do
+    field :acquired_date, non_null(:date)
+    field :age_type, non_null(:age_type_enum)
+    field :bird_age, non_null(:integer)
+    field :bird_count, non_null(:integer)
+    field :bird_type, non_null(:bird_type_enum)
+    field :name, non_null(:string)
+  end
+
   input_object :create_batch_report_input do
     field :report_date, :date, description: "defaults to the current date"
     field :batch_id, non_null(:uuid)
@@ -244,6 +253,13 @@ defmodule SmartFarmWeb.Schema.BatchTypes do
     field :create_batch, non_null(:batch) do
       arg(:data, non_null(:create_batch_input))
       resolve(&Resolvers.Batch.create_batch/2)
+    end
+
+    field :update_batch, non_null(:batch) do
+      arg(:batch_id, non_null(:uuid))
+      arg(:data, non_null(:update_batch_input))
+
+      resolve(&Resolvers.Batch.update_batch/2)
     end
 
     field :create_batch_report, non_null(:batch_report) do
