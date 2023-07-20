@@ -34,9 +34,58 @@ defmodule SmartFarm.Workers.VaccinationSchedule do
         |> list_vaccination_schedules()
         |> batch_vaccinations(batch)
 
-      Repo.insert_all(BatchVaccination, attrs)
+      {_number, inserted_records} = Repo.insert_all(BatchVaccination, attrs, returning: true)
+      process_inserted_records(inserted_records, batch)
       :ok
     end
+  end
+
+  defp process_inserted_records(inserted_records, batch) do
+    multi =
+      Multi.new()
+      |> Multi.insert_all(:insert_notifications, Notification, notifications(inserted_records, batch), returning: true)
+      |> Multi.run(:notification_ids, fn _repo, %{insert_notifications: {_, insert_notifications}} ->
+        notification_ids = Enum.map(insert_notifications, &(&1.id))
+        {:ok, notification_ids}  # Return the notification_ids with {:ok, value}
+      end)
+      |> Multi.insert_all(:insert_user_notifications, UserNotification, fn %{notification_ids: notification_ids} ->
+        user_notifications(notification_ids, batch)
+      end)
+
+    Repo.transaction(multi)
+  end
+
+  defp user_notifications(notification_ids, batch) do
+    batches = Repo.preload(batch, farm: [:owner, :managers])
+    user_id = batches.farm.owner.id
+
+    Enum.map(notification_ids, fn notification_id ->
+      %{
+        notification_id: notification_id,
+        user_id: user_id,
+        created_at: DateTime.utc_now() |> DateTime.truncate(:second),
+        updated_at: DateTime.utc_now() |> DateTime.truncate(:second)
+      }
+    end) |> IO.inspect
+  end
+
+  defp notifications(inserted_records, batch) do
+      Enum.map(inserted_records, fn %BatchVaccination{date_scheduled: date_scheduled} ->
+        new_date = Date.add(date_scheduled, -2)
+
+        %{
+          title: "Vaccination Schedule",
+          description: "Vaccination schedule for #{batch.bird_type}",
+          category: "Vaccination",
+          priority: :high,
+          action_required: true,
+          action_completed: false,
+          date_scheduled: new_date,
+          name: batch.name,
+          created_at: DateTime.utc_now() |> DateTime.truncate(:second),
+          updated_at: DateTime.utc_now() |> DateTime.truncate(:second)
+        }
+      end)
   end
 
   defp list_batches(schedule) do
